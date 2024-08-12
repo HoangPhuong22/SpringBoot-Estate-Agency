@@ -6,6 +6,8 @@ import zerocoder.com.Estate.enums.PropertyDirection;
 import zerocoder.com.Estate.enums.PropertyStatus;
 import zerocoder.com.Estate.enums.PropertyType;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -66,5 +68,6 @@ public class Property extends BaseEntity<Long> {
     @Column(name = "rent_price")
     private String rentPrice;
 
-
+    @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Contract> contracts;
 }

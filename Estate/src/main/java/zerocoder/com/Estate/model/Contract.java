@@ -49,4 +49,22 @@ public class Contract extends BaseEntity<Long>{
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private ContractStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE,
+            CascadeType.DETACH,
+            CascadeType.REFRESH
+    })
+    @JoinColumn(name = "property_id")
+    private Property property;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE,
+            CascadeType.DETACH,
+            CascadeType.REFRESH
+    })
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 }

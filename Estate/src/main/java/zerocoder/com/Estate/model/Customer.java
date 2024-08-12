@@ -5,6 +5,7 @@ import lombok.*;
 import zerocoder.com.Estate.enums.CustomerType;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -41,4 +42,10 @@ public class Customer extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private CustomerType type;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "account_id")
+    private Account account;
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Contract> contracts;
 }
