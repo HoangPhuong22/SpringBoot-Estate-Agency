@@ -7,22 +7,22 @@
 
 
 CREATE TABLE account (
-    id SERIAL PRIMARY KEY, -- Mã tài khoản (1, 2, 3, ...)
+    id BIGSERIAL PRIMARY KEY, -- Mã tài khoản (1, 2, 3, ...)
     username VARCHAR(50) UNIQUE NOT NULL, -- Tên đăng nhập (VD: "user1")
     password_hash VARCHAR(255) NOT NULL, -- Mật khẩu đã mã hóa
     email VARCHAR(255) UNIQUE, -- Email (VD: "user1@example.com")
-    created_by VARCHAR(100), -- Người tạo (VD: Hoang Van A)
-    updated_by VARCHAR(100), -- Người sửa (VD: Hoang Van A)
+    created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
+	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
 
 CREATE TABLE role (
-    id SERIAL PRIMARY KEY, -- Mã vai trò (1, 2, 3, ...)
+    id BIGSERIAL PRIMARY KEY, -- Mã vai trò (1, 2, 3, ...)
     name VARCHAR(50) UNIQUE NOT NULL, -- Tên vai trò (VD: "Admin", "User")
-    description TEXT, -- Mô tả vai trò (VD: "Quản trị hệ thống")
-	created_by VARCHAR(100), -- Người tạo (VD: Hoang Van A)
+ 	created_by INT, -- Người tạo (VD:\ 1, 2, ....)     
+	updated_by INT, -- Người sửa (VD: 1, 2, ...)
     updated_by VARCHAR(100), -- Người sửa (VD: Hoang Van A)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
@@ -31,22 +31,22 @@ CREATE TABLE role (
 
 
 CREATE TABLE permission (
-    id SERIAL PRIMARY KEY, -- Mã quyền (1, 2, 3, ...)
+    id BIGSERIAL PRIMARY KEY, -- Mã quyền (1, 2, 3, ...)
     name VARCHAR(50) UNIQUE NOT NULL, -- Tên quyền (VD: "READ", "WRITE")
     description TEXT, -- Mô tả quyền (VD: "Quyền đọc dữ liệu")
-	created_by VARCHAR(100), -- Người tạo (VD: Hoang Van A)
-    updated_by VARCHAR(100), -- Người sửa (VD: Hoang Van A)
+	created_by INT, -- Người tạo (VD:\ 1, 2, ....)     
+	updated_by INT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
 
 CREATE TABLE user_role (
-    user_id INT REFERENCES account(id), -- Mã tài khoản (VD: 1)
-    role_id INT REFERENCES role(id), -- Mã vai trò (VD: 1)
+    user_id BIGINT REFERENCES account(id), -- Mã tài khoản (VD: 1)
+    role_id BIGINT REFERENCES role(id), -- Mã vai trò (VD: 1)
     PRIMARY KEY (user_id, role_id),
-	created_by VARCHAR(100), -- Người tạo (VD: Hoang Van A)
-    updated_by VARCHAR(100), -- Người sửa (VD: Hoang Van A)
+	created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
+	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
@@ -54,11 +54,11 @@ CREATE TABLE user_role (
 
 
 CREATE TABLE role_permission (
-    role_id INT REFERENCES role(id), -- Mã vai trò (VD: 1)
-    permission_id INT REFERENCES permission(id), -- Mã quyền (VD: 1)
+    role_id BIGINT REFERENCES role(id), -- Mã vai trò (VD: 1)
+    permission_id BIGINT REFERENCES permission(id), -- Mã quyền (VD: 1)
     PRIMARY KEY (role_id, permission_id),
-	created_by VARCHAR(100), -- Người tạo (VD: Hoang Van A)
-    updated_by VARCHAR(100), -- Người sửa (VD: Hoang Van A)
+	created_by INT, -- Người tạo (VD:\ 1, 2, ....)     
+	updated_by INT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
@@ -66,7 +66,7 @@ CREATE TABLE role_permission (
 
 
 CREATE TABLE property (
-    id SERIAL PRIMARY KEY, -- Mã bất động sản (1, 2, 3, ...)
+    id BIGSERIAL PRIMARY KEY, -- Mã bất động sản (1, 2, 3, ...)
     type VARCHAR(100), -- Loại bất động sản (Căn hộ, chung cư,...)
     code VARCHAR(50) UNIQUE NOT NULL, -- Mã bất động sản (VD: "PROP001")
     name VARCHAR(255) NOT NULL, -- Tên bất động sản (VD: "Căn hộ Vinhomes")
@@ -83,22 +83,30 @@ CREATE TABLE property (
     status VARCHAR(50), -- Trạng thái (VD: "Trống", "Đã cho thuê", "Đã bán", "Đang sửa chữa")
     sale_price DECIMAL(18, 0), -- Giá bán (VD: 3000000000.00)
     rent_price DECIMAL(18, 0), -- Giá thuê (VD: 15000000.00)
-    created_by VARCHAR(100), -- Người tạo (VD: Hoang Van A)
-    updated_by VARCHAR(100), -- Người sửa (VD: Hoang Van A)
+    created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
+	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
 
-
-CREATE TABLE property_amenity (
-    id SERIAL PRIMARY KEY, -- Mã tiện ích (1, 2, 3, ...)
-    property_id INT REFERENCES property(id), -- Mã bất động sản (VD: 1)
+CREATE TABLE amenity(
+	id BIGSERIAL PRIMARY KEY, -- Mã tiện ích (1, 2, 3, ...)
     name VARCHAR(100), -- Tên tiện ích (VD: "Hồ bơi")
     type VARCHAR(50), -- Loại tiện ích (VD: "Nội thất", "Ngoại thất", "Tiện ích chung")
     description VARCHAR(255), -- Mô tả (VD: "Hồ bơi rộng 25m")
-    created_by VARCHAR(100), -- Người tạo (VD: Hoang Van A)
-    updated_by VARCHAR(100), -- Người sửa (VD: Hoang Van A)
+    created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
+	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
+    is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
+);
+CREATE TABLE property_amenity (
+    id BIGSERIAL PRIMARY KEY, -- Mã tiện ích (1, 2, 3, ...)
+    property_id BIGINT REFERENCES property(id), -- Mã bất động sản (VD: 1)
+   	amenity_id BIGINT REFERENCES amenity(id), -- Mã tiện ích
+    created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
+	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
@@ -106,13 +114,13 @@ CREATE TABLE property_amenity (
 
 
 CREATE TABLE property_image (
-    id SERIAL PRIMARY KEY, -- Mã hình ảnh (1, 2, 3, ...)
-    property_id INT REFERENCES property(id), -- Mã bất động sản (VD: 1)
+    id BIGSERIAL PRIMARY KEY, -- Mã hình ảnh (1, 2, 3, ...)
+    property_id BIGINT REFERENCES property(id), -- Mã bất động sản (VD: 1)
     image_url TEXT, -- Đường dẫn hình ảnh (VD: "https://example.com/image.jpg")
     is_main BOOLEAN DEFAULT false, -- Hình ảnh chính (VD: TRUE)
     description VARCHAR(255), -- Mô tả (VD: "Hình ảnh mặt tiền")
-    created_by VARCHAR(100), -- Người tạo (VD: Hoang Van A)
-    updated_by VARCHAR(100), -- Người sửa (VD: Hoang Van A)
+    created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
+	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
@@ -120,8 +128,8 @@ CREATE TABLE property_image (
 
 
 CREATE TABLE customer (
-    id SERIAL PRIMARY KEY, -- Mã khách hàng (1, 2, 3, ...)
-	account_id INT REFERENCES account(id),
+    id BIGSERIAL PRIMARY KEY, -- Mã khách hàng (1, 2, 3, ...)
+	account_id BIGINT REFERENCES account(id),
     code VARCHAR(50) UNIQUE NOT NULL, -- Mã khách hàng (VD: "CUST001")
     full_name VARCHAR(100), -- Họ tên khách hàng (VD: "Nguyễn Văn A")
     email VARCHAR(255) UNIQUE, -- Email (VD: "nguyenvana@example.com")
@@ -130,8 +138,8 @@ CREATE TABLE customer (
     birth_date DATE, -- Ngày sinh (VD: "1990-01-01")
     id_number VARCHAR(20) UNIQUE, -- CMND/CCCD (VD: "123456789")
     type VARCHAR(50), -- Loại khách hàng (VD: "Cá nhân", "Doanh nghiệp")
-    created_by VARCHAR(100), -- Người tạo (VD: Hoang Van A)
-    updated_by VARCHAR(100), -- Người sửa (VD: Hoang Van A)
+    created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
+	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
@@ -139,10 +147,10 @@ CREATE TABLE customer (
 
 
 CREATE TABLE contract (
-    id SERIAL PRIMARY KEY, -- Mã hợp đồng (1, 2, 3, ...)
+    id BIGSERIAL PRIMARY KEY, -- Mã hợp đồng (1, 2, 3, ...)
     code VARCHAR(50) UNIQUE NOT NULL, -- Mã hợp đồng (VD: "CONT001")
-    property_id INT REFERENCES property(id), -- Mã bất động sản (VD: 1)
-    customer_id INT REFERENCES customer(id), -- Mã khách hàng (VD: 1)
+    property_id BIGINT REFERENCES property(id), -- Mã bất động sản (VD: 1)
+    customer_id BIGINT REFERENCES customer(id), -- Mã khách hàng (VD: 1)
     type VARCHAR(50), -- Loại hợp đồng (VD: "Mua bán", "Cho thuê")
     start_date DATE, -- Ngày bắt đầu (VD: "2023-01-01")
     end_date DATE, -- Ngày kết thúc (VD: "2023-12-31")
@@ -152,18 +160,18 @@ CREATE TABLE contract (
     payment_method VARCHAR(100), -- Hình thức thanh toán (VD: "Chuyển khoản")
     terms TEXT, -- Điều khoản (VD: "Điều khoản hợp đồng")
     status VARCHAR(50), -- Trạng thái (VD: "Đang thực hiện", "Đã kết thúc", "Đã hủy")
-    created_by VARCHAR(100), -- Người tạo (VD: Hoang Van A)
-    updated_by VARCHAR(100), -- Người sửa (VD: Hoang Van A)
+    created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
+	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
 
 
-CREATE TABLE maintenance_request (
-    id SERIAL PRIMARY KEY, -- Mã yêu cầu bảo trì (1, 2, 3, ...)
-    property_id INT REFERENCES property(id), -- Mã bất động sản (VD: 1)
-    reported_by_id INT REFERENCES customer(id), -- Mã khách hàng báo cáo (VD: 1)
+CREATE TABLE maintenance (
+    id BIGSERIAL PRIMARY KEY, -- Mã yêu cầu bảo trì (1, 2, 3, ...)
+    property_id BIGINT REFERENCES property(id), -- Mã bất động sản (VD: 1)
+    reported_by_id BIGINT REFERENCES customer(id), -- Mã khách hàng báo cáo (VD: 1)
     description TEXT, -- Mô tả (VD: "Sửa chữa hệ thống điện")
     reported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày báo cáo (VD: "2023-01-01 00:00:00")
     priority_level INT, -- Mức độ ưu tiên (VD: 1)
@@ -171,8 +179,8 @@ CREATE TABLE maintenance_request (
     estimated_cost DECIMAL(15, 2), -- Chi phí dự kiến (VD: 1000000.00)
     actual_cost DECIMAL(15, 2), -- Chi phí thực tế (VD: 900000.00)
     completed_at TIMESTAMP, -- Ngày hoàn thành (VD: "2023-01-10 00:00:00")
-    created_by VARCHAR(100), -- Người tạo (VD: Hoang Van A)
-    updated_by VARCHAR(100), -- Người sửa (VD: Hoang Van A)
+    created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
+	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
@@ -180,8 +188,8 @@ CREATE TABLE maintenance_request (
 
 
 CREATE TABLE employee (
-    id SERIAL PRIMARY KEY, -- Mã nhân viên (1, 2, 3, ...)
-	account_id INT REFERENCES account(id),
+    id BIGSERIAL PRIMARY KEY, -- Mã nhân viên (1, 2, 3, ...)
+	account_id BIGINT REFERENCES account(id),
     code VARCHAR(50) UNIQUE NOT NULL, -- Mã nhân viên (VD: "EMP001")
     full_name VARCHAR(100), -- Họ tên nhân viên (VD: "Trần Văn B")
     email VARCHAR(255) UNIQUE, -- Email (VD: "tranvanb@example.com")
@@ -194,38 +202,38 @@ CREATE TABLE employee (
     education VARCHAR(100), -- Trình độ học vấn (VD: "Đại học")
     hire_date DATE, -- Ngày vào làm (VD: "2020-01-01")
     is_active BOOLEAN DEFAULT true, -- Đang làm việc (VD: TRUE)
-    created_by VARCHAR(100), -- Người tạo (VD: Hoang Van A)
-    updated_by VARCHAR(100), -- Người sửa (VD: Hoang Van A)
+    created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
+	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
 
 CREATE TABLE management_assignment (
-    id SERIAL PRIMARY KEY, -- Mã phân công (1, 2, 3, ...)
-    property_id INT REFERENCES property(id), -- Mã bất động sản (VD: 1)
-    employee_id INT REFERENCES employee(id), -- Mã nhân viên (VD: 1)
+    id BIGSERIAL PRIMARY KEY, -- Mã phân công (1, 2, 3, ...)
+    property_id BIGINT REFERENCES property(id), -- Mã bất động sản (VD: 1)
+    employee_id BIGINT REFERENCES employee(id), -- Mã nhân viên (VD: 1)
     start_date DATE NOT NULL, -- Ngày bắt đầu (VD: "2023-01-01")
     end_date DATE, -- Ngày kết thúc (VD: "2023-12-31")
     status VARCHAR(50) NOT NULL, -- Trạng thái (VD: "Đang quản lý", "Đã kết thúc")
     job_description TEXT, -- Mô tả công việc (VD: "Quản lý bảo trì")
     assigned_by INT REFERENCES employee(id), -- Người phân công (VD: 1)
-    created_by VARCHAR(100), -- Người tạo (VD: Hoang Van A)
-    updated_by VARCHAR(100), -- Người sửa (VD: Hoang Van A)
+    created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
+	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
 
 CREATE TABLE property_inspection (
-    id SERIAL PRIMARY KEY, -- Mã kiểm tra (1, 2, 3, ...)
-    property_id INT REFERENCES property(id), -- Mã bất động sản (VD: 1)
-    inspector_id INT REFERENCES employee(id), -- Mã nhân viên kiểm tra (VD: 1)
+    id BIGSERIAL PRIMARY KEY, -- Mã kiểm tra (1, 2, 3, ...)
+    property_id BIGINT REFERENCES property(id), -- Mã bất động sản (VD: 1)
+    inspector_id BIGINT REFERENCES employee(id), -- Mã nhân viên kiểm tra (VD: 1)
     inspection_date DATE, -- Ngày kiểm tra (VD: "2023-01-15")
     report TEXT, -- Báo cáo (VD: "Kiểm tra hệ thống điện")
     status VARCHAR(50), -- Trạng thái (VD: "Đạt", "Không đạt")
-    created_by VARCHAR(100), -- Người tạo (VD: Hoang Van A)
-    updated_by VARCHAR(100), -- Người sửa (VD: Hoang Van A)
+    created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
+	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
@@ -233,10 +241,10 @@ CREATE TABLE property_inspection (
 
 
 CREATE TABLE employee_activity (
-    id SERIAL PRIMARY KEY, -- Mã hoạt động (1, 2, 3, ...)
-    employee_id INT REFERENCES employee(id), -- Mã nhân viên (VD: 1)
-    customer_id INT REFERENCES customer(id), -- Mã khách hàng (VD: 1)
-    property_id INT REFERENCES property(id), -- Mã bất động sản (VD: 1)
+    id BIGSERIAL PRIMARY KEY, -- Mã hoạt động (1, 2, 3, ...)
+    employee_id BIGINT REFERENCES employee(id), -- Mã nhân viên (VD: 1)
+    customer_id BIGINT REFERENCES customer(id), -- Mã khách hàng (VD: 1)
+    property_id BIGINT REFERENCES property(id), -- Mã bất động sản (VD: 1)
     activity_type VARCHAR(100), -- Loại hoạt động (VD: "Gặp gỡ khách hàng")
     activity_time TIMESTAMP, -- Thời gian hoạt động (VD: "2023-01-20 10:00:00")
     location VARCHAR(255), -- Địa điểm (VD: "Cà phê Trung Nguyên")
@@ -244,23 +252,23 @@ CREATE TABLE employee_activity (
     result TEXT, -- Kết quả (VD: "Thống nhất ký hợp đồng")
     cost DECIMAL(10, 2), -- Chi phí (VD: 200000.00)
     note TEXT, -- Ghi chú (VD: "Mang theo tài liệu hợp đồng")
-    created_by VARCHAR(100), -- Người tạo (VD: Hoang Van A)
-    updated_by VARCHAR(100), -- Người sửa (VD: Hoang Van A)
+    created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
+	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
 
 CREATE TABLE payment (
-    id SERIAL PRIMARY KEY, -- Mã thanh toán (1, 2, 3, ...)
-    contract_id INT REFERENCES contract(id), -- Mã hợp đồng (VD: 1)
+    id BIGSERIAL PRIMARY KEY, -- Mã thanh toán (1, 2, 3, ...)
+    contract_id BIGINT REFERENCES contract(id), -- Mã hợp đồng (VD: 1)
     amount DECIMAL(15, 2), -- Số tiền (VD: 5000000.00)
     payment_date DATE, -- Ngày thanh toán (VD: "2023-01-25")
     payment_method VARCHAR(50), -- Phương thức thanh toán (VD: "Chuyển khoản")
     status VARCHAR(50), -- Trạng thái (VD: "Đã thanh toán", "Chờ xử lý")
     note TEXT, -- Ghi chú (VD: "Thanh toán tháng 1")
-    created_by VARCHAR(100), -- Người tạo (VD: Hoang Van A)
-    updated_by VARCHAR(100), -- Người sửa (VD: Hoang Van A)
+    created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
+	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)

@@ -86,4 +86,7 @@ public class Property extends BaseEntity<Long> {
             inverseJoinColumns = @JoinColumn(name = "amenity_id")
     )
     private List<Amenity> amenities;
+
+    @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Maintenance> ratings;
 }

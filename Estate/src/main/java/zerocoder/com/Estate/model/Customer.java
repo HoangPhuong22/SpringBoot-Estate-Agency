@@ -48,4 +48,7 @@ public class Customer extends BaseEntity<Long> {
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Contract> contracts;
+
+    @OneToMany(mappedBy = "reportedBy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Maintenance> maintenances;
 }
