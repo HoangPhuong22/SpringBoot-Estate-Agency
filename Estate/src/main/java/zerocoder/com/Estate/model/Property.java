@@ -70,4 +70,7 @@ public class Property extends BaseEntity<Long> {
 
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Contract> contracts;
+
+    @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<PropertyImage> images;
 }
