@@ -19,6 +19,12 @@ public abstract class BaseEntity<T extends Serializable> implements Serializable
     @Column(name = "id")
     private T id;
 
+    @Column(name = "created_by")
+    private T createdBy;
+
+    @Column(name = "updated_by")
+    private T updatedBy;
+
     @Column(name = "created_at")
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

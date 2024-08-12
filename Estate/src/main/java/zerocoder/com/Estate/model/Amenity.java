@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import zerocoder.com.Estate.enums.AmenityType;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -11,7 +13,7 @@ import zerocoder.com.Estate.enums.AmenityType;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "property_amenity")
-public class PropertyAmenity extends BaseEntity<Integer> {
+public class Amenity extends BaseEntity<Integer> {
 
     @Column(name = "name")
     private String name;
@@ -23,12 +25,16 @@ public class PropertyAmenity extends BaseEntity<Integer> {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE,
             CascadeType.DETACH,
             CascadeType.REFRESH
     })
-    @JoinColumn(name = "property_id")
-    private Property property;
+    @JoinTable(
+            name = "property_amenity",
+            joinColumns = @JoinColumn(name = "amenity_id"),
+            inverseJoinColumns = @JoinColumn(name = "property_id")
+    )
+    private List<Property> properties;
 }
