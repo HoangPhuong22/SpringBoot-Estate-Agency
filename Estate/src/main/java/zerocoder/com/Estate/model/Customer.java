@@ -2,7 +2,7 @@ package zerocoder.com.Estate.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import zerocoder.com.Estate.enums.TypeCustomer;
+import zerocoder.com.Estate.enums.CustomerType;
 
 import java.time.LocalDate;
 
@@ -39,6 +39,6 @@ public class Customer extends BaseEntity<Long> {
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
-    private TypeCustomer type;
+    private CustomerType type;
 
 }

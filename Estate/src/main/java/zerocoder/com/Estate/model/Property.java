@@ -2,9 +2,9 @@ package zerocoder.com.Estate.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import zerocoder.com.Estate.enums.DirectionProperty;
-import zerocoder.com.Estate.enums.StatusProperty;
-import zerocoder.com.Estate.enums.TypeProperty;
+import zerocoder.com.Estate.enums.PropertyDirection;
+import zerocoder.com.Estate.enums.PropertyStatus;
+import zerocoder.com.Estate.enums.PropertyType;
 
 @Getter
 @Setter
@@ -17,7 +17,7 @@ public class Property extends BaseEntity<Long> {
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
-    private TypeProperty type;
+    private PropertyType type;
 
     @Column(name = "code")
     private String code;
@@ -51,14 +51,14 @@ public class Property extends BaseEntity<Long> {
 
     @Column(name = "direction")
     @Enumerated(EnumType.STRING)
-    private DirectionProperty direction;
+    private PropertyDirection direction;
 
     @Column(name = "description")
     private String description;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private StatusProperty status;
+    private PropertyStatus status;
 
     @Column(name = "sale_price")
     private String salePrice;

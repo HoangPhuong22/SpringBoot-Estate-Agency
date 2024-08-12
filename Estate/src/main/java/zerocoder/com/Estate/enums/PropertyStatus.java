@@ -3,7 +3,7 @@ package zerocoder.com.Estate.enums;
 import lombok.Getter;
 
 @Getter
-public enum StatusProperty {
+public enum PropertyStatus {
     AVAILABLE("Trống"),
     RENTED("Đã cho thuê"),
     SOLD("Đã bán"),
@@ -11,7 +11,7 @@ public enum StatusProperty {
 
     private final String description;
 
-    StatusProperty(String description) {
+    PropertyStatus(String description) {
         this.description = description;
     }
 

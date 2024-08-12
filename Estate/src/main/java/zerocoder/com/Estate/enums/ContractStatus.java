@@ -1,14 +1,13 @@
 package zerocoder.com.Estate.enums;
 
-public enum TypeCustomer {
-    INDIVIDUAL("Cá nhân"),
-    BUSINESS("Doanh nghiệp"),
+public enum ContractStatus {
+    IN_PROGRESS("Đang thực hiện"),
+    COMPLETED("Đã kết thúc"),
+    CANCELLED("Đã hủy");
 
-    OTHER("Khác"),
-    ;
     private final String description;
 
-    TypeCustomer(String description) {
+    ContractStatus(String description) {
         this.description = description;
     }
 

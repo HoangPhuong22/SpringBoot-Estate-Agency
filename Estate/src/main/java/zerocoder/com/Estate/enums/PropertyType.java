@@ -3,13 +3,13 @@ package zerocoder.com.Estate.enums;
 import lombok.Getter;
 
 @Getter
-public enum TypeProperty {
+public enum PropertyType {
     APARTMENT("Căn hộ"),
     HOUSE("Nhà"),
     VILLA("Biệt thự"),
     ;
     private final String description;
-    TypeProperty(String s) {
+    PropertyType(String s) {
         this.description = s;
     }
 }
