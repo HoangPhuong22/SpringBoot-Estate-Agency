@@ -23,7 +23,6 @@ CREATE TABLE role (
     name VARCHAR(50) UNIQUE NOT NULL, -- Tên vai trò (VD: "Admin", "User")
  	created_by INT, -- Người tạo (VD:\ 1, 2, ....)     
 	updated_by INT, -- Người sửa (VD: 1, 2, ...)
-    updated_by VARCHAR(100), -- Người sửa (VD: Hoang Van A)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
@@ -254,7 +253,7 @@ CREATE TABLE employee (
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
 
-CREATE TYPE assignment_status (
+CREATE TYPE assignment_status AS ENUM (
 	'MANAGING',
 	'ENDE'
 );
@@ -263,9 +262,9 @@ CREATE TABLE assignment (
     id BIGSERIAL PRIMARY KEY, -- Mã phân công (1, 2, 3, ...)
     property_id BIGINT REFERENCES property(id), -- Mã bất động sản (VD: 1)
     employee_id BIGINT REFERENCES employee(id), -- Mã nhân viên (VD: 1)
-    start_date DATE NOTNULL, -- Ngày bắt đầu (VD: "2023-01-01")
+    start_date DATE NOT NULL, -- Ngày bắt đầu (VD: "2023-01-01")
     end_date DATE, -- Ngày kết thúc (VD: "2023-12-31")
-    status assignment_status NOTNULL, -- Trạng thái (VD: "Đang quản lý", "Đã kết thúc")
+    status assignment_status NOT NULL, -- Trạng thái (VD: "Đang quản lý", "Đã kết thúc")
     job_description TEXT, -- Mô tả công việc (VD: "Quản lý bảo trì")
     created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
 	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
@@ -309,21 +308,6 @@ CREATE TABLE activity (
     result TEXT, -- Kết quả (VD: "Thống nhất ký hợp đồng")
     cost DECIMAL(10, 2), -- Chi phí (VD: 200000.00)
     note TEXT, -- Ghi chú (VD: "Mang theo tài liệu hợp đồng")
-    created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
-	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
-    is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
-);
-
-CREATE TABLE payment (
-    id BIGSERIAL PRIMARY KEY, -- Mã thanh toán (1, 2, 3, ...)
-    contract_id BIGINT REFERENCES contract(id), -- Mã hợp đồng (VD: 1)
-    amount DECIMAL(18, 0), -- Số tiền (VD: 5000000.00)
-    payment_date DATE, -- Ngày thanh toán (VD: "2023-01-25")
-    payment_method VARCHAR(50), -- Phương thức thanh toán (VD: "Chuyển khoản")
-    status VARCHAR(50), -- Trạng thái (VD: "Đã thanh toán", "Chờ xử lý")
-    note TEXT, -- Ghi chú (VD: "Thanh toán tháng 1")
     created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
 	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
