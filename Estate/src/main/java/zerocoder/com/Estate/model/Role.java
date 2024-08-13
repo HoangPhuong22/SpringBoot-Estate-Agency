@@ -1,10 +1,18 @@
 package zerocoder.com.Estate.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.List;
 import java.util.Set;
 
+@Getter
+@Setter
+@Builder
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "role")
 public class Role extends BaseEntity<Integer> {
 
     @Column(name = "name")

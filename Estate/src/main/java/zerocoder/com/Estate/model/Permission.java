@@ -1,9 +1,16 @@
 package zerocoder.com.Estate.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.Set;
-
+@Getter
+@Setter
+@Builder
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "permission")
 public class Permission extends BaseEntity<Integer> {
     @Column(name = "name")
     private String name;
