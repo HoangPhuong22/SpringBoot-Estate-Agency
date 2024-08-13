@@ -20,10 +20,10 @@ public abstract class BaseEntity<T extends Serializable> implements Serializable
     private T id;
 
     @Column(name = "created_by")
-    private T createdBy;
+    private Long createdBy;
 
     @Column(name = "updated_by")
-    private T updatedBy;
+    private Long updatedBy;
 
     @Column(name = "created_at")
     @CreationTimestamp

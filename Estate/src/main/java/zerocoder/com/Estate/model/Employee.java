@@ -53,4 +53,7 @@ public class Employee extends BaseEntity<Long> {
 
     @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Assignment> assignments;
+
+    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Inspection> inspections;
 }
