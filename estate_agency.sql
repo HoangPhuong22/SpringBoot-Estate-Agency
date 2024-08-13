@@ -254,15 +254,19 @@ CREATE TABLE employee (
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
 
-CREATE TABLE management_assignment (
+CREATE TYPE assignment_status (
+	'MANAGING',
+	'ENDE'
+);
+
+CREATE TABLE assignment (
     id BIGSERIAL PRIMARY KEY, -- Mã phân công (1, 2, 3, ...)
     property_id BIGINT REFERENCES property(id), -- Mã bất động sản (VD: 1)
     employee_id BIGINT REFERENCES employee(id), -- Mã nhân viên (VD: 1)
-    start_date DATE NOT NULL, -- Ngày bắt đầu (VD: "2023-01-01")
+    start_date DATE NOTNULL, -- Ngày bắt đầu (VD: "2023-01-01")
     end_date DATE, -- Ngày kết thúc (VD: "2023-12-31")
-    status VARCHAR(50) NOT NULL, -- Trạng thái (VD: "Đang quản lý", "Đã kết thúc")
+    status assignment_status NOTNULL, -- Trạng thái (VD: "Đang quản lý", "Đã kết thúc")
     job_description TEXT, -- Mô tả công việc (VD: "Quản lý bảo trì")
-    assigned_by INT REFERENCES employee(id), -- Người phân công (VD: 1)
     created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
 	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
@@ -270,11 +274,11 @@ CREATE TABLE management_assignment (
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
 
-CREATE TABLE property_inspection (
+CREATE TABLE inspection (
     id BIGSERIAL PRIMARY KEY, -- Mã kiểm tra (1, 2, 3, ...)
     property_id BIGINT REFERENCES property(id), -- Mã bất động sản (VD: 1)
     inspector_id BIGINT REFERENCES employee(id), -- Mã nhân viên kiểm tra (VD: 1)
-    inspection_date DATE, -- Ngày kiểm tra (VD: "2023-01-15")
+    inspection_date TIMESTAMP, -- Ngày kiểm tra (VD: "2023-01-15")
     report TEXT, -- Báo cáo (VD: "Kiểm tra hệ thống điện")
     status VARCHAR(50), -- Trạng thái (VD: "Đạt", "Không đạt")
     created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
@@ -285,12 +289,20 @@ CREATE TABLE property_inspection (
 );
 
 
-CREATE TABLE employee_activity (
+CREATE TYPE activity_type AS ENUM (
+    'MEETING_CUSTOMER',
+    'CONTRACT_DISCUSSION',
+    'PROPERTY_SHOWING',
+    'NEGOTIATION',
+    'CLOSING_DEAL',
+    'OTHER'
+);
+CREATE TABLE activity (
     id BIGSERIAL PRIMARY KEY, -- Mã hoạt động (1, 2, 3, ...)
     employee_id BIGINT REFERENCES employee(id), -- Mã nhân viên (VD: 1)
     customer_id BIGINT REFERENCES customer(id), -- Mã khách hàng (VD: 1)
     property_id BIGINT REFERENCES property(id), -- Mã bất động sản (VD: 1)
-    activity_type VARCHAR(100), -- Loại hoạt động (VD: "Gặp gỡ khách hàng")
+    activity_type activity_type, -- Loại hoạt động (VD: "Gặp gỡ khách hàng")
     activity_time TIMESTAMP, -- Thời gian hoạt động (VD: "2023-01-20 10:00:00")
     location VARCHAR(255), -- Địa điểm (VD: "Cà phê Trung Nguyên")
     description TEXT, -- Mô tả (VD: "Thảo luận về hợp đồng")

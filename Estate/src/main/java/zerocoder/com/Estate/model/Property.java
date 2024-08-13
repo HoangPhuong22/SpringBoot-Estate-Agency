@@ -95,4 +95,7 @@ public class Property extends BaseEntity<Long> {
 
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Inspection> inspections;
+
+    @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Activity> activities;
 }
