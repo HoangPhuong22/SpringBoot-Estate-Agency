@@ -1,5 +1,8 @@
 package zerocoder.com.Estate.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum MaintenanceStatus {
     PENDING("Chờ xử lý"),
     IN_PROGRESS("Đang xử lý"),
@@ -10,9 +13,5 @@ public enum MaintenanceStatus {
 
     MaintenanceStatus(String description) {
         this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

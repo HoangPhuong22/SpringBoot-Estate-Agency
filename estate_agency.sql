@@ -19,7 +19,7 @@ CREATE TABLE account (
 );
 
 CREATE TABLE role (
-    id BIGSERIAL PRIMARY KEY, -- Mã vai trò (1, 2, 3, ...)
+    id SERIAL PRIMARY KEY, -- Mã vai trò (1, 2, 3, ...)
     name VARCHAR(50) UNIQUE NOT NULL, -- Tên vai trò (VD: "Admin", "User")
  	created_by INT, -- Người tạo (VD:\ 1, 2, ....)     
 	updated_by INT, -- Người sửa (VD: 1, 2, ...)
@@ -31,7 +31,7 @@ CREATE TABLE role (
 
 
 CREATE TABLE permission (
-    id BIGSERIAL PRIMARY KEY, -- Mã quyền (1, 2, 3, ...)
+    id SERIAL PRIMARY KEY, -- Mã quyền (1, 2, 3, ...)
     name VARCHAR(50) UNIQUE NOT NULL, -- Tên quyền (VD: "READ", "WRITE")
     description TEXT, -- Mô tả quyền (VD: "Quyền đọc dữ liệu")
 	created_by INT, -- Người tạo (VD:\ 1, 2, ....)     
@@ -43,7 +43,7 @@ CREATE TABLE permission (
 
 CREATE TABLE user_role (
     user_id BIGINT REFERENCES account(id), -- Mã tài khoản (VD: 1)
-    role_id BIGINT REFERENCES role(id), -- Mã vai trò (VD: 1)
+    role_id INT REFERENCES role(id), -- Mã vai trò (VD: 1)
     PRIMARY KEY (user_id, role_id),
 	created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
 	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
@@ -54,8 +54,8 @@ CREATE TABLE user_role (
 
 
 CREATE TABLE role_permission (
-    role_id BIGINT REFERENCES role(id), -- Mã vai trò (VD: 1)
-    permission_id BIGINT REFERENCES permission(id), -- Mã quyền (VD: 1)
+    role_id INT REFERENCES role(id), -- Mã vai trò (VD: 1)
+    permission_id INT REFERENCES permission(id), -- Mã quyền (VD: 1)
     PRIMARY KEY (role_id, permission_id),
 	created_by INT, -- Người tạo (VD:\ 1, 2, ....)     
 	updated_by INT, -- Người sửa (VD: 1, 2, ...)
@@ -64,10 +64,26 @@ CREATE TABLE role_permission (
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
 
-
+CREATE TYPE property_type AS ENUM (
+	'APARTMENT',
+	'HOUSE',
+	'VILLA'
+);
+CREATE TYPE property_status AS ENUM (
+	'AVAILABLE',
+	'RENTED',
+	'SOLD',
+	'UNDER_REPAIR'
+);
+CREATE TYPE property_direction AS ENUM(
+	'EAST',
+	'NORTH',
+	'SOUTH',
+	'WEST'
+);
 CREATE TABLE property (
     id BIGSERIAL PRIMARY KEY, -- Mã bất động sản (1, 2, 3, ...)
-    type VARCHAR(100), -- Loại bất động sản (Căn hộ, chung cư,...)
+    type property_type, -- Loại bất động sản (Căn hộ, chung cư,...)
     code VARCHAR(50) UNIQUE NOT NULL, -- Mã bất động sản (VD: "PROP001")
     name VARCHAR(255) NOT NULL, -- Tên bất động sản (VD: "Căn hộ Vinhomes")
     address TEXT, -- Địa chỉ (VD: "72 Lê Thánh Tôn, Quận 1, TP.HCM")
@@ -78,9 +94,9 @@ CREATE TABLE property (
     bedrooms INT, -- Số phòng ngủ (VD: 2)
     bathrooms INT, -- Số phòng tắm (VD: 2)
     built_year INT, -- Năm xây dựng (VD: 2019)
-    direction VARCHAR(50), -- Hướng nhà (VD: "Đông")
+    direction property_direction, -- Hướng nhà (VD: "Đông")
     description TEXT, -- Mô tả (VD: "Căn hộ cao cấp")
-    status VARCHAR(50), -- Trạng thái (VD: "Trống", "Đã cho thuê", "Đã bán", "Đang sửa chữa")
+    status property_status, -- Trạng thái (VD: "Trống", "Đã cho thuê", "Đã bán", "Đang sửa chữa")
     sale_price DECIMAL(18, 0), -- Giá bán (VD: 3000000000.00)
     rent_price DECIMAL(18, 0), -- Giá thuê (VD: 15000000.00)
     created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
@@ -90,10 +106,17 @@ CREATE TABLE property (
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
 
+
+CREATE TYPE amenity_type AS ENUM(
+	'INTERIOR',
+	'EXTERIOR',
+	'COMMON',
+	'OTHER'
+);
 CREATE TABLE amenity(
 	id BIGSERIAL PRIMARY KEY, -- Mã tiện ích (1, 2, 3, ...)
     name VARCHAR(100), -- Tên tiện ích (VD: "Hồ bơi")
-    type VARCHAR(50), -- Loại tiện ích (VD: "Nội thất", "Ngoại thất", "Tiện ích chung")
+    type amenity_type, -- Loại tiện ích (VD: "Nội thất", "Ngoại thất", "Tiện ích chung")
     description VARCHAR(255), -- Mô tả (VD: "Hồ bơi rộng 25m")
     created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
 	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
@@ -126,7 +149,11 @@ CREATE TABLE property_image (
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
 
-
+CREATE TYPE customer_type as ENUM (
+	'INDIVIDUAL',
+	'BUSINESS',
+	'OTHER'
+);
 CREATE TABLE customer (
     id BIGSERIAL PRIMARY KEY, -- Mã khách hàng (1, 2, 3, ...)
 	account_id BIGINT REFERENCES account(id),
@@ -137,7 +164,7 @@ CREATE TABLE customer (
     address TEXT, -- Địa chỉ (VD: "123 Đường ABC, Quận 1, TP.HCM")
     birth_date DATE, -- Ngày sinh (VD: "1990-01-01")
     id_number VARCHAR(20) UNIQUE, -- CMND/CCCD (VD: "123456789")
-    type VARCHAR(50), -- Loại khách hàng (VD: "Cá nhân", "Doanh nghiệp")
+    type customer_type, -- Loại khách hàng (VD: "Cá nhân", "Doanh nghiệp")
     created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
 	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
@@ -145,21 +172,30 @@ CREATE TABLE customer (
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
 
+CREATE TYPE contract_type AS ENUM (
+	'SALE',
+	'RENT'
+);
 
+CREATE TYPE contract_status AS ENUM (
+	'IN_PROGRESS',
+	'COMPLETED',
+	'CANCELLED'
+);
 CREATE TABLE contract (
     id BIGSERIAL PRIMARY KEY, -- Mã hợp đồng (1, 2, 3, ...)
     code VARCHAR(50) UNIQUE NOT NULL, -- Mã hợp đồng (VD: "CONT001")
     property_id BIGINT REFERENCES property(id), -- Mã bất động sản (VD: 1)
     customer_id BIGINT REFERENCES customer(id), -- Mã khách hàng (VD: 1)
-    type VARCHAR(50), -- Loại hợp đồng (VD: "Mua bán", "Cho thuê")
+    type contract_type, -- Loại hợp đồng (VD: "Mua bán", "Cho thuê")
     start_date DATE, -- Ngày bắt đầu (VD: "2023-01-01")
     end_date DATE, -- Ngày kết thúc (VD: "2023-12-31")
-    value DECIMAL(15, 2), -- Giá trị hợp đồng (VD: 5000000000.00)
-    deposit DECIMAL(15, 2), -- Tiền cọc (VD: 500000000.00)
-    service_fee DECIMAL(15, 2), -- Phí dịch vụ (VD: 10000000.00)
+    value DECIMAL(18, 0), -- Giá trị hợp đồng (VD: 5000000000.00)
+    deposit DECIMAL(18, 0), -- Tiền cọc (VD: 500000000.00)
+    service_fee DECIMAL(18, 0), -- Phí dịch vụ (VD: 10000000.00)
     payment_method VARCHAR(100), -- Hình thức thanh toán (VD: "Chuyển khoản")
     terms TEXT, -- Điều khoản (VD: "Điều khoản hợp đồng")
-    status VARCHAR(50), -- Trạng thái (VD: "Đang thực hiện", "Đã kết thúc", "Đã hủy")
+    status contract_status, -- Trạng thái (VD: "Đang thực hiện", "Đã kết thúc", "Đã hủy")
     created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
 	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
@@ -168,16 +204,27 @@ CREATE TABLE contract (
 );
 
 
+CREATE TYPE maintenance_level AS ENUM(
+	'LOW',
+	'MEDIUM',
+	'HIGH'
+);
+CREATE TYPE maintenance_status AS ENUM(
+	'PENDING',
+    'IN_PROGRESS',
+    'COMPLETED',
+    'CANCELLED'
+);
 CREATE TABLE maintenance (
     id BIGSERIAL PRIMARY KEY, -- Mã yêu cầu bảo trì (1, 2, 3, ...)
     property_id BIGINT REFERENCES property(id), -- Mã bất động sản (VD: 1)
     reported_by_id BIGINT REFERENCES customer(id), -- Mã khách hàng báo cáo (VD: 1)
     description TEXT, -- Mô tả (VD: "Sửa chữa hệ thống điện")
     reported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày báo cáo (VD: "2023-01-01 00:00:00")
-    priority_level INT, -- Mức độ ưu tiên (VD: 1)
-    status VARCHAR(50), -- Trạng thái (VD: "Đang xử lý", "Hoàn thành")
-    estimated_cost DECIMAL(15, 2), -- Chi phí dự kiến (VD: 1000000.00)
-    actual_cost DECIMAL(15, 2), -- Chi phí thực tế (VD: 900000.00)
+    priority_level maintenance_level, -- Mức độ ưu tiên (VD: 1)
+    status maintenance_status, -- Trạng thái (VD: "Đang xử lý", "Hoàn thành")
+    estimated_cost DECIMAL(18, 0), -- Chi phí dự kiến (VD: 1000000.00)
+    actual_cost DECIMAL(18, 0), -- Chi phí thực tế (VD: 900000.00)
     completed_at TIMESTAMP, -- Ngày hoàn thành (VD: "2023-01-10 00:00:00")
     created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
 	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
@@ -197,8 +244,6 @@ CREATE TABLE employee (
     address TEXT, -- Địa chỉ (VD: "456 Đường XYZ, Quận 2, TP.HCM")
     birth_date DATE, -- Ngày sinh (VD: "1985-05-15")
     id_number VARCHAR(20) UNIQUE, -- CMND/CCCD (VD: "987654321")
-    position VARCHAR(100), -- Chức vụ (VD: "Quản lý")
-    department VARCHAR(100), -- Phòng ban (VD: "Kinh doanh")
     education VARCHAR(100), -- Trình độ học vấn (VD: "Đại học")
     hire_date DATE, -- Ngày vào làm (VD: "2020-01-01")
     is_active BOOLEAN DEFAULT true, -- Đang làm việc (VD: TRUE)
@@ -262,7 +307,7 @@ CREATE TABLE employee_activity (
 CREATE TABLE payment (
     id BIGSERIAL PRIMARY KEY, -- Mã thanh toán (1, 2, 3, ...)
     contract_id BIGINT REFERENCES contract(id), -- Mã hợp đồng (VD: 1)
-    amount DECIMAL(15, 2), -- Số tiền (VD: 5000000.00)
+    amount DECIMAL(18, 0), -- Số tiền (VD: 5000000.00)
     payment_date DATE, -- Ngày thanh toán (VD: "2023-01-25")
     payment_method VARCHAR(50), -- Phương thức thanh toán (VD: "Chuyển khoản")
     status VARCHAR(50), -- Trạng thái (VD: "Đã thanh toán", "Chờ xử lý")

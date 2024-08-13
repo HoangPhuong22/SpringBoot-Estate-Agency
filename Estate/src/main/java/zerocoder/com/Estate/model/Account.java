@@ -39,6 +39,7 @@ public class Account extends BaseEntity<Long> {
     @OneToOne(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Customer customer;
 
-
+    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Employee employee;
 
 }

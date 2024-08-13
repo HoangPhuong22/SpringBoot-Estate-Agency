@@ -1,5 +1,8 @@
 package zerocoder.com.Estate.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum ContractStatus {
     IN_PROGRESS("Đang thực hiện"),
     COMPLETED("Đã kết thúc"),
@@ -11,7 +14,4 @@ public enum ContractStatus {
         this.description = description;
     }
 
-    public String getDescription() {
-        return description;
-    }
 }

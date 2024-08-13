@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -36,12 +37,6 @@ public class Employee extends BaseEntity<Long> {
     @Column(name = "id_number")
     private String idNumber;
 
-    @Column(name = "position")
-    private String position;
-
-    @Column(name = "department")
-    private String department;
-
     @Column(name = "education")
     private String education;
 
@@ -51,4 +46,11 @@ public class Employee extends BaseEntity<Long> {
 
     @Column(name = "is_active")
     private Boolean isActive;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "account_id")
+    private Account account;
+
+    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Assignment> assignments;
 }
