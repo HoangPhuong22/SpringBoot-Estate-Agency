@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{common/admin/page-admin.html}"
+>
+<head>
+    <title>Thêm tiện ích</title>
+</head>
+
+<div layout:fragment="content">
+    <div class="pagetitle">
+        <h1>Tiện ích căn hộ</h1>
+        <nav>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/admin">Trang chủ</a>
+                </li>
+                <li class="breadcrumb-item active">Thêm tiện ích</li>
+            </ul>
+        </nav>
+    </div>
+    <!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Thêm mới</h5>
+                    <!-- General Form Elements -->
+                    <form id="formAmenity">
+                        <div class="row mb-3">
+                            <label for="nameAmenity" class="col-sm-2 col-form-label">Tên tiện ích</label>
+                            <div class="col-sm-10">
+                                <input id="nameAmenity" type="text" class="form-control" placeholder="Nhập tên tiện ích (VD: Bể bơi, Phòng gym, ...)">
+                                <div id="nameError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="typeAmenity" class="col-sm-2 col-form-label">Chọn loại tiện ích</label>
+                            <div class="col-sm-10">
+                                <select id="typeAmenity" class="form-select" aria-label="Default select example">
+                                    <option value="" selected>Chọn loại tiện ích</option>
+                                    <option value="INTERIOR">Nội thất</option>
+                                    <option value="EXTERIOR">Ngoại thất</option>
+                                    <option value="COMMON">Tiện ích chung</option>
+                                    <option value="OTHER">Khác</option>
+                                </select>
+                                <div id="typeError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="descriptionAmenity" class="col-sm-2 col-form-label">Mô tả</label>
+                            <div class="col-sm-10">
+                                <textarea id="descriptionAmenity" class="form-control" style="height: 100px"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Gửi</label>
+                            <div class="col-sm-10">
+                                <a href="/admin/amenity" class="btn btn-danger">Quay lại</a>
+                                <button type="submit" class="btn btn-primary" id="btn-add-amenity">Tạo tiện ích</button>
+                            </div>
+                        </div>
+
+                    </form>
+                    <!-- End General Form Elements -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        $('#btn-add-amenity').click(function (e) {
+            e.preventDefault();
+            $('.invalid-feedback').hide().text('');
+            const data = {
+                name: $('#nameAmenity').val(),
+                type: $('#typeAmenity').val(),
+                description: $('#descriptionAmenity').val()
+            };
+            $.ajax({
+                type: 'POST',
+                url: '/api/amenity/add',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (data) {
+                    alert('Thêm tiện ích thành công');
+                    console.log(data);
+                },
+                error: function (response) {
+                    const errors = response.responseJSON.data;
+                    $.each(errors, function (key, value) {
+                        $(`#${key}Error`).show().text(value);
+                    });
+                }
+            });
+        });
+    </script>
+</div>

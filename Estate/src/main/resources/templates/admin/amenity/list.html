@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{common/admin/page-admin.html}"
+>
+<head>
+    <title>Danh sách các tiện ích</title>
+</head>
+
+<div layout:fragment="content">
+    <div class="pagetitle">
+        <h1>Danh sách tiện ích</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin">Trang chủ</a></li>
+                <li class="breadcrumb-item">Tiện ích</li>
+                <li class="breadcrumb-item active">Danh sách tiện ích</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Tìm kiếm</h5>
+            <form action="/admin/amenity" method="get">
+                <div class="row mb-3">
+                    <label for="nameAmenity" class="col-sm-2 col-form-label">Tên tiện ích</label>
+                    <div class="col-sm-10">
+                        <input id="nameAmenity" th:value="${param.name}" name="name" type="text" class="form-control" placeholder="Nhập tên tiện ích cần tìm (VD: Bể bơi, Phòng gym, ...)">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="typeAmenity" class="col-sm-2 col-form-label">Loại tiện ích</label>
+                    <div class="col-sm-10">
+                        <select id="typeAmenity" name="type" class="form-select" aria-label="Default select example">
+                            <option value="" selected>Chọn loại tiện ích</option>
+                            <option value="INTERIOR" th:selected="${#strings.equals(param.type, 'INTERIOR')}">Nội thất</option>
+                            <option value="EXTERIOR" th:selected="${#strings.equals(param.type, 'EXTERIOR')}">Ngoại thất</option>
+                            <option value="COMMON" th:selected="${#strings.equals(param.type, 'COMMON')}">Tiện ích chung</option>
+                            <option value="OTHER" th:selected="${#strings.equals(param.type, 'OTHER')}">Khác</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-10 offset-sm-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-search"></i>
+                            Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="card-body">
+            <a href="/admin/amenity/add" class="btn btn-success mt-3 mb-3">Thêm mới</a>
+            <p class="text-danger" th:if="${amenities.size() == 0}">Không tiện ích nào được tìm thấy</p>
+            <p class="text-success" th:if="${amenities.size() > 0}">Có tổng cộng [[${pageResponse.totalElements}]] tiện ích được tìm thấy</p>
+            <!-- Table Variants -->
+            <div class="table-responsive" th:if="${amenities.size() > 0}">
+                <table class="table">
+                    <thead>
+                    <tr class="table-info">
+                        <th scope="col">#</th>
+                        <th scope="col">Tên tiện ích</th>
+                        <th scope="col">Loại tiện ích</th>
+                        <th scope="col">Người thêm</th>
+                        <th scope="col">Ngày thêm</th>
+                        <th scope="col">Người sửa</th>
+                        <th scope="col">Ngày sửa</th>
+                        <th scope="col">Hành động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr
+                            th:each="amenity, index: ${amenities}"
+                            th:classappend="${index.count % 2 == 0} ? 'table-light' : 'table-primary'"
+                    >
+                        <th scope="row" th:text="${index.index + 1}">1</th>
+                        <td th:text="${amenity.name}">Bể bơi</td>
+                        <td th:text="${amenity.type.description}">Nội thất</td>
+                        <td>Anonymous</td>
+                        <td th:text="${#temporals.format(amenity.createdAt, 'HH:mm dd-MM-yyyy')}"></td>
+                        <td>Anonymous</td>
+                        <td th:text="${#temporals.format(amenity.updatedAt, 'HH:mm dd-MM-yyyy')}"></td>
+                        <td>
+                            <a th:href="@{'/admin/amenity/edit/' + ${amenity.id}}" class="btn btn-warning">
+                                <i class="bi bi-pencil-square"></i>
+                                Sửa
+                            </a>
+                            <!-- Disabled Backdrop Modal -->
+                            <button
+                                    type="button"
+                                    class="btn btn-danger btn-deleted"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#disablebackdrop"
+                                    th:data-idamenity="${amenity.id}"
+                                    th:data-nameamenity="${amenity.name}"
+                            >
+                                <i class="bi bi-trash"></i>
+                                Xóa
+                            </button>
+                            <!-- End Disabled Backdrop Modal-->
+                        </td>
+                    </tr>
+                    <div class="modal fade" th:id="disablebackdrop" tabindex="-1" data-bs-backdrop="false" style="display: none;" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Xoá tiện ích</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p id="text-modal-amenity">
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                    <button type="button" class="btn btn-danger" id="btn-deleted-amenity">Xoá</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </tbody>
+                </table>
+            </div>
+            <!-- End Table Variants -->
+
+        </div>
+        <div class="card-body" th:if="${pageResponse.totalPages > 1}">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                        <li class="page-item" th:classappend="${pageResponse.pageNo <= 1} ? 'disabled' : ''">
+                        <a class="page-link" th:href="@{'?pageNo=' + ${pageResponse.pageNo - 1}}" aria-label="Previous">
+                            <span aria-hidden="true">«</span>
+                        </a>
+                    </li>
+                    <li
+                        class="page-item"
+                        th:each="item: ${pageRange}"
+                        th:classappend="${item == pageResponse.pageNo} ? 'active' : ''"
+                    >
+                        <a class="page-link" th:href="@{'?pageNo=' + ${item}}">[[${item}]]</a>
+                    </li>
+                    <li class="page-item" th:classappend="${pageResponse.pageNo >= pageResponse.totalPages} ? 'disabled' : ''">
+                        <a class="page-link" th:href="@{'?pageNo=' + ${pageResponse.pageNo + 1}}" aria-label="Next">
+                            <span aria-hidden="true">»</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <script>
+        function textModel (data) {
+            return "Bạn có chắc chắn muốn xoá tiện ích <strong>" + data + "</strong> không?. Việc này sẽ không thể hoàn tác, hãy cân nhắc kỹ trước khi thực hiện";
+        }
+        let amenityIdToDelete, amenityNameToDelete;
+        $('.btn-deleted').click(function () {
+            amenityIdToDelete = $(this).data('idamenity');
+            amenityNameToDelete = $(this).data('nameamenity');
+            $('#text-modal-amenity').html(textModel(amenityNameToDelete));
+        });
+        $('#btn-deleted-amenity').click(function () {
+            $.ajax({
+                url: '/api/amenity/delete/' + amenityIdToDelete,
+                type: 'DELETE',
+                contentType: 'application/json',
+                success: function () {
+                    window.location.reload();
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            })
+            $('#disablebackdrop').modal('hide');
+        });
+    </script>
+</div>

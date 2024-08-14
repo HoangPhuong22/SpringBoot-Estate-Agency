@@ -2,6 +2,8 @@ package zerocoder.com.Estate.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import zerocoder.com.Estate.enums.AmenityType;
 
 import java.util.List;
@@ -12,7 +14,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "property_amenity")
+@Table(name = "amenity")
 public class Amenity extends BaseEntity<Integer> {
 
     @Column(name = "name")
@@ -20,6 +22,7 @@ public class Amenity extends BaseEntity<Integer> {
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private AmenityType type;
 
     @Column(name = "description")

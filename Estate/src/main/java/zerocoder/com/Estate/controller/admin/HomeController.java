@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequiredArgsConstructor
 @RequestMapping(value = "/admin")
-@Controller(value = "AdminHomeController")
+@Controller(value = "HomeControllerAdmin")
 public class HomeController {
     @GetMapping
     public String index(Model theModel) {

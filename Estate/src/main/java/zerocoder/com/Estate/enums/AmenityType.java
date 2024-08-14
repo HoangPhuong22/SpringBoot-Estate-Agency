@@ -1,5 +1,8 @@
 package zerocoder.com.Estate.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum AmenityType {
     INTERIOR("Nội thất"),
     EXTERIOR("Ngoại thất"),
@@ -10,9 +13,5 @@ public enum AmenityType {
 
     AmenityType(String description) {
         this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }
