@@ -90,6 +90,7 @@ CREATE TABLE property (
     district VARCHAR(100), -- Quận/Huyện (VD: "Quận 1")
     ward VARCHAR(100), -- Phường/Xã (VD: "Phường Bến Nghé")
     area DECIMAL(10, 2), -- Diện tích (VD: 100.50)
+	floor INT, -- Số tầng
     bedrooms INT, -- Số phòng ngủ (VD: 2)
     bathrooms INT, -- Số phòng tắm (VD: 2)
     built_year INT, -- Năm xây dựng (VD: 2019)

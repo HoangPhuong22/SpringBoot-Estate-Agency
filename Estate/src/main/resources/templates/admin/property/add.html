@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{common/admin/page-admin.html}"
+>
+<head>
+    <title>Thêm tòa nhà</title>
+</head>
+
+<div layout:fragment="content">
+    <div class="pagetitle">
+        <h1>Bất động sản</h1>
+        <nav>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/admin">Trang chủ</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="/admin/property">Tài sản</a>
+                </li>
+                <li class="breadcrumb-item active">Thêm tòa nhà</li>
+            </ul>
+        </nav>
+    </div>
+    <!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Thêm mới</h5>
+                    <!-- General Form Elements -->
+                    <form id="formProperty">
+                        <div class="row mb-3">
+                            <label for="nameProperty" class="col-sm-2 col-form-label">Tên tòa nhà</label>
+                            <div class="col-sm-10">
+                                <input id="nameProperty" type="text" class="form-control" placeholder="Nhập tên tòa nhà(VD: Tòa nhà A, Tòa nhà B, ...)">
+                                <div id="nameError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="typeProperty" class="col-sm-2 col-form-label">Chọn loại tòa nhà</label>
+                            <div class="col-sm-10">
+                                <select id="typeProperty" class="form-select" aria-label="Default select example">
+                                    <option value="" selected>Chọn loại tòa nhà</option>
+                                    <option value="APARTMENT">Căn hộ</option>
+                                    <option value="HOUSE">Nhà</option>
+                                    <option value="VILLA">Biệt thự</option>
+                                </select>
+                                <div id="typeError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="addressProperty" class="col-sm-2 col-form-label">Tỉnh / Thành phố</label>
+                            <div class="col-sm-10">
+                                <input id="addressProperty" type="text" class="form-control" placeholder="Nhập địa chỉ tòa nhà (VD: Hà Nội, TP.Hồ Chí Minh, ...)">
+                                <div id="addressError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="cityProperty" class="col-sm-2 col-form-label">Quận / Huyện</label>
+                            <div class="col-sm-10">
+                                <input id="cityProperty" type="text" class="form-control" placeholder="Nhập quận / huyện tòa nhà (VD: Cầu Giấy, Thanh Xuân, ...)">
+                                <div id="cityError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="districtProperty" class="col-sm-2 col-form-label">Phường / Xã</label>
+                            <div class="col-sm-10">
+                                <input id="districtProperty" type="text" class="form-control" placeholder="Nhập phường / xã tòa nhà (VD: Trung Hòa, Mỹ Đình, ...)">
+                                <div id="districtError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="wardProperty" class="col-sm-2 col-form-label">Đường / Tòa nhà</label>
+                            <div class="col-sm-10">
+                                <input id="wardProperty" type="text" class="form-control" placeholder="Nhập đường, tòa nhà (VD: Nguyễn Trãi, Lê Văn Lương, ...)">
+                                <div id="wardError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="areaProperty" class="col-sm-2 col-form-label">Diện tích</label>
+                            <div class="col-sm-10">
+                                <input id="areaProperty" type="number" class="form-control" placeholder="Nhập diện tích tòa nhà (VD: 100, 200, ...)">
+                                <div id="areaError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="floorProperty" class="col-sm-2 col-form-label">Số tầng</label>
+                            <div class="col-sm-10">
+                                <input id="floorProperty" type="number" class="form-control" placeholder="Nhập số tầng tòa nhà (VD: 1, 2, ...)">
+                                <div id="floorError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="bedroomProperty" class="col-sm-2 col-form-label">Số phòng ngủ</label>
+                            <div class="col-sm-10">
+                                <input id="bedroomProperty" type="number" class="form-control" placeholder="Nhập số phòng ngủ (VD: 1, 2, ...)">
+                                <div id="bedroomError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="bathroomProperty" class="col-sm-2 col-form-label">Số phòng tắm</label>
+                            <div class="col-sm-10">
+                                <input id="bathroomProperty" type="number" class="form-control" placeholder="Nhập số phòng tắm (VD: 1, 2, ...)">
+                                <div id="bathroomError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="builtYearProperty" class="col-sm-2 col-form-label">Năm xây dựng</label>
+                            <div class="col-sm-10">
+                                <input id="builtYearProperty" type="number" class="form-control" placeholder="Nhập năm xây dựng (VD: 2020, 2021, ...)">
+                                <div id="builtYearError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="directionProperty" class="col-sm-2 col-form-label">Hướng</label>
+                            <div class="col-sm-10">
+                                <select id="directionProperty" class="form-select" aria-label="Default select example">
+                                    <option value="" selected>Chọn hướng</option>
+                                    <option value="NORTH">Bắc</option>
+                                    <option value="SOUTH">Nam</option>
+                                    <option value="EAST">Đông</option>
+                                    <option value="WEST">Tây</option>
+                                </select>
+                                <div id="directionError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="descriptionProperty" class="col-sm-2 col-form-label">Mô tả</label>
+                            <div class="col-sm-10">
+                                <textarea id="descriptionProperty" class="form-control" style="height: 100px"></textarea>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="statusProperty" class="col-sm-2 col-form-label">Trạng thái</label>
+                            <div class="col-sm-10">
+                                <select id="statusProperty" class="form-select" aria-label="Default select example">
+                                    <option value="" selected>Chọn trạng thái</option>
+                                    <option value="AVAILABLE">Còn trống</option>
+                                    <option value="RENTED">Đã cho thuê</option>
+                                    <option value="SOLD">Đã bán</option>
+                                </select>
+                                <div id="statusError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="salePriceProperty" class="col-sm-2 col-form-label">Giá bán</label>
+                            <div class="col-sm-10">
+                                <input id="salePriceProperty" type="number" class="form-control" placeholder="Nhập giá bán (VD: 1000000000, 2000000000, ...)">
+                                <div id="salePriceError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="rentPriceProperty" class="col-sm-2 col-form-label">Giá thuê</label>
+                            <div class="col-sm-10">
+                                <input id="rentPriceProperty" type="number" class="form-control" placeholder="Nhập giá thuê (VD: 1000000, 2000000, ...)">
+                                <div id="rentPriceError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Gửi</label>
+                            <div class="col-sm-10">
+                                <a href="/admin/property" class="btn btn-danger">Quay lại</a>
+                                <button type="submit" class="btn btn-primary" id="btn-add-property">Tạo tài sản</button>
+                            </div>
+                        </div>
+
+                    </form>
+                    <!-- End General Form Elements -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        $('#formProperty').submit(function (e) {
+            e.preventDefault();
+            $('.invalid-feedback').hide().text('');
+            const data = {
+                name: $('#nameProperty').val(),
+                type: $('#typeProperty').val(),
+                address: $('#addressProperty').val(),
+                city: $('#cityProperty').val(),
+                district: $('#districtProperty').val(),
+                ward: $('#wardProperty').val(),
+                area: $('#areaProperty').val(),
+                floor: $('#floorProperty').val(),
+                bedroom: $('#bedroomProperty').val(),
+                bathroom: $('#bathroomProperty').val(),
+                builtYear: $('#builtYearProperty').val(),
+                direction: $('#directionProperty').val(),
+                description: $('#descriptionProperty').val(),
+                status: $('#statusProperty').val(),
+                salePrice: $('#salePriceProperty').val(),
+                rentPrice: $('#rentPriceProperty').val()
+            };
+            $.ajax({
+                type: 'POST',
+                url: '/api/property/add',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function () {
+                    alert('Thêm tài sản thành công');
+                    window.location.href = '/admin/property';
+                },
+                error: function (response) {
+                    const error = response.responseJSON.data;
+                    $.each(error, function (key, value) {
+                        $(`#${key}Error`).show().text(value);
+                        console.log(key, value);
+                    });
+                }
+            })
+        })
+    </script>
+</div>

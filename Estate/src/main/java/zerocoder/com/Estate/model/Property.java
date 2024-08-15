@@ -1,7 +1,10 @@
 package zerocoder.com.Estate.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import zerocoder.com.Estate.enums.PropertyDirection;
 import zerocoder.com.Estate.enums.PropertyStatus;
 import zerocoder.com.Estate.enums.PropertyType;
@@ -19,6 +22,7 @@ public class Property extends BaseEntity<Long> {
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private PropertyType type;
 
     @Column(name = "code")
@@ -42,6 +46,9 @@ public class Property extends BaseEntity<Long> {
     @Column(name = "area")
     private Double area;
 
+    @Column(name = "floor")
+    private Integer floor;
+
     @Column(name = "bedrooms")
     private Integer bedRooms;
 
@@ -53,6 +60,7 @@ public class Property extends BaseEntity<Long> {
 
     @Column(name = "direction")
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private PropertyDirection direction;
 
     @Column(name = "description")
@@ -60,13 +68,14 @@ public class Property extends BaseEntity<Long> {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private PropertyStatus status;
 
     @Column(name = "sale_price")
-    private String salePrice;
+    private Long salePrice;
 
     @Column(name = "rent_price")
-    private String rentPrice;
+    private Long rentPrice;
 
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Contract> contracts;
