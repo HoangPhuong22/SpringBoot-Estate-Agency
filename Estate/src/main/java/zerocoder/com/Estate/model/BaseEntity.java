@@ -35,6 +35,6 @@ public abstract class BaseEntity<T extends Serializable> implements Serializable
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updatedAt;
 
-    @Column(name = "is_deleted")
+    @Column(name = "is_deleted", columnDefinition = "boolean default false")
     private Boolean isDeleted;
 }

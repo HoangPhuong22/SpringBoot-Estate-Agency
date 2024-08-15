@@ -1,5 +1,6 @@
 package zerocoder.com.Estate.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PageUtils {
@@ -14,6 +15,10 @@ public class PageUtils {
             end = totalPages;
             start = Math.max(1, totalPages - pageSize + 1);
         }
-        return List.of(start, end);
+        List<Integer> pageRange = new ArrayList<>();
+        for(int i = start; i <= end; i++) {
+            pageRange.add(i);
+        }
+        return pageRange;
     }
 }

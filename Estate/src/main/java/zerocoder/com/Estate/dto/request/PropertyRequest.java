@@ -14,6 +14,7 @@ import zerocoder.com.Estate.validator.NumberValid;
 @Setter
 @Builder
 public class PropertyRequest {
+    private Long id;
 
     @EnumNamePattern(regexp = "APARTMENT|HOUSE|VILLA", message = "Loại tài sản không hợp lệ")
     private String type;

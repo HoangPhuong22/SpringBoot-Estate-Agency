@@ -25,9 +25,12 @@ public class PropertyResponse {
     private Integer bedRooms;
     private Integer bathRooms;
     private Integer builtYear;
+    private String description;
     private PropertyDirection direction;
     private PropertyType type;
     private PropertyStatus status;
+    private Long salePrice;
+    private Long rentPrice;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

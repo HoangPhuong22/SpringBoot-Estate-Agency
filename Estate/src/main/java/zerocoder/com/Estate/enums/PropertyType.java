@@ -5,14 +5,16 @@ import lombok.Getter;
 
 @Getter
 public enum PropertyType {
-    APARTMENT("Căn hộ"),
-    HOUSE("Nhà"),
-    VILLA("Biệt thự"),
+    APARTMENT("Căn hộ", "CH"),
+    HOUSE("Nhà riêng","NR"),
+    VILLA("Biệt thự", "BT"),
     ;
 
     private final String description;
+    private final String code;
 
-    PropertyType(String s) {
-        this.description = s;
+    PropertyType(String desc, String code) {
+        this.description = desc;
+        this.code = code;
     }
 }

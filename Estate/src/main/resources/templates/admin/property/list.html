@@ -22,27 +22,107 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">Tìm kiếm</h5>
-            <form action="/admin/property" method="get">
-                <div class="row mb-3">
-                    <label for="nameProperty" class="col-sm-2 col-form-label">Tên tài sản</label>
-                    <div class="col-sm-10">
-                        <input id="nameProperty" th:value="${param.name}" name="name" type="text" class="form-control" placeholder="Nhập tên tài sản cần tìm (VD: Căn hộ, Biệt thự, ...)">
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-sm-10 offset-sm-2">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-search"></i>
-                            Tìm kiếm
+            <div class="accordion accordion-flush" id="accordionFlushExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="flush-headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="true" aria-controls="flush-collapseOne">
+                            Bạn muốn tìm kiếm, click vào
+                            <a class="badge bg-success">
+                                <i class="bi bi-search"></i>
+                                đây
+                            </a>
+                            để mở form tìm kiếm
                         </button>
+                    </h2>
+                    <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="">
+                        <form action="/admin/property" method="get" class="row g-3">
+                            <div class="col-md-6">
+                                <label for="nameProperty" class="col-sm-2 col-form-label">Tên tài sản</label>
+                                <input id="nameProperty" th:value="${param.name}" name="name" type="text" class="form-control" placeholder="Chung cư mini, nhà 3 tầng, biệt thự 5 tầng...">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="builtYearProperty" class="col-form-label">Năm xây dựng</label>
+                                <input id="builtYearProperty" th:value="${param.builtYear}" name="builtYear" type="number" class="form-control" placeholder="Nhập năm xây dựng VD: 2021">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="typeProperty" class="col-form-label">Loại tài sản</label>
+                                <select id="typeProperty" name="type" class="form-select">
+                                    <option value="">Chọn loại tài sản</option>
+                                    <option value="HOUSE" th:selected="${param.type == 'HOUSE'}">Nhà riêng</option>
+                                    <option value="APARTMENT" th:selected="${param.type == 'APARTMENT'}">Căn hộ</option>
+                                    <option value="VILLA" th:selected="${param.type == 'VILLA'}">Biệt thự</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="statusProperty" class="col-form-label">Trạng thái</label>
+                                <select id="statusProperty" name="status" class="form-select">
+                                    <option value="">Chọn trạng thái</option>
+                                    <option value="AVAILABLE" th:selected="${param.status == 'AVAILABLE'}">Còn trống</option>
+                                    <option value="RENTED" th:selected="${param.status == 'RENTED'}">Đã cho thuê</option>
+                                    <option value="SOLD" th:selected="${param.status == 'SOLD'}">Đã bán</option>
+                                    <option value="UNDER_REPAIR" th:selected="${param.status == 'UNDER_REPAIR'}">Đang sửa chữa</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="areaProperty" class="col-form-label">Diện tích</label>
+                                <input id="areaProperty" th:value="${param.area}" name="area" type="number" class="form-control" placeholder="Nhập diện tích VD: 100">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="bedroomProperty" class="col-form-label">Số phòng ngủ</label>
+                                <input id="bedroomProperty" th:value="${param.bedroom}" name="bedroom" type="number" class="form-control" placeholder="Nhập số phòng ngủ VD: 3">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="bathroomProperty" class="col-form-label">Số phòng tắm</label>
+                                <input id="bathroomProperty" th:value="${param.bathroom}" name="bathroom" type="number" class="form-control" placeholder="Nhập số phòng tắm VD: 2">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="floorProperty" class="col-form-label">Số tầng</label>
+                                <input id="floorProperty" th:value="${param.floor}" name="floor" type="number" class="form-control" placeholder="Nhập số tầng VD: 5">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="salePriceProperty" class="col-form-label">Giá bán</label>
+                                <input id="salePriceProperty" th:value="${param.salePrice}" name="salePrice" type="number" class="form-control" placeholder="Nhập giá bán VD: 1.000.000.000 VNĐ">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="rentPriceProperty" class="col-form-label">Giá thuê</label>
+                                <input id="rentPriceProperty" th:value="${param.rentPrice}" name="rentPrice" type="number" class="form-control" placeholder="Nhập giá thuê VD: 10.000.000 VNĐ">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="addressProperty" class="col-form-label">Tỉnh/Thành phố</label>
+                                <input id="addressProperty" th:value="${param.address}" name="address" type="text" class="form-control" placeholder="Nhập tỉnh/thành phố VD: Hà Nội,..">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="cityProperty" class="col-form-label">Quận/Huyện</label>
+                                <input id="cityProperty" th:value="${param.city}" name="city" type="text" class="form-control" placeholder="Nhập quận/huyện VD: Cầu Giấy,..">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="districtProperty" class="col-form-label">Phường/Xã</label>
+                                <input id="districtProperty" th:value="${param.district}" name="district" type="text" class="form-control" placeholder="Nhập phường/xã VD: Dịch Vọng,..">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="wardProperty" class="col-form-label">Đường / Tòa nhà</label>
+                                <input id="wardProperty" th:value="${param.ward}" name="ward" type="text" class="form-control" placeholder="Nhập đường/tòa nhà VD: 101 Láng Hạ,..">
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-search"></i>
+                                    Tìm kiếm
+                                </button>
+                                <button type="reset" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                    Làm mới
+                                </button>
+                            </div>
+
+                        </form>
                     </div>
                 </div>
-
-            </form>
+            </div>
         </div>
         <div class="card-body">
             <a href="/admin/property/add" class="btn btn-success mt-3 mb-3">Thêm mới</a>
             <p class="text-danger" th:if="${properties.size() == 0}">Không tài sản nào được tìm thấy</p>
+            <p class="text-success" th:if="${properties.size() > 0}">Có tổng cộng [[${pageResponse.totalElements}]] tiện ích được tìm thấy</p>
             <!-- Table Variants -->
             <div class="table-responsive" th:if="${properties.size() > 0}">
                 <table class="table">
@@ -79,18 +159,18 @@
                         <td>Anonymus</td>
                         <td th:text="${#temporals.format(property.updatedAt, 'dd/MM/yyyy HH:mm')}"></td>
                         <td>
-                            <a th:href="@{'/admin/amenity/edit/' + ${property.id}}" class="btn btn-warning">
+                            <a th:href="@{'/admin/property/edit/' + ${property.id}}" class="btn btn-warning">
                                 <i class="bi bi-pencil-square"></i>
                                 Sửa
                             </a>
                             <!-- Disabled Backdrop Modal -->
                             <button
                                     type="button"
-                                    class="btn btn-danger btn-deleted"
+                                    class="btn btn-danger btn-deleted-property"
                                     data-bs-toggle="modal"
                                     data-bs-target="#disablebackdrop"
-                                    th:data-idamenity="${property.id}"
-                                    th:data-nameamenity="${property.name}"
+                                    th:data-id="${property.id}"
+                                    th:data-name="${property.name}"
                             >
                                 <i class="bi bi-trash"></i>
                                 Xóa
@@ -104,7 +184,95 @@
             <!-- End Table Variants -->
 
             <!--  Start Modal -->
+            <div class="modal fade" id="disablebackdrop" tabindex="-1" data-bs-backdrop="false" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Xoá tài sản</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="text-modal-property">
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <button type="button" class="btn btn-danger" id="btn-deleted-property">Xoá</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!--  End Modal -->
         </div>
+        <div class="card-body" th:if="${pageResponse.totalPages > 1}">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${pageResponse.pageNo <= 1} ? 'disabled' : ''">
+                        <a class="page-link" th:href="@{'?pageNo=' + ${pageResponse.pageNo - 1}}" aria-label="Previous">
+                            <span aria-hidden="true">«</span>
+                        </a>
+                    </li>
+                    <li
+                            class="page-item"
+                            th:each="item: ${pageRange}"
+                            th:classappend="${item == pageResponse.pageNo} ? 'active' : ''"
+                    >
+                        <a class="page-link" th:href="@{'?pageNo=' + ${item}}">[[${item}]]</a>
+                    </li>
+                    <li class="page-item" th:classappend="${pageResponse.pageNo >= pageResponse.totalPages} ? 'disabled' : ''">
+                        <a class="page-link" th:href="@{'?pageNo=' + ${pageResponse.pageNo + 1}}" aria-label="Next">
+                            <span aria-hidden="true">»</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
+    <script>
+        $('button[type="reset"]').click(function (event) {
+            event.preventDefault(); // Ngăn chặn hành động mặc định của nút reset
+            console.log('Làm mới form');
+
+            // Reset tất cả các trường input
+            $('form input').val('');
+
+            // Reset tất cả các trường select về option đầu tiên
+            $('form select').each(function() {
+                $(this).val($(this).find('option:first').val());
+            });
+
+            // Reset tất cả các trường textarea nếu có
+            $('form textarea').val('');
+
+            // Optional: Reset các trường radio và checkbox
+            $('form input[type="radio"], form input[type="checkbox"]').prop('checked', false);
+        });
+
+        function textModalProperty(data) {
+            return 'Bạn có chắc chắn muốn xoá tài sản '
+            + '<strong>' + data + '</strong>' + ' không?' + '<br>'
+            + 'Lưu ý: Tất cả thông tin liên quan đến tài sản này sẽ bị xoá khỏi hệ thống, '
+            + 'vui lòng kiểm tra kỹ trước khi thực hiện hành động này!'
+        }
+        let nameProperty, idProperty;
+        $('.btn-deleted-property').click(function () {
+            nameProperty = $(this).data('name');
+            idProperty = $(this).data('id');
+            $('#text-modal-property').html(textModalProperty(nameProperty));
+        })
+        $('#btn-deleted-property').click(function () {
+            $.ajax({
+                url: '/api/property/delete/' + idProperty,
+                type: 'PATCH',
+                success: function () {
+                    alert('Xoá tài sản thành công');
+                    window.location.reload();
+                },
+                error: function () {
+                    alert('Xoá tài sản thất bại');
+                }
+            })
+            $('#disablebackdrop').modal('hide');
+        })
+    </script>
 </div>

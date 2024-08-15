@@ -21,7 +21,7 @@ public class PropertyImage extends BaseEntity<Integer> {
     @Column(name = "description")
     private String description;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE,
             CascadeType.DETACH,

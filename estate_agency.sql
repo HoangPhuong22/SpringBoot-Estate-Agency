@@ -106,7 +106,6 @@ CREATE TABLE property (
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
 
-
 CREATE TYPE amenity_type AS ENUM(
 	'INTERIOR',
 	'EXTERIOR',

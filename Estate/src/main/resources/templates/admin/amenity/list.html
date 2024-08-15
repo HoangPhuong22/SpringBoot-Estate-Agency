@@ -153,7 +153,8 @@
     </div>
     <script>
         function textModel (data) {
-            return "Bạn có chắc chắn muốn xoá tiện ích <strong>" + data + "</strong> không?. Việc này sẽ không thể hoàn tác, hãy cân nhắc kỹ trước khi thực hiện";
+            return "Bạn có chắc chắn muốn xoá tiện ích <strong>" + data + "</strong> không?."
+            + "<br>" + "Lưu ý: Tất cả thông tin liên quan đến tiện ích này sẽ bị xoá khỏi hệ thống, vui lòng kiểm tra kỹ trước khi thực hiện hành động này!";
         }
         let amenityIdToDelete, amenityNameToDelete;
         $('.btn-deleted').click(function () {
@@ -167,9 +168,11 @@
                 type: 'DELETE',
                 contentType: 'application/json',
                 success: function () {
+                    alert('Xoá tiện ích thành công');
                     window.location.reload();
                 },
                 error: function (error) {
+                    alert('Xoá tiện ích thất bại');
                     console.log(error);
                 }
             })
