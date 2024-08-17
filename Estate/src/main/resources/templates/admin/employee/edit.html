@@ -74,8 +74,8 @@
                                 <select id="genderEmployee" class="form-select" aria-label="Default select example">
                                     <option value="" selected>Chọn giới tính</option>
                                     <option value="MALE" th:selected="${#strings.equals(employee.gender, 'MALE')}">Nam</option>
-                                    <option value="FEMALE" th:selected="${#strings.equals(employee, 'FEMALE')}">Nữ</option>
-                                    <option value="OTHER" th:selected="${#strings.equals(employee, 'OTHER')}">Khác</option>
+                                    <option value="FEMALE" th:selected="${#strings.equals(employee.gender, 'FEMALE')}">Nữ</option>
+                                    <option value="OTHER" th:selected="${#strings.equals(employee.gender, 'OTHER')}">Khác</option>
                                 </select>
                                 <div id="genderError" class="invalid-feedback"></div>
                             </div>

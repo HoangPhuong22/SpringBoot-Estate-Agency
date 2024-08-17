@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{common/admin/page-admin.html}"
+>
+<head>
+    <title>Thêm khách hàng</title>
+</head>
+
+<div layout:fragment="content">
+    <div class="pagetitle">
+        <h1>Khách hàng</h1>
+        <nav>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/admin">Trang chủ</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="/admin/amenity">Khách hàng</a>
+                </li>
+                <li class="breadcrumb-item active">Thêm khách hàng</li>
+            </ul>
+        </nav>
+    </div>
+    <!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Thêm mới</h5>
+                    <!-- General Form Elements -->
+                    <form id="form-add-customer">
+                        <div class="row mb-3">
+                            <label for="fullNameCustomer" class="col-sm-2 col-form-label">Tên khách hàng</label>
+                            <div class="col-sm-10">
+                                <input id="fullNameCustomer" type="text" class="form-control" placeholder="Nhập tên khách hàng VD: (Nguyễn Văn A,...)">
+                                <div id="fullNameError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="emailCustomer" class="col-sm-2 col-form-label">Email</label>
+                            <div class="col-sm-10">
+                                <input id="emailCustomer" type="email" class="form-control" placeholder="Nhập email. VD: (nguyen@gmail.com,...)">
+                                <div id="emailError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="phoneCustomer" class="col-sm-2 col-form-label">Số điện thoại</label>
+                            <div class="col-sm-10">
+                                <input id="phoneCustomer" type="text" class="form-control" placeholder="Nhập số điện thoại. VD: (0987654321,...)">
+                                <div id="phoneError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="addressCustomer" class="col-sm-2 col-form-label">Địa chỉ</label>
+                            <div class="col-sm-10">
+                                <input id="addressCustomer" type="text" class="form-control" placeholder="Nhập địa chỉ. VD: (Hà Nội,...)">
+                                <div id="addressError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="genderCustomer" class="col-sm-2 col-form-label">Giới tính</label>
+                            <div class="col-sm-10">
+                                <select id="genderCustomer" class="form-select">
+                                    <option value="">Chọn giới tính</option>
+                                    <option value="MALE">Nam</option>
+                                    <option value="FEMALE">Nữ</option>
+                                    <option value="OTHER">Khác</option>
+                                </select>
+                                <div id="genderError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="birthDayCustomer" class="col-sm-2 col-form-label">Ngày sinh</label>
+                            <div class="col-sm-10">
+                                <input id="birthDayCustomer" type="date" class="form-control">
+                                <div id="birthDayError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="idNumberCustomer" class="col-sm-2 col-form-label">Số CMND</label>
+                            <div class="col-sm-10">
+                                <input id="idNumberCustomer" type="text" class="form-control" placeholder="Nhập số CMND. VD: (123456789,...)">
+                                <div id="idNumberError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="typeCustomer" class="col-sm-2 col-form-label">Loại khách hàng</label>
+                            <div class="col-sm-10">
+                                <select id="typeCustomer" class="form-select">
+                                    <option value="">Chọn loại khách hàng</option>
+                                    <option value="INDIVIDUAL">Cá nhân</option>
+                                    <option value="BUSINESS">Doanh nghiệp</option>
+                                    <option value="OTHER">Khác</option>
+                                </select>
+                                <div id="typeError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Gửi</label>
+                            <div class="col-sm-10">
+                                <a href="/admin/customer" class="btn btn-danger">Quay lại</a>
+                                <button type="submit" class="btn btn-primary" id="btn-add-customer">Tạo khách hàng</button>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- End General Form Elements -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        $('#form-add-customer').submit(function (e) {
+            e.preventDefault();
+            const data = {
+                fullName: $('#fullNameCustomer').val(),
+                email: $('#emailCustomer').val(),
+                phone: $('#phoneCustomer').val(),
+                address: $('#addressCustomer').val(),
+                gender: $('#genderCustomer').val(),
+                birthDay: $('#birthDayCustomer').val(),
+                idNumber: $('#idNumberCustomer').val(),
+                type: $('#typeCustomer').val()
+            }
+            $('.invalid-feedback').hide().text('');
+            $.ajax({
+                type: 'POST',
+                url: '/api/customer/add',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (data) {
+                    alert('Thêm khách hàng thành công');
+                    window.location.href = '/admin/customer';
+                },
+                error: function (error) {
+                    const erros = error.responseJSON.data;
+                    $.each(erros, function (key, value) {
+                        $(`#${key}Error`).text(value).show();
+                    });
+                }
+            })
+        });
+    </script>
+</div>

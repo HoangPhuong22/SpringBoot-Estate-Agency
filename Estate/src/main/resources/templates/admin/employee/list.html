@@ -120,7 +120,7 @@
                         </td>
                     </tr>
                     <!-- Modal add Account -->
-                    <div class="modal fade" id="disablebackdrop" tabindex="-1" data-bs-backdrop="false" style="display: none;" aria-hidden="true">
+                    <div class="modal fade" id="disablebackdrop">
                         <div class="modal-dialog modal-dialog-scrollable">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -254,7 +254,8 @@
                 email: $('#emailAccount').val(),
                 password: $('#passwordAccount').val(),
                 confirmPassword: $('#confirmPasswordAcount').val(),
-                employeeId: idEmployee
+                id: idEmployee,
+                type: 1 // Loại tài khoản nhân viên
             };
             $('.invalid-feedback').hide().text('');
             if(data.confirmPassword !== data.password) {
@@ -268,6 +269,7 @@
                     success: function () {
                         alert('Tạo tài khoản thành công');
                         $('#disablebackdrop').modal('hide');
+                        window.location.reload();
                     },
                     error: function (error) {
                         const errors = error.responseJSON.data;

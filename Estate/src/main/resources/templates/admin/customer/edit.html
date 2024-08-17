@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{common/admin/page-admin.html}"
+>
+<head>
+    <title>Thêm khách hàng</title>
+</head>
+
+<div layout:fragment="content">
+    <div class="pagetitle">
+        <h1>Khách hàng</h1>
+        <nav>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/admin">Trang chủ</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="/admin/amenity">Khách hàng</a>
+                </li>
+                <li class="breadcrumb-item active">Sửa thông tin khách hàng</li>
+            </ul>
+        </nav>
+    </div>
+    <!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Chỉnh sửa thông tin khách hàng</h5>
+                    <!-- General Form Elements -->
+                    <form id="form-edit-customer">
+                        <input type="hidden" th:value="${customer.id}" id="idCustomer">
+                        <div class="row mb-3">
+                            <label for="fullNameCustomer" class="col-sm-2 col-form-label">Tên khách hàng</label>
+                            <div class="col-sm-10">
+                                <input id="fullNameCustomer" th:value="${customer.fullName}" type="text" class="form-control" placeholder="Nhập tên khách hàng VD: (Nguyễn Văn A,...)">
+                                <div id="fullNameError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="emailCustomer" class="col-sm-2 col-form-label">Email</label>
+                            <div class="col-sm-10">
+                                <input id="emailCustomer" th:value="${customer.email}" type="email" class="form-control" placeholder="Nhập email. VD: (nguyen@gmail.com,...)">
+                                <div id="emailError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="phoneCustomer" class="col-sm-2 col-form-label">Số điện thoại</label>
+                            <div class="col-sm-10">
+                                <input id="phoneCustomer" th:value="${customer.phone}" type="text" class="form-control" placeholder="Nhập số điện thoại. VD: (0987654321,...)">
+                                <div id="phoneError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="addressCustomer" class="col-sm-2 col-form-label">Địa chỉ</label>
+                            <div class="col-sm-10">
+                                <input id="addressCustomer" th:value="${customer.address}" type="text" class="form-control" placeholder="Nhập địa chỉ. VD: (Hà Nội,...)">
+                                <div id="addressError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="genderCustomer" class="col-sm-2 col-form-label">Giới tính</label>
+                            <div class="col-sm-10">
+                                <select id="genderCustomer" class="form-select">
+                                    <option value="">Chọn giới tính</option>
+                                    <option value="MALE" th:selected="${#strings.equals(customer.gender, 'MALE')}">Nam</option>
+                                    <option value="FEMALE" th:selected="${#strings.equals(customer.gender, 'FEMALE')}">Nữ</option>
+                                    <option value="OTHER" th:selected="${#strings.equals(customer.gender, 'OTHER')}">Khác</option>
+                                </select>
+                                <div id="genderError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="birthDayCustomer" class="col-sm-2 col-form-label">Ngày sinh</label>
+                            <div class="col-sm-10">
+                                <input id="birthDayCustomer" th:value="${customer.birthDay}" type="date" class="form-control">
+                                <div id="birthDayError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="idNumberCustomer" class="col-sm-2 col-form-label">Số CMND</label>
+                            <div class="col-sm-10">
+                                <input id="idNumberCustomer" th:value="${customer.idNumber}" type="text" class="form-control" placeholder="Nhập số CMND. VD: (123456789,...)">
+                                <div id="idNumberError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="typeCustomer" class="col-sm-2 col-form-label">Loại khách hàng</label>
+                            <div class="col-sm-10">
+                                <select id="typeCustomer" class="form-select">
+                                    <option value="">Chọn loại khách hàng</option>
+                                    <option value="INDIVIDUAL" th:selected="${#strings.equals(customer.type, 'INDIVIDUAL')}">Cá nhân</option>
+                                    <option value="BUSINESS" th:selected="${#strings.equals(customer.type, 'BUSINESS')}">Doanh nghiệp</option>
+                                    <option value="OTHER" th:selected="${#strings.equals(customer.type, 'OTHER')}">Khác</option>
+                                </select>
+                                <div id="typeError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="statusCustomer" class="col-sm-2 col-form-label">Trạng thái</label>
+                            <div class="col-sm-10">
+                                <select id="statusCustomer" class="form-select">
+                                    <option value="PENDING" th:selected="${#strings.equals(customer.status, 'PENDIND')}">Chờ xác nhận</option>
+                                    <option value="ASSIGNED" th:selected="${#strings.equals(customer.status, 'ASSIGNED')}">Đã phân công</option>
+                                    <option value="DONE" th:selected="${#strings.equals(customer.status, 'DONE')}">Hoàn thành</option>
+                                </select>
+                                <div id="statusError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Gửi</label>
+                            <div class="col-sm-10">
+                                <a href="/admin/customer" class="btn btn-danger">Quay lại</a>
+                                <button type="submit" class="btn btn-primary" id="btn-edit-customer">Sửa</button>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- End General Form Elements -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        $('#form-edit-customer').submit(function (e) {
+            e.preventDefault();
+            const data = {
+                id: $('#idCustomer').val(),
+                fullName: $('#fullNameCustomer').val(),
+                email: $('#emailCustomer').val(),
+                phone: $('#phoneCustomer').val(),
+                address: $('#addressCustomer').val(),
+                gender: $('#genderCustomer').val(),
+                birthDay: $('#birthDayCustomer').val(),
+                idNumber: $('#idNumberCustomer').val(),
+                type: $('#typeCustomer').val(),
+                status: $('#statusCustomer').val()
+            }
+            $('.invalid-feedback').hide().text('');
+            $.ajax({
+                type: 'PUT',
+                url: '/api/customer/edit',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (data) {
+                    alert('Sửa khách hàng thành công');
+                    window.location.href = '/admin/customer';
+                },
+                error: function (error) {
+                    const erros = error.responseJSON.data;
+                    $.each(erros, function (key, value) {
+                        $(`#${key}Error`).text(value).show();
+                    });
+                }
+            })
+        });
+    </script>
+</div>

@@ -46,4 +46,8 @@ public class Account extends BaseEntity<Long> {
         this.employee = employee;
         employee.setAccount(this);
     }
+    public void addCustomer(Customer customer) {
+        this.customer = customer;
+        customer.setAccount(this);
+    }
 }

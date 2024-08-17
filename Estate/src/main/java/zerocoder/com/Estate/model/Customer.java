@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import zerocoder.com.Estate.enums.CustomerStatus;
 import zerocoder.com.Estate.enums.CustomerType;
 import zerocoder.com.Estate.enums.Gender;
 
@@ -48,7 +49,13 @@ public class Customer extends BaseEntity<Long> {
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private CustomerType type;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    private CustomerStatus status = CustomerStatus.PENDING;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id")

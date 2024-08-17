@@ -6,10 +6,13 @@ import org.springframework.stereotype.Service;
 import zerocoder.com.Estate.dto.request.AccountRequest;
 import zerocoder.com.Estate.exception.UniqueException;
 import zerocoder.com.Estate.model.Account;
+import zerocoder.com.Estate.model.Customer;
 import zerocoder.com.Estate.model.Employee;
 import zerocoder.com.Estate.repository.AccountRepository;
+import zerocoder.com.Estate.repository.CustomerRepository;
 import zerocoder.com.Estate.repository.EmployeeRepository;
 import zerocoder.com.Estate.service.AccountService;
+import zerocoder.com.Estate.service.CustomerService;
 import zerocoder.com.Estate.service.EmployeeService;
 
 @Slf4j
@@ -19,6 +22,7 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
     private final EmployeeRepository employeeRepository;
+    private final CustomerRepository customerRepository;
     @Override
     public Long saveAccount(AccountRequest request) {
         if(accountRepository.existsByEmail(request.getEmail())) {
@@ -27,16 +31,30 @@ public class AccountServiceImpl implements AccountService {
         if(accountRepository.existsByUsername(request.getUsername())) {
             throw new UniqueException("Tên đăng nhập đã tồn tại", "username");
         }
-        Employee employee = employeeRepository.findById(request.getEmployeeId()).orElseThrow();
-        if(employee.getAccount() != null) {
-            throw new UniqueException("Nhân viên đã có tài khoản", "employee");
+        Object user;
+        if(request.getType() == 1) {
+            Employee userTemp = employeeRepository.findById(request.getId()).orElseThrow();
+            if(userTemp.getAccount() != null) {
+                throw new UniqueException("Nhân viên đã có tài khoản", "employee");
+            }
+            user = userTemp;
+        } else {
+            Customer userTemp = customerRepository.findById(request.getId()).orElseThrow();
+            if(userTemp.getAccount() != null) {
+                throw new UniqueException("Khách hàng đã có tài khoản", "customer");
+            }
+            user = userTemp;
         }
         Account account = Account.builder()
                 .email(request.getEmail())
                 .username(request.getUsername())
                 .password(request.getPassword())
                 .build();
-        account.addEmployee(employee);
+        if(request.getType() == 1) {
+            account.addEmployee((Employee) user);
+        } else {
+            account.addCustomer((Customer) user);
+        }
         accountRepository.save(account);
         return account.getId();
     }

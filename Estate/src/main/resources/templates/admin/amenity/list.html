@@ -83,21 +83,19 @@
                         <td>Anonymous</td>
                         <td th:text="${#temporals.format(amenity.updatedAt, 'HH:mm dd-MM-yyyy')}"></td>
                         <td>
-                            <a th:href="@{'/admin/amenity/edit/' + ${amenity.id}}" class="btn btn-warning">
+                            <a th:href="@{'/admin/amenity/edit/' + ${amenity.id}}" class="btn btn-warning btn-sm">
                                 <i class="bi bi-pencil-square"></i>
-                                Sửa
                             </a>
                             <!-- Disabled Backdrop Modal -->
                             <button
                                     type="button"
-                                    class="btn btn-danger btn-deleted"
+                                    class="btn btn-danger btn-deleted btn-sm"
                                     data-bs-toggle="modal"
                                     data-bs-target="#disablebackdrop"
                                     th:data-idamenity="${amenity.id}"
                                     th:data-nameamenity="${amenity.name}"
                             >
                                 <i class="bi bi-trash"></i>
-                                Xóa
                             </button>
                             <!-- End Disabled Backdrop Modal-->
                         </td>

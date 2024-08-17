@@ -22,6 +22,9 @@ public class AccountRequest {
     @NotBlank(message = "Email không được để trống")
     private String email;
 
-    @NotNull(message = "Nhân viên không được để trống")
-    private Long employeeId;
+    @NotNull(message = "Id không được để trống")
+    private Long id;
+
+    @NotNull(message = "Loại không được để trống")
+    private Integer type;
 }

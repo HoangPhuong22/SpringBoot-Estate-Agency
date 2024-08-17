@@ -156,21 +156,19 @@
                         <td>Anonymus</td>
                         <td th:text="${#temporals.format(property.updatedAt, 'dd/MM/yyyy HH:mm')}"></td>
                         <td>
-                            <a th:href="@{'/admin/property/edit/' + ${property.id}}" class="btn btn-warning">
+                            <a th:href="@{'/admin/property/edit/' + ${property.id}}" class="btn btn-warning btn-sm">
                                 <i class="bi bi-pencil-square"></i>
-                                Sửa
                             </a>
                             <!-- Disabled Backdrop Modal -->
                             <button
                                     type="button"
-                                    class="btn btn-danger btn-deleted-property"
+                                    class="btn btn-danger btn-deleted-property btn-sm"
                                     data-bs-toggle="modal"
                                     data-bs-target="#disablebackdrop"
                                     th:data-id="${property.id}"
                                     th:data-name="${property.name}"
                             >
                                 <i class="bi bi-trash"></i>
-                                Xóa
                             </button>
                             <!-- End Disabled Backdrop Modal-->
                         </td>
