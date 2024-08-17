@@ -14,8 +14,7 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/admin">Trang chủ</a></li>
-                <li class="breadcrumb-item">Tài sản</li>
-                <li class="breadcrumb-item active">Danh sách tài sản</li>
+                <li class="breadcrumb-item active">Tài sản</li>
             </ol>
         </nav>
     </div>
@@ -35,7 +34,7 @@
                         </button>
                     </h2>
                     <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="">
-                        <form action="/admin/property" method="get" class="row g-3">
+                        <form action="/admin/property" id="searchFormProperty" method="get" class="row g-3">
                             <div class="col-md-6">
                                 <label for="nameProperty" class="col-sm-2 col-form-label">Tên tài sản</label>
                                 <input id="nameProperty" th:value="${param.name}" name="name" type="text" class="form-control" placeholder="Chung cư mini, nhà 3 tầng, biệt thự 5 tầng...">
@@ -48,19 +47,19 @@
                                 <label for="typeProperty" class="col-form-label">Loại tài sản</label>
                                 <select id="typeProperty" name="type" class="form-select">
                                     <option value="">Chọn loại tài sản</option>
-                                    <option value="HOUSE" th:selected="${param.type == 'HOUSE'}">Nhà riêng</option>
-                                    <option value="APARTMENT" th:selected="${param.type == 'APARTMENT'}">Căn hộ</option>
-                                    <option value="VILLA" th:selected="${param.type == 'VILLA'}">Biệt thự</option>
+                                    <option value="HOUSE" th:selected="${#strings.equals(param.type, 'HOUSE')}">Nhà riêng</option>
+                                    <option value="APARTMENT" th:selected="${#strings.equals(param.type, 'APARTMENT')}">Chung cư</option>
+                                    <option value="VILLA" th:selected="${#strings.equals(param.type, 'VILLA')}">Biệt thự</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label for="statusProperty" class="col-form-label">Trạng thái</label>
                                 <select id="statusProperty" name="status" class="form-select">
                                     <option value="">Chọn trạng thái</option>
-                                    <option value="AVAILABLE" th:selected="${param.status == 'AVAILABLE'}">Còn trống</option>
-                                    <option value="RENTED" th:selected="${param.status == 'RENTED'}">Đã cho thuê</option>
-                                    <option value="SOLD" th:selected="${param.status == 'SOLD'}">Đã bán</option>
-                                    <option value="UNDER_REPAIR" th:selected="${param.status == 'UNDER_REPAIR'}">Đang sửa chữa</option>
+                                    <option value="AVAILABLE" th:selected="${#strings.equals(param.status, 'AVAILABLE')}">Còn trống</option>
+                                    <option value="RENTED" th:selected="${#strings.equals(param.status, 'RENTED')}">Đã cho thuê</option>
+                                    <option value="SOLD" th:selected="${#strings.equals(param.status, 'SOLD')}">Đã bán</option>
+                                    <option value="UNDER_REPAIR" th:selected="${#strings.equals(param.status, 'UNDER_REPAIR')}">Đang sửa chữa</option>
                                 </select>
                             </div>
                             <div class="col-md-3">
@@ -129,7 +128,6 @@
                     <thead>
                     <tr class="table-info">
                         <th scope="col">#</th>
-                        <th scope="col">Mã code</th>
                         <th scope="col">Tên tài sản</th>
                         <th scope="col">Loại tài sản</th>
                         <th scope="col">Năm xây dựng</th>
@@ -147,8 +145,7 @@
                             th:each="property, index : ${properties}"
                             th:classappend="${index.count % 2 == 0} ? 'table-light' : 'table-primary'"
                     >
-                        <th scope="row" th:text="${index.index + 1}"></th>
-                        <td th:text="${property.code}"></td>
+                        <th scope="row" th:text="${index.count} + ${pageResponse.pageSize * (pageResponse.pageNo - 1)}"></th>
                         <td th:text="${property.name}"></td>
                         <td th:text="${property.type.description}"></td>
                         <td th:text="${property.builtYear}"></td>
@@ -208,7 +205,7 @@
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
                     <li class="page-item" th:classappend="${pageResponse.pageNo <= 1} ? 'disabled' : ''">
-                        <a class="page-link" th:href="@{'?pageNo=' + ${pageResponse.pageNo - 1}}" aria-label="Previous">
+                        <a class="page-link" th:href="@{'?pageNo=' + ${pageResponse.pageNo - 1}}" aria-label="Previous" th:data-page="${pageResponse.pageNo - 1}">
                             <span aria-hidden="true">«</span>
                         </a>
                     </li>
@@ -217,10 +214,10 @@
                             th:each="item: ${pageRange}"
                             th:classappend="${item == pageResponse.pageNo} ? 'active' : ''"
                     >
-                        <a class="page-link" th:href="@{'?pageNo=' + ${item}}">[[${item}]]</a>
+                        <a class="page-link" th:href="@{'?pageNo=' + ${item}}" th:data-page="${item}">[[${item}]]</a>
                     </li>
                     <li class="page-item" th:classappend="${pageResponse.pageNo >= pageResponse.totalPages} ? 'disabled' : ''">
-                        <a class="page-link" th:href="@{'?pageNo=' + ${pageResponse.pageNo + 1}}" aria-label="Next">
+                        <a class="page-link" th:href="@{'?pageNo=' + ${pageResponse.pageNo + 1}}" aria-label="Next" th:data-page="${pageResponse.pageNo + 1}">
                             <span aria-hidden="true">»</span>
                         </a>
                     </li>
@@ -229,22 +226,24 @@
         </div>
     </div>
     <script>
+        $('#searchFormProperty').submit(function (e) {
+            e.preventDefault();
+            const inputs = $(this).find('input, select');
+            inputs.each(function() {
+                if ($(this).val().trim().length === 0) {
+                    $(this).attr('name', '');
+                }
+            });
+            this.submit();
+        });
+
         $('button[type="reset"]').click(function (event) {
-            event.preventDefault(); // Ngăn chặn hành động mặc định của nút reset
-            console.log('Làm mới form');
-
-            // Reset tất cả các trường input
+            event.preventDefault();
             $('form input').val('');
-
-            // Reset tất cả các trường select về option đầu tiên
             $('form select').each(function() {
                 $(this).val($(this).find('option:first').val());
             });
-
-            // Reset tất cả các trường textarea nếu có
             $('form textarea').val('');
-
-            // Optional: Reset các trường radio và checkbox
             $('form input[type="radio"], form input[type="checkbox"]').prop('checked', false);
         });
 

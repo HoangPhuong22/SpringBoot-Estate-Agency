@@ -15,14 +15,13 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/admin">Trang chủ</a></li>
                 <li class="breadcrumb-item">Tiện ích</li>
-                <li class="breadcrumb-item active">Danh sách tiện ích</li>
             </ol>
         </nav>
     </div>
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">Tìm kiếm</h5>
-            <form action="/admin/amenity" method="get">
+            <form action="/admin/amenity" id="searchFormAmenity" method="get">
                 <div class="row mb-3">
                     <label for="nameAmenity" class="col-sm-2 col-form-label">Tên tiện ích</label>
                     <div class="col-sm-10">
@@ -43,7 +42,7 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-sm-10 offset-sm-2">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" id="btn-search-property">
                             <i class="bi bi-search"></i>
                             Tìm kiếm
                         </button>
@@ -76,7 +75,7 @@
                             th:each="amenity, index: ${amenities}"
                             th:classappend="${index.count % 2 == 0} ? 'table-light' : 'table-primary'"
                     >
-                        <th scope="row" th:text="${index.index + 1}">1</th>
+                        <th scope="row" th:text="${index.count} + ${pageResponse.pageSize * (pageResponse.pageNo - 1)}"></th>
                         <td th:text="${amenity.name}">Bể bơi</td>
                         <td th:text="${amenity.type.description}">Nội thất</td>
                         <td>Anonymous</td>
@@ -130,20 +129,20 @@
         <div class="card-body" th:if="${pageResponse.totalPages > 1}">
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
-                        <li class="page-item" th:classappend="${pageResponse.pageNo <= 1} ? 'disabled' : ''">
-                        <a class="page-link" th:href="@{'?pageNo=' + ${pageResponse.pageNo - 1}}" aria-label="Previous">
+                    <li class="page-item" th:classappend="${pageResponse.pageNo <= 1} ? 'disabled' : ''">
+                        <a class="page-link" th:href="@{'?pageNo=' + ${pageResponse.pageNo - 1}}" aria-label="Previous" th:data-page="${pageResponse.pageNo - 1}">
                             <span aria-hidden="true">«</span>
                         </a>
                     </li>
                     <li
-                        class="page-item"
-                        th:each="item: ${pageRange}"
-                        th:classappend="${item == pageResponse.pageNo} ? 'active' : ''"
+                            class="page-item"
+                            th:each="item: ${pageRange}"
+                            th:classappend="${item == pageResponse.pageNo} ? 'active' : ''"
                     >
-                        <a class="page-link" th:href="@{'?pageNo=' + ${item}}">[[${item}]]</a>
+                        <a class="page-link" th:href="@{'?pageNo=' + ${item}}" th:data-page="${item}">[[${item}]]</a>
                     </li>
                     <li class="page-item" th:classappend="${pageResponse.pageNo >= pageResponse.totalPages} ? 'disabled' : ''">
-                        <a class="page-link" th:href="@{'?pageNo=' + ${pageResponse.pageNo + 1}}" aria-label="Next">
+                        <a class="page-link" th:href="@{'?pageNo=' + ${pageResponse.pageNo + 1}}" aria-label="Next" th:data-page="${pageResponse.pageNo + 1}">
                             <span aria-hidden="true">»</span>
                         </a>
                     </li>
@@ -152,6 +151,19 @@
         </div>
     </div>
     <script>
+        $('#searchFormAmenity').submit(function (e) {
+            e.preventDefault(); // Ngăn chặn hành động mặc định của form (reload trang)
+
+            const inputs = $(this).find('input, select');
+            inputs.each(function() {
+                if ($(this).val().trim().length === 0) {
+                    $(this).attr('name', '');  // Loại bỏ tên của input nếu nó trống
+                    console.log($(this).attr('name')); // In ra giá trị mới của name (sẽ là chuỗi rỗng)
+                }
+            });
+            this.submit();
+        });
+
         function textModel (data) {
             return "Bạn có chắc chắn muốn xoá tiện ích <strong>" + data + "</strong> không?."
             + "<br>" + "Lưu ý: Tất cả thông tin liên quan đến tiện ích này sẽ bị xoá khỏi hệ thống, vui lòng kiểm tra kỹ trước khi thực hiện hành động này!";

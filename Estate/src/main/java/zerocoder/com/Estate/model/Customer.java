@@ -2,7 +2,10 @@ package zerocoder.com.Estate.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import zerocoder.com.Estate.enums.CustomerType;
+import zerocoder.com.Estate.enums.Gender;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,7 +34,12 @@ public class Customer extends BaseEntity<Long> {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "birth_day")
+    @Column(name = "gender")
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    private Gender gender;
+
+    @Column(name = "birth_date")
     @Temporal(TemporalType.DATE)
     private LocalDate birthDay;
 

@@ -11,7 +11,7 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "employee")
+@Table(name = "account")
 public class Account extends BaseEntity<Long> {
 
     @Column(name = "username")
@@ -42,4 +42,8 @@ public class Account extends BaseEntity<Long> {
     @OneToOne(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Employee employee;
 
+    public void addEmployee(Employee employee) {
+        this.employee = employee;
+        employee.setAccount(this);
+    }
 }

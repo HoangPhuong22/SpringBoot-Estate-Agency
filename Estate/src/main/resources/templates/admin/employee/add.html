@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{common/admin/page-admin.html}"
+>
+<head>
+    <title>Thêm nhân viên</title>
+</head>
+
+<div layout:fragment="content">
+    <div class="pagetitle">
+        <h1>Nhân viên</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/admin">Trang chủ</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="/admin/employee">Nhân viên</a>
+                </li>
+                <li class="breadcrumb-item active">Thêm nhân viên</li>
+            </ol>
+        </nav>
+    </div>
+    <!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Thêm mới</h5>
+                    <!-- General Form Elements -->
+                    <form id="formEmployee">
+                        <div class="row mb-3">
+                            <label for="fullNameEmployee" class="col-sm-2 col-form-label">Tên nhân viên</label>
+                            <div class="col-sm-10">
+                                <input id="fullNameEmployee" type="text" class="form-control" placeholder="Nhập tên nhân viên (VD: Nguyễn Văn A,...)">
+                                <div id="fullNameError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="emailEmployee" class="col-sm-2 col-form-label">Email</label>
+                            <div class="col-sm-10">
+                                <input id="emailEmployee" type="text" class="form-control" placeholder="Nhập email (VD: HoangVanA@gmail.com,...)">
+                                <div id="emailError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="phoneEmployee" class="col-sm-2 col-form-label">Số điện thoại</label>
+                            <div class="col-sm-10">
+                                <input id="phoneEmployee" type="text" class="form-control" placeholder="Nhập số điện thoại (VD: 0123456789,...)">
+                                <div id="phoneError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="addressEmployee" class="col-sm-2 col-form-label">Địa chỉ</label>
+                            <div class="col-sm-10">
+                                <input id="addressEmployee" type="text" class="form-control" placeholder="Nhập địa chỉ (VD: 123 Đường ABC,...)">
+                                <div id="addressError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="birthDayEmployee" class="col-sm-2 col-form-label">Ngày sinh</label>
+                            <div class="col-sm-10">
+                                <input id="birthDayEmployee" type="date" class="form-control">
+                                <div id="birthDayError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="genderEmployee" class="col-sm-2 col-form-label">Giới tính</label>
+                            <div class="col-sm-10">
+                                <select id="genderEmployee" class="form-select" aria-label="Default select example">
+                                    <option value="" selected>Chọn giới tính</option>
+                                    <option value="MALE">Nam</option>
+                                    <option value="FEMALE">Nữ</option>
+                                    <option value="OTHER">Khác</option>
+                                </select>
+                                <div id="genderError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="idNumberEmployee" class="col-sm-2 col-form-label">Số CMND / CCCD</label>
+                            <div class="col-sm-10">
+                                <input id="idNumberEmployee" type="text" class="form-control" placeholder="Nhập số CMND (VD: 1213121212,...)">
+                                <div id="idNumberError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="educationEmployee" class="col-sm-2 col-form-label">Trình độ học vấn</label>
+                            <div class="col-sm-10">
+                                <input id="educationEmployee" type="text" class="form-control" placeholder="Nhập trình độ học vấn (VD: Cử nhân,...)">
+                                <div id="educationError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="hireDateEmployee" class="col-sm-2 col-form-label">Ngày bắt đầu làm việc</label>
+                            <div class="col-sm-10">
+                                <input id="hireDateEmployee" type="date" class="form-control">
+                                <div id="hireDateError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Gửi</label>
+                            <div class="col-sm-10">
+                                <a href="/admin/employee" class="btn btn-danger">Quay lại</a>
+                                <button type="submit" class="btn btn-primary" id="btn-add-employee">Tạo nhân viên</button>
+                            </div>
+                        </div>
+
+                    </form>
+                    <!-- End General Form Elements -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        $('#btn-add-employee').click(function (e) {
+            e.preventDefault();
+            const data = {
+                fullName: $('#fullNameEmployee').val(),
+                email: $('#emailEmployee').val(),
+                phone: $('#phoneEmployee').val(),
+                address: $('#addressEmployee').val(),
+                birthDay: $('#birthDayEmployee').val(),
+                gender: $('#genderEmployee').val(),
+                idNumber: $('#idNumberEmployee').val(),
+                education: $('#educationEmployee').val(),
+                hireDate: $('#hireDateEmployee').val()
+            };
+            $('.invalid-feedback').text('').hide();
+            $.ajax({
+                type: 'POST',
+                url: '/api/employee/add',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function () {
+                    alert("Thêm nhân viên thành công");
+                    window.location.href = '/admin/employee';
+                },
+                error: function (response) {
+                    const data = response.responseJSON.data;
+                    console.log(data);
+                    $.each(data, function (key, value) {
+                        $(`#${key}Error`).text(value).show();
+                    });
+                }
+            })
+        });
+    </script>
+</div>

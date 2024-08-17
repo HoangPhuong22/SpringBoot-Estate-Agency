@@ -1,4 +1,4 @@
-package zerocoder.com.Estate.service.iml;
+package zerocoder.com.Estate.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,6 @@ import zerocoder.com.Estate.model.Amenity;
 import zerocoder.com.Estate.repository.AmenityRepository;
 import zerocoder.com.Estate.service.AmenityService;
 
-import java.io.Serializable;
 import java.util.List;
 
 @Slf4j

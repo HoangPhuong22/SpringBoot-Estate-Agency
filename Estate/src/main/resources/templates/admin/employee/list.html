@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{common/admin/page-admin.html}"
+>
+<head>
+    <title>Danh sách nhân viên</title>
+</head>
+
+<div layout:fragment="content">
+    <div class="pagetitle">
+        <h1>Danh sách nhân viên</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Nhân viên</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Tìm kiếm</h5>
+            <form action="/admin/employee" id="searhEmployee" method="get" class="row g-3">
+                <div class="col-md-6">
+                    <label for="fullName" class="form-label">Tên nhân viên</label>
+                    <input type="text" th:value="${param.fullName}" class="form-control" id="fullName" name="fullName" placeholder="Nhập tên nhân viên, VD: Nguyễn Văn A">
+                </div>
+                <div class="col-md-6">
+                    <label for="phone" class="form-label">Số điện thoại</label>
+                    <input type="text" th:value="${param.phone}" class="form-control" id="phone" name="phone" placeholder="Nhập số điện thoại, VD: 0382288231">
+                </div>
+                <div class="col-md-6">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="text" th:value="${param.email}" class="form-control" id="email" name="email" placeholder="Nhập email, VD: nguyena@gmailc.com">
+                </div>
+                <div class="col-md-6">
+                    <label for="idNumber" class="form-label">Số CMND</label>
+                    <input type="text" th:value="${param.idNumber}" class="form-control" id="idNumber" name="idNumber" placeholder="Nhập số CMND, VD: 123456789">
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i>
+                        Tìm kiếm
+                    </button>
+                    <button type="reset" class="btn btn-secondary">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                        Làm mới
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="card-body">
+            <a href="/admin/employee/add" class="btn btn-success mt-3 mb-3">Thêm mới</a>
+            <p class="text-danger" th:if="${employees.size() == 0}">Không có nhân viên nào</p>
+            <p class="text-success" th:if="${employees.size() > 0}">Có tổng cộng [[${pageResponse.totalElements}]] nhân viên được tìm thấy</p>
+            <!-- Table Variants -->
+            <div class="table-responsive" th:if="${employees.size() > 0}">
+                <table class="table">
+                    <thead>
+                    <tr class="table-info">
+                        <th scope="col">#</th>
+                        <th scope="col">Tên nhân viên</th>
+                        <th scope="col">Số điện thoại</th>
+                        <th scope="col">Giới tính</th>
+                        <th scope="col">Ngày sinh</th>
+                        <th scope="col">Ngày vào làm</th>
+                        <th scope="col">Người tạo</th>
+                        <th scope="col">Ngày cập nhật</th>
+                        <th scope="col">Người cập nhật</th>
+                        <th scope="col">Trạng thái</th>
+                        <th scope="col">Hành động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr
+                            th:each="employee, index: ${employees}"
+                            th:classappend="${index.count % 2 == 0} ? 'table-light' : 'table-primary'"
+                    >
+                        <th scope="row" th:text="${index.count} + ${pageResponse.pageSize * (pageResponse.pageNo - 1)}"></th>
+                        <td th:text="${employee.fullName}"></td>
+                        <td th:text="${employee.phone}"></td>
+                        <td th:text="${employee.gender.description}"></td>
+                        <td th:text="${#temporals.format(employee.birthDay, 'dd-MM-yyyy')}"></td>
+                        <td th:text="${#temporals.format(employee.hireDate, 'dd-MM-yyyy')}"></td>
+                        <td th:text="Anonymouse"></td>
+                        <td th:text="${#temporals.format(employee.updatedAt, 'HH:mm dd-MM-yyyy')}"></td>
+                        <td th:text="Anonymouse"></td>
+                        <td th:text="${employee.isActive != null and employee.isActive ? 'Đang làm việc' : 'Đã nghỉ việc'}"></td>
+                        <td>
+                            <a th:href="@{'/admin/employee/edit/' + ${employee.id}}" class="btn btn-primary btn-sm">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <!-- Disabled Backdrop Modal -->
+                            <button
+                                    th:if="${employee.accountId == null}"
+                                    type="button"
+                                    class="btn btn-danger btn-sm btn-info-account"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#disablebackdrop"
+                                    th:data-fullname="${employee.fullName}"
+                                    th:data-id-employee="${employee.id}"
+                            >
+                                <i class="bi bi-person-add"></i>
+                            </button>
+                            <!-- End Disabled Backdrop Modal-->
+                            <!-- Change Password Modal -->
+                            <button
+                                th:if="${employee.accountId != null}"
+                                type="button"
+                                class="btn btn-warning btn-sm btn-change-password"
+                                data-bs-toggle="modal"
+                                data-bs-target="#changePasswordModal"
+                                th:data-fullname="${employee.fullName}"
+                                th:data-id-account="${employee.accountId}"
+                                th:data-user-name="${employee.userName}"
+                            >
+                                <i class="bi bi-key"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <!-- Modal add Account -->
+                    <div class="modal fade" id="disablebackdrop" tabindex="-1" data-bs-backdrop="false" style="display: none;" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="text-title-modal"></h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="formAddAccount" method="post">
+                                        <div class="mb-3">
+                                            <label for="usernameAccount" class="form-label">Tên đăng nhập</label>
+                                            <input type="text" class="form-control" id="usernameAccount" name="username" placeholder="Nhập tên đăng nhập VD(zerocoder,...)">
+                                            <div id="usernameError" class="invalid-feedback"></div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="emailAccount" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="emailAccount" name="email" placeholder="Nhập email VD(zerocoder@edu.com...)">
+                                            <div id="emailError" class="invalid-feedback"></div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="passwordAccount" class="form-label">Mật khẩu</label>
+                                            <input type="password" class="form-control" id="passwordAccount" name="password" placeholder="Nhập mật khẩu">
+                                            <div id="passwordError" class="invalid-feedback"></div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="confirmPasswordAcount" class="form-label">Xác nhận mật khẩu</label>
+                                            <input type="password" class="form-control" id="confirmPasswordAcount" name="confirmPassword" placeholder="Nhập lại mật khẩu">
+                                            <div id="confirmPasswordError" class="invalid-feedback"></div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Tạo tài khoản</button>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Thoát</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Change Password -->
+                    <div class="modal fade" id="changePasswordModal">
+                        <div class="modal-dialog modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="title-modal-password"></h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="formChangePassword" >
+                                        <div class="mb-3">
+                                            <label for="userNameInfo" class="form-label">Tên đăng nhập</label>
+                                            <input type="text" class="form-control" id="userNameInfo" name="username" disabled>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="passwordChange" class="form-label">Mật khẩu mới</label>
+                                            <input type="password" class="form-control" id="passwordChange" name="password" placeholder="Nhập mật khẩu mới">
+                                            <div id="passwordChangeError" class="invalid-feedback"></div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="confirmChangePassword" class="form-label">Xác nhận mật khẩu</label>
+                                            <input type="password" class="form-control" id="confirmChangePassword" name="confirmPassword" placeholder="Nhập lại mật khẩu">
+                                            <div id="confirmChangeError" class="invalid-feedback"></div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Sửa mật khẩu</button>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Thoát</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </table>
+            </div>
+            <!-- End Table Variants -->
+
+        </div>
+        <div class="card-body" th:if="${pageResponse.totalPages > 1}">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${pageResponse.pageNo <= 1} ? 'disabled' : ''">
+                        <a class="page-link" th:href="@{'?pageNo=' + ${pageResponse.pageNo - 1}}" aria-label="Previous" th:data-page="${pageResponse.pageNo - 1}">
+                            <span aria-hidden="true">«</span>
+                        </a>
+                    </li>
+                    <li
+                            class="page-item"
+                            th:each="item: ${pageRange}"
+                            th:classappend="${item == pageResponse.pageNo} ? 'active' : ''"
+                    >
+                        <a class="page-link" th:href="@{'?pageNo=' + ${item}}" th:data-page="${item}">[[${item}]]</a>
+                    </li>
+                    <li class="page-item" th:classappend="${pageResponse.pageNo >= pageResponse.totalPages} ? 'disabled' : ''">
+                        <a class="page-link" th:href="@{'?pageNo=' + ${pageResponse.pageNo + 1}}" aria-label="Next" th:data-page="${pageResponse.pageNo + 1}">
+                            <span aria-hidden="true">»</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <script>
+        $('button[type="reset"]').click(function (event) {
+            event.preventDefault();
+            $('form input').val('');
+        });
+
+        $('#searhEmployee').submit(function (e) {
+            e.preventDefault();
+            const inputs = $(this).find('input, select');
+            inputs.each(function() {
+                if ($(this).val().trim().length === 0) {
+                    $(this).attr('name', '');
+                }
+            });
+            this.submit();
+        });
+
+
+        let fullName, idEmployee;
+        $('.btn-info-account').click(function (e) {
+            e.preventDefault();
+            fullName = $(this).data('fullname');
+            idEmployee = $(this).data('id-employee');
+            $('#text-title-modal').html('Tạo tài khoản cho nhân viên: ' + '<strong>' + fullName + '</strong>');
+        });
+
+        $('#formAddAccount').submit(function(e) {
+            e.preventDefault();
+            const data = {
+                username: $('#usernameAccount').val(),
+                email: $('#emailAccount').val(),
+                password: $('#passwordAccount').val(),
+                confirmPassword: $('#confirmPasswordAcount').val(),
+                employeeId: idEmployee
+            };
+            $('.invalid-feedback').hide().text('');
+            if(data.confirmPassword !== data.password) {
+                $('#confirmPasswordError').text('Mật khẩu không khớp').show();
+            } else {
+                $.ajax({
+                    url: '/api/account/add',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function () {
+                        alert('Tạo tài khoản thành công');
+                        $('#disablebackdrop').modal('hide');
+                    },
+                    error: function (error) {
+                        const errors = error.responseJSON.data;
+                        $.each(errors, function (key, value) {
+                            $(`#${key}Error`).text(value).show();
+                        });
+                    }
+                });
+            }
+        });
+
+        // Change Password
+        let idAccount, nameEmployee, userName;
+        $('.btn-change-password').click(function (e) {
+            e.preventDefault();
+            idAccount = $(this).data('id-account');
+            nameEmployee = $(this).data('fullname');
+            userName = $(this).data('user-name');
+            $('#userNameInfo').val(userName);
+            $('#title-modal-password').html('Thay đổi mật khẩu cho nhân viên: ' + '<strong>' + nameEmployee + '</strong>');
+        });
+        $('#formChangePassword').submit(function (e) {
+            e.preventDefault();
+            const data = {
+                id: idAccount,
+                passwordChange: $('#passwordChange').val()
+            };
+            $('.invalid-feedback').hide().text('');
+            const confirmPassword = $('#confirmChangePassword').val();
+            if(data.passwordChange !== confirmPassword) {
+                $('#confirmChangeError').text('Mật khẩu không khớp').show();
+            } else {
+                $.ajax({
+                    url: '/api/account/change-password',
+                    type: 'Patch',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function () {
+                        alert('Thay đổi mật khẩu thành công');
+                        $('#changePasswordModal').modal('hide');
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        const errors = error.responseJSON.data;
+                        $.each(errors, function (key, value) {
+                            $(`#${key}Error`).text(value).show();
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+</div>
