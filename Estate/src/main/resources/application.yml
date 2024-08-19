@@ -1,0 +1,5 @@
+jwt:
+  expiryHour: 10
+  expiryDay: 15
+  secretKey: 3fa69988d3176dc2f014f401893fa3b819d3cb5a49d208009d725678275cbb18
+  refreshKey: 715cbdf9a1fe2ac08d4726d43a5f6e30fa7b38047439e39afe6ed1179affb332

@@ -10,10 +10,12 @@ import org.hibernate.validator.constraints.Range;
 import zerocoder.com.Estate.validator.EnumNamePattern;
 import zerocoder.com.Estate.validator.NumberValid;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @Builder
-public class PropertyRequest {
+public class PropertyRequest implements Serializable {
     private Long id;
 
     @EnumNamePattern(regexp = "APARTMENT|HOUSE|VILLA", message = "Loại tài sản không hợp lệ")

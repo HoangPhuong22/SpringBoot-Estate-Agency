@@ -2,6 +2,9 @@ package zerocoder.com.Estate.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import zerocoder.com.Estate.dto.request.AccountRequest;
 import zerocoder.com.Estate.exception.UniqueException;
@@ -23,6 +26,13 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final EmployeeRepository employeeRepository;
     private final CustomerRepository customerRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public UserDetailsService userDetailsService() {
+        return username -> accountRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy tài khoản"));
+    }
+
     @Override
     public Long saveAccount(AccountRequest request) {
         if(accountRepository.existsByEmail(request.getEmail())) {
@@ -48,7 +58,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = Account.builder()
                 .email(request.getEmail())
                 .username(request.getUsername())
-                .password(request.getPassword())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .build();
         if(request.getType() == 1) {
             account.addEmployee((Employee) user);
@@ -62,7 +72,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void changePassword(Long id, String password) {
         Account account = accountRepository.findById(id).orElseThrow();
-        account.setPassword(password);
+        account.setPassword(passwordEncoder.encode(password));
         accountRepository.save(account);
     }
 }

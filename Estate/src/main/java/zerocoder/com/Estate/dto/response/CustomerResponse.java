@@ -5,6 +5,7 @@ import zerocoder.com.Estate.enums.CustomerStatus;
 import zerocoder.com.Estate.enums.CustomerType;
 import zerocoder.com.Estate.enums.Gender;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerResponse {
+public class CustomerResponse implements Serializable {
     private Long id;
     private String fullName;
     private String email;

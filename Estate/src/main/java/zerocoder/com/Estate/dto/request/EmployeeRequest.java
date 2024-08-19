@@ -11,6 +11,7 @@ import zerocoder.com.Estate.validator.EnumNamePattern;
 import zerocoder.com.Estate.validator.IdNumberValid;
 import zerocoder.com.Estate.validator.PhoneValid;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Getter
@@ -18,7 +19,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeRequest {
+public class EmployeeRequest implements Serializable {
     private Long id;
 
     @NotBlank(message = "Tên nhân viên không được để trống")

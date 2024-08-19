@@ -8,11 +8,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import zerocoder.com.Estate.validator.PasswordValid;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountRequest {
+public class AccountRequest implements Serializable {
     @NotBlank(message = "Tên đăng nhập không được để trống")
     private String username;
 
