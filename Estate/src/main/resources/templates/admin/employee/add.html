@@ -32,6 +32,7 @@
                     <h5 class="card-title">Thêm mới</h5>
                     <!-- General Form Elements -->
                     <form id="formEmployee">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf"/>
                         <div class="row mb-3">
                             <label for="fullNameEmployee" class="col-sm-2 col-form-label">Tên nhân viên</label>
                             <div class="col-sm-10">
@@ -128,12 +129,16 @@
                 education: $('#educationEmployee').val(),
                 hireDate: $('#hireDateEmployee').val()
             };
+            const csrf = $('#csrf').val();
             $('.invalid-feedback').text('').hide();
             $.ajax({
                 type: 'POST',
                 url: '/api/employee/add',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                },
                 success: function () {
                     alert("Thêm nhân viên thành công");
                     window.location.href = '/admin/employee';

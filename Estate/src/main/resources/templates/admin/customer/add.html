@@ -32,6 +32,7 @@
                     <h5 class="card-title">Thêm mới</h5>
                     <!-- General Form Elements -->
                     <form id="form-add-customer">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf"/>
                         <div class="row mb-3">
                             <label for="fullNameCustomer" class="col-sm-2 col-form-label">Tên khách hàng</label>
                             <div class="col-sm-10">
@@ -125,12 +126,16 @@
                 type: $('#typeCustomer').val()
             }
             $('.invalid-feedback').hide().text('');
+            const csrf = $('#csrf').val();
             $.ajax({
                 type: 'POST',
                 url: '/api/customer/add',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
-                success: function (data) {
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                },
+                success: function () {
                     alert('Thêm khách hàng thành công');
                     window.location.href = '/admin/customer';
                 },

@@ -1,14 +1,23 @@
 package zerocoder.com.Estate.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import zerocoder.com.Estate.dto.request.AmenityRequest;
 import zerocoder.com.Estate.dto.response.AmenityResponse;
 import zerocoder.com.Estate.enums.AmenityType;
+import zerocoder.com.Estate.model.Account;
 import zerocoder.com.Estate.model.Amenity;
+import zerocoder.com.Estate.repository.AccountRepository;
+import zerocoder.com.Estate.service.AccountService;
+import zerocoder.com.Estate.utils.SecurityUtils;
 import zerocoder.com.Estate.utils.TitleUtils;
 
 @Component
+@RequiredArgsConstructor
 public class AmenityMapper {
+
+    private final SecurityUtils securityUtils;
+    private final AccountService accountService;
 
     public Amenity toAmenity(AmenityRequest request) {
         return Amenity.builder()
@@ -23,6 +32,8 @@ public class AmenityMapper {
                 .name(amenity.getName())
                 .type(amenity.getType())
                 .description(amenity.getDescription())
+                .createdBy(accountService.getUserName(amenity.getCreatedBy()))
+                .updatedBy(accountService.getUserName(amenity.getUpdatedBy()))
                 .createdAt(amenity.getCreatedAt())
                 .updatedAt(amenity.getUpdatedAt())
                 .build();

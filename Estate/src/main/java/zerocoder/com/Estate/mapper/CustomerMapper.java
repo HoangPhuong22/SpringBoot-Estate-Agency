@@ -1,15 +1,25 @@
 package zerocoder.com.Estate.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import zerocoder.com.Estate.dto.request.CustomerRequest;
 import zerocoder.com.Estate.dto.response.CustomerResponse;
 import zerocoder.com.Estate.enums.CustomerStatus;
 import zerocoder.com.Estate.enums.CustomerType;
 import zerocoder.com.Estate.enums.Gender;
+import zerocoder.com.Estate.model.Account;
 import zerocoder.com.Estate.model.Customer;
+import zerocoder.com.Estate.repository.AccountRepository;
+import zerocoder.com.Estate.service.AccountService;
+import zerocoder.com.Estate.utils.SecurityUtils;
 
 @Component
+@RequiredArgsConstructor
 public class CustomerMapper {
+
+    private final SecurityUtils securityUtils;
+    private final AccountService accountService;
+
     public Customer toCustomer(CustomerRequest customerRequest) {
         String code = "KH" + System.currentTimeMillis();
         return Customer.builder()
@@ -37,8 +47,8 @@ public class CustomerMapper {
                 .type(customer.getType())
                 .birthDay(customer.getBirthDay())
                 .gender(customer.getGender())
-                .createdBy(customer.getCreatedBy())
-                .updatedBy(customer.getUpdatedBy())
+                .createdBy(accountService.getUserName(customer.getCreatedBy()))
+                .updatedBy(accountService.getUserName(customer.getUpdatedBy()))
                 .createdAt(customer.getCreatedAt())
                 .updatedAt(customer.getUpdatedAt())
                 .accountId((customer.getAccount() != null) ? customer.getAccount().getId() : null)
@@ -56,5 +66,4 @@ public class CustomerMapper {
         customer.setGender(Gender.valueOf(customerRequest.getGender()));
         customer.setStatus(CustomerStatus.valueOf(customerRequest.getStatus()));
     }
-
 }

@@ -1,5 +1,6 @@
 package zerocoder.com.Estate.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import zerocoder.com.Estate.dto.request.PropertyRequest;
 import zerocoder.com.Estate.dto.response.PropertyResponse;
@@ -7,9 +8,14 @@ import zerocoder.com.Estate.enums.PropertyDirection;
 import zerocoder.com.Estate.enums.PropertyStatus;
 import zerocoder.com.Estate.enums.PropertyType;
 import zerocoder.com.Estate.model.Property;
+import zerocoder.com.Estate.service.AccountService;
 
 @Component
+@RequiredArgsConstructor
 public class PropertyMapper {
+
+    private final AccountService accountService;
+
     public Property toProperty(PropertyRequest propertyRequest) {
         String Code = PropertyType.valueOf(propertyRequest.getType()).getCode() + System.currentTimeMillis();
         return Property.builder()
@@ -52,6 +58,8 @@ public class PropertyMapper {
                 .direction(PropertyDirection.valueOf(property.getDirection().name()))
                 .type(PropertyType.valueOf(property.getType().name()))
                 .status(PropertyStatus.valueOf(property.getStatus().name()))
+                .createdBy(accountService.getUserName(property.getCreatedBy()))
+                .updatedBy(accountService.getUserName(property.getUpdatedBy()))
                 .createdAt(property.getCreatedAt())
                 .updatedAt(property.getUpdatedAt())
                 .build();

@@ -60,7 +60,8 @@ public class PropertyServiceImpl implements PropertyService {
     @Override
     public PageResponse<?> findPropertiesAndSearch(PropertySearchDTO searchDTO) {
         PageResponse<?> response = propertyRepository.findPropertiesAndSearch(searchDTO);
-        List<PropertyResponse> propertyResponses = (List<PropertyResponse>) response.getContent();
+        List<Property> properties = (List<Property>) response.getContent();
+        List<PropertyResponse> propertyResponses = properties.stream().map(propertyMapper::toPropertyResponse).toList();
         return PageResponse.builder()
                 .content(propertyResponses)
                 .pageNo(response.getPageNo())

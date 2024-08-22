@@ -1,6 +1,7 @@
 package zerocoder.com.Estate.dto.response;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import zerocoder.com.Estate.enums.CustomerStatus;
 import zerocoder.com.Estate.enums.CustomerType;
 import zerocoder.com.Estate.enums.Gender;
@@ -10,10 +11,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class CustomerResponse {
+@SuperBuilder
+public class CustomerResponse extends AbstractResponse{
     private Long id;
     private String fullName;
     private String email;
@@ -24,10 +23,6 @@ public class CustomerResponse {
     private CustomerStatus status;
     private CustomerType type;
     private LocalDate birthDay;
-    private Long createdBy;
-    private Long updatedBy;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
     private String userName;
     private Long accountId;
 }

@@ -83,9 +83,9 @@
                         <td th:text="${employee.gender.description}"></td>
                         <td th:text="${#temporals.format(employee.birthDay, 'dd-MM-yyyy')}"></td>
                         <td th:text="${#temporals.format(employee.hireDate, 'dd-MM-yyyy')}"></td>
-                        <td th:text="Anonymouse"></td>
+                        <td th:text="${employee.createdBy}"></td>
                         <td th:text="${#temporals.format(employee.updatedAt, 'HH:mm dd-MM-yyyy')}"></td>
-                        <td th:text="Anonymouse"></td>
+                        <td th:text="${employee.updatedBy}"></td>
                         <td th:text="${employee.isActive != null and employee.isActive ? 'Đang làm việc' : 'Đã nghỉ việc'}"></td>
                         <td>
                             <a th:href="@{'/admin/employee/edit/' + ${employee.id}}" class="btn btn-primary btn-sm">
@@ -129,6 +129,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <form id="formAddAccount" method="post">
+                                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf-add-account"/>
                                         <div class="mb-3">
                                             <label for="usernameAccount" class="form-label">Tên đăng nhập</label>
                                             <input type="text" class="form-control" id="usernameAccount" name="username" placeholder="Nhập tên đăng nhập VD(zerocoder,...)">
@@ -169,6 +170,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <form id="formChangePassword" >
+                                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf-change-password"/>
                                         <div class="mb-3">
                                             <label for="userNameInfo" class="form-label">Tên đăng nhập</label>
                                             <input type="text" class="form-control" id="userNameInfo" name="username" disabled>
@@ -257,6 +259,7 @@
                 id: idEmployee,
                 type: 1 // Loại tài khoản nhân viên
             };
+            const csrf = $('#csrf-add-account').val();
             $('.invalid-feedback').hide().text('');
             if(data.confirmPassword !== data.password) {
                 $('#confirmPasswordError').text('Mật khẩu không khớp').show();
@@ -266,6 +269,9 @@
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(data),
+                    headers: {
+                        'X-CSRF-TOKEN': csrf
+                    },
                     success: function () {
                         alert('Tạo tài khoản thành công');
                         $('#disablebackdrop').modal('hide');
@@ -298,6 +304,7 @@
                 passwordChange: $('#passwordChange').val()
             };
             $('.invalid-feedback').hide().text('');
+            const csrf = $('#csrf-change-password').val();
             const confirmPassword = $('#confirmChangePassword').val();
             if(data.passwordChange !== confirmPassword) {
                 $('#confirmChangeError').text('Mật khẩu không khớp').show();
@@ -307,6 +314,9 @@
                     type: 'Patch',
                     contentType: 'application/json',
                     data: JSON.stringify(data),
+                    headers: {
+                        'X-CSRF-TOKEN': csrf
+                    },
                     success: function () {
                         alert('Thay đổi mật khẩu thành công');
                         $('#changePasswordModal').modal('hide');

@@ -32,6 +32,7 @@
                     <h5 class="card-title">Chỉnh sửa</h5>
                     <!-- General Form Elements -->
                     <form id="formEditProperty">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf"/>
                         <input type="hidden" th:value="${property.id}" id="idProperty">
                         <div class="row mb-3">
                             <label for="nameProperty" class="col-sm-2 col-form-label">Tên tòa nhà</label>
@@ -197,12 +198,15 @@
                 salePrice: $('#salePriceProperty').val(),
                 rentPrice: $('#rentPriceProperty').val()
             };
-            console.log(data);
+            const csrf = $('#csrf').val();
             $.ajax({
                 type: 'PUT',
                 url: '/api/property/edit',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                },
                 success: function () {
                     alert('Sửa tài sản thành công');
                     window.location.href = '/admin/property';

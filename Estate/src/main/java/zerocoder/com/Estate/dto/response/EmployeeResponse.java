@@ -3,6 +3,7 @@ package zerocoder.com.Estate.dto.response;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 import zerocoder.com.Estate.enums.Gender;
 
@@ -11,10 +12,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class EmployeeResponse {
+@SuperBuilder
+public class EmployeeResponse extends AbstractResponse {
     private Long id;
     private String code;
     private String fullName;
@@ -24,16 +23,9 @@ public class EmployeeResponse {
     private String idNumber;
     private String address;
     private String education;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDay;
     private LocalDate hireDate;
     private Boolean isActive;
-    private Long createdBy;
-    private Long updatedBy;
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime createdAt;
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime updatedAt;
     private Long accountId;
     private String userName;
 }

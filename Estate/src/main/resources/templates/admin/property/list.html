@@ -2,6 +2,7 @@
 <html
         lang="en"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
         layout:decorate="~{common/admin/page-admin.html}"
 >
 <head>
@@ -151,9 +152,9 @@
                         <td th:text="${property.builtYear}"></td>
                         <td th:text="${property.area} + 'm2'"></td>
                         <td th:text="${property.status.description}"></td>
-                        <td>Anonymus</td>
+                        <td th:text="${property.createdBy}"></td>
                         <td th:text="${#temporals.format(property.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
-                        <td>Anonymus</td>
+                        <td th:text="${property.updatedBy}"></td>
                         <td th:text="${#temporals.format(property.updatedAt, 'dd/MM/yyyy HH:mm')}"></td>
                         <td>
                             <a th:href="@{'/admin/property/edit/' + ${property.id}}" class="btn btn-warning btn-sm">
@@ -161,6 +162,7 @@
                             </a>
                             <!-- Disabled Backdrop Modal -->
                             <button
+                                    sec:authorize="hasAuthority('ADMIN')"
                                     type="button"
                                     class="btn btn-danger btn-deleted-property btn-sm"
                                     data-bs-toggle="modal"
@@ -179,11 +181,12 @@
             <!-- End Table Variants -->
 
             <!--  Start Modal -->
-            <div class="modal fade" id="disablebackdrop" tabindex="-1" data-bs-backdrop="false" style="display: none;" aria-hidden="true">
+            <div sec:authorize="hasAuthority('ADMIN')" class="modal fade" id="disablebackdrop" tabindex="-1" data-bs-backdrop="false" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Xoá tài sản</h5>
+                            <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf" />
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -258,9 +261,13 @@
             $('#text-modal-property').html(textModalProperty(nameProperty));
         })
         $('#btn-deleted-property').click(function () {
+            const csrf = $('#csrf').val();
             $.ajax({
                 url: '/api/property/delete/' + idProperty,
                 type: 'PATCH',
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                },
                 success: function () {
                     alert('Xoá tài sản thành công');
                     window.location.reload();

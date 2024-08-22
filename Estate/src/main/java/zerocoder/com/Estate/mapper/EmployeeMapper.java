@@ -1,13 +1,21 @@
 package zerocoder.com.Estate.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import zerocoder.com.Estate.dto.request.EmployeeRequest;
 import zerocoder.com.Estate.dto.response.EmployeeResponse;
 import zerocoder.com.Estate.enums.Gender;
+import zerocoder.com.Estate.model.Account;
 import zerocoder.com.Estate.model.Employee;
+import zerocoder.com.Estate.repository.AccountRepository;
+import zerocoder.com.Estate.service.AccountService;
 
 @Component
+@RequiredArgsConstructor
 public class EmployeeMapper {
+
+    private final AccountService accountService;
+
     public Employee toEmployee(EmployeeRequest request) {
         String code = "NV" + System.currentTimeMillis();
         return Employee.builder()
@@ -38,8 +46,8 @@ public class EmployeeMapper {
                 .education(employee.getEducation())
                 .hireDate(employee.getHireDate())
                 .isActive(employee.getIsActive())
-                .createdBy(employee.getCreatedBy())
-                .updatedBy(employee.getUpdatedBy())
+                .createdBy(accountService.getUserName(employee.getCreatedBy()))
+                .updatedBy(accountService.getUserName(employee.getUpdatedBy()))
                 .updatedAt(employee.getUpdatedAt())
                 .createdAt(employee.getCreatedAt())
                 .accountId(employee.getAccount() != null ? employee.getAccount().getId() : null)

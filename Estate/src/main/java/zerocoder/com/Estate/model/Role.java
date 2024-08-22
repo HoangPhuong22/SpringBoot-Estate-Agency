@@ -21,7 +21,6 @@ public class Role extends BaseEntity<Integer> {
     @Column(name = "description")
     private String description;
 
-
     @ManyToMany(fetch = FetchType.LAZY, cascade = {
             CascadeType.DETACH,
             CascadeType.MERGE,
@@ -34,17 +33,4 @@ public class Role extends BaseEntity<Integer> {
             inverseJoinColumns = @JoinColumn(name = "account_id")
     )
     private List<Account> accounts;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {
-            CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.PERSIST,
-            CascadeType.REFRESH
-    })
-    @JoinTable(
-            name = "role_permission",
-            joinColumns = @JoinColumn(name = "role_id"),
-            inverseJoinColumns = @JoinColumn(name = "permission_id")
-    )
-    private Set<Permission> permissions;
 }

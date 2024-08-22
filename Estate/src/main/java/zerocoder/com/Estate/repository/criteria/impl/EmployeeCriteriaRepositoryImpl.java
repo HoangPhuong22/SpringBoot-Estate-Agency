@@ -55,7 +55,13 @@ public class EmployeeCriteriaRepositoryImpl implements EmployeeCriteriaRepositor
                 e.printStackTrace();
             }
         }
-        query.select(root).where(predicates.toArray(new Predicate[0]));
+        query.select(root)
+                .where(predicates.toArray(new Predicate[0]))
+                .orderBy(
+                        cb.desc(root.get("updatedAt")),
+                        cb.desc(root.get("createdAt")),
+                        cb.asc(root.get("fullName"))
+                );
         Integer pageNo = searchDTO.getPageNo();
         Integer pageSize = searchDTO.getPageSize();
 

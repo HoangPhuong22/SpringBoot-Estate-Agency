@@ -2,6 +2,7 @@
 <html
         lang="en"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
         layout:decorate="~{common/admin/page-admin.html}"
 >
 <head>
@@ -52,7 +53,7 @@
             </form>
         </div>
         <div class="card-body">
-            <a href="/admin/amenity/add" class="btn btn-success mt-3 mb-3">Thêm mới</a>
+            <a href="/admin/amenity/add" class="btn btn-success mt-3 mb-3" sec:authorize="hasAuthority('ADMIN')">Thêm mới</a>
             <p class="text-danger" th:if="${amenities.size() == 0}">Không tiện ích nào được tìm thấy</p>
             <p class="text-success" th:if="${amenities.size() > 0}">Có tổng cộng [[${pageResponse.totalElements}]] tiện ích được tìm thấy</p>
             <!-- Table Variants -->
@@ -67,7 +68,7 @@
                         <th scope="col">Ngày thêm</th>
                         <th scope="col">Người sửa</th>
                         <th scope="col">Ngày sửa</th>
-                        <th scope="col">Hành động</th>
+                        <th scope="col" sec:authorize="hasAuthority('ADMIN')">Hành động</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -78,33 +79,34 @@
                         <th scope="row" th:text="${index.count} + ${pageResponse.pageSize * (pageResponse.pageNo - 1)}"></th>
                         <td th:text="${amenity.name}">Bể bơi</td>
                         <td th:text="${amenity.type.description}">Nội thất</td>
-                        <td>Anonymous</td>
+                        <td th:text="${amenity.createdBy}"></td>
                         <td th:text="${#temporals.format(amenity.createdAt, 'HH:mm dd-MM-yyyy')}"></td>
-                        <td>Anonymous</td>
+                        <td th:text="${amenity.updatedBy}"></td>
                         <td th:text="${#temporals.format(amenity.updatedAt, 'HH:mm dd-MM-yyyy')}"></td>
-                        <td>
+                        <td sec:authorize="hasAuthority('ADMIN')">
                             <a th:href="@{'/admin/amenity/edit/' + ${amenity.id}}" class="btn btn-warning btn-sm">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
                             <!-- Disabled Backdrop Modal -->
                             <button
-                                    type="button"
-                                    class="btn btn-danger btn-deleted btn-sm"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#disablebackdrop"
-                                    th:data-idamenity="${amenity.id}"
-                                    th:data-nameamenity="${amenity.name}"
+                                type="button"
+                                class="btn btn-danger btn-deleted btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#disablebackdrop"
+                                th:data-idamenity="${amenity.id}"
+                                th:data-nameamenity="${amenity.name}"
                             >
                                 <i class="bi bi-trash"></i>
                             </button>
                             <!-- End Disabled Backdrop Modal-->
                         </td>
                     </tr>
-                    <div class="modal fade" th:id="disablebackdrop" tabindex="-1" data-bs-backdrop="false" style="display: none;" aria-hidden="true">
+                    <div sec:authorize="hasAuthority('ADMIN')" class="modal fade" th:id="disablebackdrop" tabindex="-1" data-bs-backdrop="false" style="display: none;" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Xoá tiện ích</h5>
+                                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf" />
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -173,10 +175,14 @@
             $('#text-modal-amenity').html(textModel(amenityNameToDelete));
         });
         $('#btn-deleted-amenity').click(function () {
+            const csrf = $('#csrf').val();
             $.ajax({
                 url: '/api/amenity/delete/' + amenityIdToDelete,
                 type: 'DELETE',
                 contentType: 'application/json',
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                },
                 success: function () {
                     alert('Xoá tiện ích thành công');
                     window.location.reload();

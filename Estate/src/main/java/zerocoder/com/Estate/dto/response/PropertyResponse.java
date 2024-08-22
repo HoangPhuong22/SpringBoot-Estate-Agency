@@ -1,6 +1,7 @@
 package zerocoder.com.Estate.dto.response;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import zerocoder.com.Estate.enums.PropertyDirection;
 import zerocoder.com.Estate.enums.PropertyStatus;
 import zerocoder.com.Estate.enums.PropertyType;
@@ -9,10 +10,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class PropertyResponse {
+@SuperBuilder
+public class PropertyResponse extends AbstractResponse {
     private Long id;
     private String code;
     private String name;

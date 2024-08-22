@@ -32,6 +32,7 @@
                     <h5 class="card-title">Chỉnh sửa thông tin khách hàng</h5>
                     <!-- General Form Elements -->
                     <form id="form-edit-customer">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf"/>
                         <input type="hidden" th:value="${customer.id}" id="idCustomer">
                         <div class="row mb-3">
                             <label for="fullNameCustomer" class="col-sm-2 col-form-label">Tên khách hàng</label>
@@ -138,13 +139,17 @@
                 type: $('#typeCustomer').val(),
                 status: $('#statusCustomer').val()
             }
+            const csrf = $('#csrf').val();
             $('.invalid-feedback').hide().text('');
             $.ajax({
                 type: 'PUT',
                 url: '/api/customer/edit',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
-                success: function (data) {
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                },
+                success: function () {
                     alert('Sửa khách hàng thành công');
                     window.location.href = '/admin/customer';
                 },

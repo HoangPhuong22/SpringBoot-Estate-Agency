@@ -50,7 +50,13 @@ public class CustomerCriteriaRepositoryImpl implements CustomerCriteriaRepositor
                 log.error("Error occurred while accessing field: {}", e.getMessage());
             }
         }
-        query.select(root).where(predicates.toArray(new Predicate[0]));
+        query.select(root)
+                .where(predicates.toArray(new Predicate[0]))
+                .orderBy(
+                        cb.desc(root.get("updatedAt")),
+                        cb.desc(root.get("createdAt")),
+                        cb.asc(root.get("fullName"))
+                );
         Integer pageNo = customerSearchDTO.getPageNo();
         Integer pageSize = customerSearchDTO.getPageSize();
 
