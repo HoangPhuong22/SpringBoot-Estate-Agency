@@ -21,6 +21,7 @@ CREATE TABLE account (
 CREATE TABLE role (
     id SERIAL PRIMARY KEY, -- Mã vai trò (1, 2, 3, ...)
     name VARCHAR(50) UNIQUE NOT NULL, -- Tên vai trò (VD: "Admin", "User")
+	description TEXT,
  	created_by INT, -- Người tạo (VD:\ 1, 2, ....)     
 	updated_by INT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
@@ -28,36 +29,12 @@ CREATE TABLE role (
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
 
-
-CREATE TABLE permission (
-    id SERIAL PRIMARY KEY, -- Mã quyền (1, 2, 3, ...)
-    name VARCHAR(50) UNIQUE NOT NULL, -- Tên quyền (VD: "READ", "WRITE")
-    description TEXT, -- Mô tả quyền (VD: "Quyền đọc dữ liệu")
-	created_by INT, -- Người tạo (VD:\ 1, 2, ....)     
-	updated_by INT, -- Người sửa (VD: 1, 2, ...)
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
-    is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
-);
-
-CREATE TABLE user_role (
-    user_id BIGINT REFERENCES account(id), -- Mã tài khoản (VD: 1)
+CREATE TABLE account_role (
+    account_id BIGINT REFERENCES account(id), -- Mã tài khoản (VD: 1)
     role_id INT REFERENCES role(id), -- Mã vai trò (VD: 1)
     PRIMARY KEY (user_id, role_id),
 	created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
 	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
-    is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
-);
-
-
-CREATE TABLE role_permission (
-    role_id INT REFERENCES role(id), -- Mã vai trò (VD: 1)
-    permission_id INT REFERENCES permission(id), -- Mã quyền (VD: 1)
-    PRIMARY KEY (role_id, permission_id),
-	created_by INT, -- Người tạo (VD:\ 1, 2, ....)     
-	updated_by INT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
@@ -314,3 +291,11 @@ CREATE TABLE activity (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
+
+
+
+INSERT INTO role (name, description) VALUES
+    ('ADMIN', 'Quản lý cấp cao'),
+    ('EMPLOYEE', 'Quyền nhân viên'),
+    ('CUSTOMER', 'Quyền khách hàng');
+	
