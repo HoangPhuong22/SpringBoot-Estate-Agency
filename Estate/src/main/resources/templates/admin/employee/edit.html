@@ -2,6 +2,7 @@
 <html
         lang="en"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
         layout:decorate="~{common/admin/page-admin.html}"
 >
 <head>
@@ -138,7 +139,8 @@
                 gender: $('#genderEmployee').val(),
                 idNumber: $('#idNumberEmployee').val(),
                 education: $('#educationEmployee').val(),
-                hireDate: $('#hireDateEmployee').val()
+                hireDate: $('#hireDateEmployee').val(),
+                isActive: $('#isActiveEmployee').val() === 'true'
             };
             const csrf = $('#csrf').val();
             $('.invalid-feedback').text('').hide();

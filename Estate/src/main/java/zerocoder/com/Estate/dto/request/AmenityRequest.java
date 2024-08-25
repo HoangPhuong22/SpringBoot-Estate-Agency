@@ -7,11 +7,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import zerocoder.com.Estate.validator.EnumNamePattern;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AmenityRequest {
+public class AmenityRequest implements Serializable {
 
     private Integer id;
 

@@ -12,6 +12,7 @@ public interface AmenityService {
     Integer editAmenity(AmenityRequest request);
     Integer deleteAmenity(Integer id);
     AmenityResponse findAmenityById(Integer id);
+    List<AmenityResponse> findAmenitiesByIds(List<Integer> ids);
     List<AmenityResponse> findAllAmenities();
     PageResponse<?> findAmenitiesAndSearch(AmenitySearchDTO searchDTO);
 }

@@ -2,6 +2,7 @@
 <html
         lang="en"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
         layout:decorate="~{common/admin/page-admin.html}"
 >
 <head>
@@ -17,7 +18,7 @@
                     <a href="/admin">Trang chủ</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="/admin/amenity">Khách hàng</a>
+                    <a href="/admin/customer">Khách hàng</a>
                 </li>
                 <li class="breadcrumb-item active">Sửa thông tin khách hàng</li>
             </ul>
@@ -123,6 +124,309 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Danh sách hoạt động</h5>
+
+                    <ul class="nav nav-tabs nav-tabs-bordered d-flex" id="borderedTabJustified" role="tablist">
+                        <li class="nav-item flex-fill" role="presentation" th:each="type, index: ${typeCode}">
+                            <button
+                                class="nav-link w-100"
+                                th:classappend="${index.count == 1} ? 'active' : ''"
+                                th:id="${type.getKey()} +'-tab'"
+                                data-bs-toggle="tab"
+                                th:data-bs-target="'#' + ${type.getKey()}"
+                                type="button" role="tab" aria-controls="home"
+                                aria-selected="false"
+                                th:text="${type.getValue()}"
+                            >
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content pt-2" id="borderedTabJustifiedContent" th:each="type, index: ${typeCode}">
+                        <div
+                                class="tab-pane fade"
+                                th:classappend="${index.count == 1} ? 'show active' : ''"
+                                th:id="${type.getKey()}"
+                                role="tabpanel"
+                                aria-labelledby="home-tab"
+                        >
+                        <button
+                                type="button"
+                                class="btn btn-primary mb-3 btn-add-activity"
+                                data-bs-toggle="modal"
+                                data-bs-target="#activityModal"
+                                th:data-type-activity="${type.getKey()}"
+                                th:data-customer-id="${customer.id}"
+                        >
+                            Thêm
+                        </button>
+                        <!-- Table Variants -->
+                        <div class="table-responsive" th:if="${type.getKey().equals('MEETING')}">
+                            <p class="alert alert-danger" th:if="${mettingType.size() == 0}">Không có dữ liệu tìm thấy</p>
+                            <table class="table table-striped table-bordered" th:if="${mettingType.size() > 0}">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Loại</th>
+                                    <th>Thời gian</th>
+                                    <th>Địa điểm</th>
+                                    <th>Ghi chú</th>
+                                    <th>Kết quả</th>
+                                    <th>Chi phí</th>
+                                    <th>Người tạo</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Người sửa</th>
+                                    <th>Ngày sửa</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="item, index: ${mettingType}">
+                                    <td th:text="${index.count}"></td>
+                                    <td th:text="${item.type}"></td>
+                                    <td th:text="${#temporals.format(item.time, 'HH:mm dd/MM/yyyy')}"></td>
+                                    <td th:text="${item.location}"></td>
+                                    <td th:text="${item.note}"></td>
+                                    <td th:text="${item.result}"></td>
+                                    <td th:text="${T(zerocoder.com.Estate.utils.MoneyUtils).formatMoney(item.cost)}"></td>
+                                    <td th:text="${item.createdBy}"></td>
+                                    <td th:text="${#temporals.format(item.createdAt, 'HH:mm dd/MM/yyyy')}"></td>
+                                    <td th:text="${item.updatedBy}"></td>
+                                    <td th:text="${#temporals.format(item.updatedAt, 'HH:mm dd/MM/yyyy')}"></td>
+                                    <td>
+                                        <button
+                                                type="button"
+                                                class="btn btn-warning btn-sm btn-edit-activity"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#activityModal"
+                                                data-type-activity="MEETING"
+                                                th:data-id-activity="${item.id}"
+                                                th:data-location="${item.location}"
+                                                th:data-note="${item.note}"
+                                                th:data-result="${item.result}"
+                                                th:data-cost="${item.cost}"
+                                                th:data-time="${item.time}"
+                                                th:data-customer-id="${customer.id}"
+                                        >
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <button
+                                                type="button"
+                                                class="btn btn-danger btn-sm show-delete-activity"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteActivity"
+                                                th:data-name-activity="${item.type}"
+                                                th:data-id-activity="${item.id}"
+                                        >
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-responsive" th:if="${type.getKey().equals('CONTRACT')}">
+                            <p class="alert alert-danger" th:if="${contractType.size() == 0}">Không có dữ liệu tìm thấy</p>
+                            <table class="table table-striped table-bordered" th:if="${contractType.size() > 0}">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Loại</th>
+                                    <th>Thời gian</th>
+                                    <th>Địa điểm</th>
+                                    <th>Ghi chú</th>
+                                    <th>Kết quả</th>
+                                    <th>Chi phí</th>
+                                    <th>Người tạo</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Người sửa</th>
+                                    <th>Ngày sửa</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr
+                                        th:each="item, index: ${contractType}"
+                                >
+                                    <td th:text="${index.count}"></td>
+                                    <td th:text="${item.type}"></td>
+                                    <td th:text="${#temporals.format(item.time, 'HH:mm dd/MM/yyyy')}"></td>
+                                    <td th:text="${item.location}"></td>
+                                    <td th:text="${item.note}"></td>
+                                    <td th:text="${item.result}"></td>
+                                    <td th:text="${T(zerocoder.com.Estate.utils.MoneyUtils).formatMoney(item.cost)}"></td>
+                                    <td th:text="${item.createdBy}"></td>
+                                    <td th:text="${#temporals.format(item.createdAt, 'HH:mm dd/MM/yyyy')}"></td>
+                                    <td th:text="${item.updatedBy}"></td>
+                                    <td th:text="${#temporals.format(item.updatedAt, 'HH:mm dd/MM/yyyy')}"></td>
+                                    <td>
+                                        <button
+                                                type="button"
+                                                class="btn btn-warning btn-sm btn-edit-activity"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#activityModal"
+                                                data-type-activity="CONTRACT"
+                                                th:data-id-activity="${item.id}"
+                                                th:data-location="${item.location}"
+                                                th:data-note="${item.note}"
+                                                th:data-result="${item.result}"
+                                                th:data-cost="${item.cost}"
+                                                th:data-time="${item.time}"
+                                                th:data-customer-id="${customer.id}"
+                                        >
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <button
+                                                type="button"
+                                                class="btn btn-danger btn-sm show-delete-activity"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteActivity"
+                                                th:data-name-activity="${item.type}"
+                                                th:data-id-activity="${item.id}"
+                                        >
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-responsive" th:if="${type.getKey().equals('OTHER')}">
+                            <p class="alert alert-danger" th:if="${otherType.size() == 0}">Không có dữ liệu tìm thấy</p>
+                            <table class="table table-striped table-bordered" th:if="${otherType.size() > 0}">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Loại</th>
+                                    <th>Thời gian</th>
+                                    <th>Địa điểm</th>
+                                    <th>Ghi chú</th>
+                                    <th>Kết quả</th>
+                                    <th>Chi phí</th>
+                                    <th>Người tạo</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Người sửa</th>
+                                    <th>Ngày sửa</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr
+                                        th:each="item, index: ${otherType}"
+                                >
+                                    <th scope="row" th:text="${index.count}"></th>
+                                    <td th:text="${item.type}"></td>
+                                    <td th:text="${#temporals.format(item.time, 'HH:mm dd/MM/yyyy')}"></td>
+                                    <td th:text="${item.location}"></td>
+                                    <td th:text="${item.note}"></td>
+                                    <td th:text="${item.result}"></td>
+                                    <td th:text="${T(zerocoder.com.Estate.utils.MoneyUtils).formatMoney(item.cost)}"></td>
+                                    <td th:text="${item.createdBy}"></td>
+                                    <td th:text="${#temporals.format(item.createdAt, 'HH:mm dd/MM/yyyy')}"></td>
+                                    <td th:text="${item.updatedBy}"></td>
+                                    <td th:text="${#temporals.format(item.updatedAt, 'HH:mm dd/MM/yyyy')}"></td>
+                                    <td>
+                                        <button
+                                                type="button"
+                                                class="btn btn-warning btn-sm btn-edit-activity"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#activityModal"
+                                                data-type-activity="OTHER"
+                                                th:data-id-activity="${item.id}"
+                                                th:data-location="${item.location}"
+                                                th:data-note="${item.note}"
+                                                th:data-result="${item.result}"
+                                                th:data-cost="${item.cost}"
+                                                th:data-time="${item.time}"
+                                                th:data-customer-id="${customer.id}"
+                                        >
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <button
+                                                type="button"
+                                                class="btn btn-danger btn-sm show-delete-activity"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteActivity"
+                                                th:data-name-activity="${item.type}"
+                                                th:data-id-activity="${item.id}"
+                                        >
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="activityModal" tabindex="-1"  aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Hoạt động</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formAddActivity" method="post">
+                            <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf-add-activity"/>
+                            <input type="hidden" name="id" value="" id="idActivity"/>
+                            <div class="mb-3">
+                                <label for="location" class="form-label">Địa điểm</label>
+                                <input type="text" class="form-control" id="location" name="location" placeholder="Nhập địa điểm. VD( Hà Nội,...)">
+                                <div class="invalid-feedback" id="locationError"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="note" class="form-label">Ghi chú</label>
+                                <input type="text" class="form-control" id="note" name="note" placeholder="Nhập ghi chú. VD( Gặp khách hàng,...)">
+                                <div class="invalid-feedback" id="noteError"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="result" class="form-label">Kết quả</label>
+                                <input type="text" class="form-control" id="result" name="result" placeholder="Nhập kết quả. VD( Thành công,...)">
+                                <div class="invalid-feedback" id="resultError"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cost" class="form-label">Chi phí</label>
+                                <input type="number" class="form-control" id="cost" name="cost" placeholder="Nhập chi phí. VD( 1.000.000 VNĐ,...)">
+                                <div class="invalid-feedback" id="costError"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="time" class="form-label">Thời gian hoạt động</label>
+                                <input type="datetime-local" class="form-control" id="time" name="time">
+                                <div class="invalid-feedback" id="timeError"></div>
+                            </div>
+                            <button type="submit" class="btn btn-success">Gửi</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Thoát</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" th:id="deleteActivity" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Xoá hoạt động</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="text-modal-activity">
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="button" class="btn btn-danger" id="btn-deleted-activity">Xoá</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
     <script>
         $('#form-edit-customer').submit(function (e) {
@@ -160,6 +464,96 @@
                     });
                 }
             })
+        });
+
+        let typeActivity, customerId;
+        $('.btn-add-activity').click(function () {
+            typeActivity = $(this).data('type-activity');
+            customerId = $(this).data('customer-id');
+            $('#location').val('');
+            $('#note').val('');
+            $('#result').val('');
+            $('#cost').val('');
+            $('#time').val('');
+        });
+
+        $('.btn-edit-activity').click(function () {
+            const id = $(this).data('id-activity');
+            const location = $(this).data('location');
+            const note = $(this).data('note');
+            const result = $(this).data('result');
+            const cost = $(this).data('cost');
+            const time = $(this).data('time');
+            console.log(id, location, note, result, cost, time);
+            $('#location').val(location);
+            $('#note').val(note);
+            $('#result').val(result);
+            $('#cost').val(cost);
+            $('#time').val(time);
+            $('#customerId').val(id);
+            $('#idActivity').val(id);
+            typeActivity = $(this).data('type-activity');
+            customerId = $(this).data('customer-id');
+        });
+
+        $('#formAddActivity').submit(function (e) {
+            e.preventDefault();
+            const data = {
+                id: $('#idActivity').val(),
+                customerId: customerId,
+                location: $('#location').val(),
+                note: $('#note').val(),
+                result: $('#result').val(),
+                cost: $('#cost').val(),
+                time: $('#time').val(),
+                type: typeActivity
+            }
+            const csrf = $('#csrf-add-activity').val();
+            $('.invalid-feedback').hide().text('');
+            $.ajax({
+                type: 'POST',
+                url: '/api/activity/save',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                },
+                success: function () {
+                    alert('Xử lý hoạt động thành công');
+                    window.location.reload();
+                },
+                error: function (error) {
+                    console.log(error);
+                    const erros = error.responseJSON.data;
+                    $.each(erros, function (key, value) {
+                        $(`#${key}Error`).text(value).show();
+                    });
+                }
+            });
+        });
+        let idActivity;
+        $('.show-delete-activity').click(function () {
+            const name = $(this).data('name-activity');
+            idActivity = $(this).data('id-activity');
+            $('#text-modal-activity').html(`Bạn có chắc chắn muốn xoá hoạt động của` + `<strong>${name}</strong>`);
+        });
+
+        $('#btn-deleted-activity').click(function () {
+            const csrf = $('#csrf-add-activity').val();
+            $.ajax({
+                type: 'DELETE',
+                url: `/api/activity/delete/${idActivity}`,
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                },
+                success: function () {
+                    alert('Xoá hoạt động thành công');
+                    window.location.reload();
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
         });
     </script>
 </div>

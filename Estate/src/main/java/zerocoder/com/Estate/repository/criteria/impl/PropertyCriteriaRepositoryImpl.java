@@ -2,14 +2,13 @@ package zerocoder.com.Estate.repository.criteria.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import zerocoder.com.Estate.dto.response.PageResponse;
 import zerocoder.com.Estate.dto.search.PropertySearchDTO;
+import zerocoder.com.Estate.model.Contract;
+import zerocoder.com.Estate.model.Customer;
 import zerocoder.com.Estate.model.Property;
 import zerocoder.com.Estate.repository.criteria.PropertyCriteriaRepository;
 
@@ -33,6 +32,8 @@ public class PropertyCriteriaRepositoryImpl implements PropertyCriteriaRepositor
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Property> query = cb.createQuery(Property.class);
         Root<Property> root = query.from(Property.class);
+        Join<Property, Contract> contractJoin = root.join("contracts", JoinType.LEFT);
+        Join<Contract, Customer> customerJoin = contractJoin.join("customer", JoinType.LEFT);
         List<Predicate> predicates = new ArrayList<>();
 
         for(Field field : searchDTO.getClass().getDeclaredFields()) {
@@ -62,6 +63,7 @@ public class PropertyCriteriaRepositoryImpl implements PropertyCriteriaRepositor
                     case "builtYear" -> predicates.add(cb.equal(root.get("builtYear"), data));
                     case "salePrice" -> predicates.add(cb.greaterThan(root.get("salePrice"), Long.parseLong((String) data)));
                     case "rentPrice" -> predicates.add(cb.greaterThan(root.get("rentPrice"), Long.parseLong((String) data)));
+                    case "customerId" -> predicates.add(cb.equal(customerJoin.get("id"), data));
                 }
             } catch (Exception e) {
                 log.error("Error occurred while accessing field: {}", e.getMessage());

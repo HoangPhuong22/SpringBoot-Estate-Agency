@@ -3,14 +3,18 @@ package zerocoder.com.Estate.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import zerocoder.com.Estate.dto.request.AssignmentRequest;
 import zerocoder.com.Estate.dto.request.CustomerRequest;
 import zerocoder.com.Estate.dto.response.CustomerResponse;
 import zerocoder.com.Estate.dto.response.PageResponse;
 import zerocoder.com.Estate.dto.search.CustomerSearchDTO;
+import zerocoder.com.Estate.enums.CustomerStatus;
 import zerocoder.com.Estate.exception.UniqueException;
 import zerocoder.com.Estate.mapper.CustomerMapper;
 import zerocoder.com.Estate.model.Customer;
+import zerocoder.com.Estate.model.Employee;
 import zerocoder.com.Estate.repository.CustomerRepository;
+import zerocoder.com.Estate.repository.EmployeeRepository;
 import zerocoder.com.Estate.service.CustomerService;
 
 import java.util.List;
@@ -22,6 +26,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
+    private final EmployeeRepository employeeRepository;
+
     @Override
     public Long addCustomer(CustomerRequest customerRequest) {
         if(customerRepository.existsByEmail(customerRequest.getEmail())) {
@@ -52,6 +58,18 @@ public class CustomerServiceImpl implements CustomerService {
             throw new UniqueException("Số chứng minh nhân dân đã tồn tại", "idNumber");
         }
         customerMapper.toCustomer(customer, customerRequest);
+        customerRepository.save(customer);
+        return customer.getId();
+    }
+
+    @Override
+    public Long assignEmployee(AssignmentRequest assignmentRequest) {
+        Long id = assignmentRequest.getCustomerId();
+        List<Long> employeeIds = assignmentRequest.getEmployeeIds();
+        Customer customer = customerRepository.findById(id).orElseThrow();
+        List<Employee> employees = employeeRepository.findAllById(employeeIds);
+        customer.setEmployees(employees);
+        customer.setStatus(CustomerStatus.ASSIGNED);
         customerRepository.save(customer);
         return customer.getId();
     }

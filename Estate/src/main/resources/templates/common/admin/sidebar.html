@@ -8,14 +8,14 @@
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
-        <li class="nav-item">
+        <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN')">
             <a class="nav-link " href="/admin">
                 <i class="bi bi-grid"></i>
                 <span>Trang chủ</span>
             </a>
         </li>
 
-        <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN', 'EMPLOYEE')">
+        <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-menu-button-wide"></i><span>Bất động sản</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
@@ -25,7 +25,7 @@
                         <i class="bi bi-circle"></i><span>Tài sản</span>
                     </a>
                 </li>
-                <li>
+                <li  sec:authorize="hasAnyAuthority('ADMIN', 'EMPLOYEE')">
                     <a href="/admin/amenity">
                         <i class="bi bi-circle"></i><span>Tiện ích</span>
                     </a>
@@ -52,7 +52,7 @@
         </li>
 
         <li class="nav-item" sec:authorize="isAuthenticated()">
-            <a class="nav-link collapsed" href="/profile">
+            <a class="nav-link collapsed" href="/admin/profile">
                 <i class="bi bi-person"></i>
                 <span>Hồ sơ cá nhân</span>
             </a>

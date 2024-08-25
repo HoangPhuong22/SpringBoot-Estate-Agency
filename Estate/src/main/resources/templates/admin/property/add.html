@@ -161,10 +161,40 @@
                             </div>
                         </div>
                         <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Tiện ích</label>
+                            <div class="col-sm-10">
+                                <!-- Modal amenity -->
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalAmenity">
+                                    Chọn tiện ích
+                                </button>
+                                <div class="modal fade" id="modalAmenity">
+                                    <div class="modal-dialog modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Chọn tiện ích</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input class="form-control" id="searchAmenity" type="text" placeholder="Tìm kiếm tiện ích...">
+                                                <div class="invalid-feedback" id="amenityError">Không có tiện ích nào</div>
+                                                <div class="form-check mt-3" th:each="amenity : ${amenities}">
+                                                    <input class="form-check-input amenity-checkbox" type="checkbox" th:value="${amenity.id}" th:id="${amenity.id}">
+                                                    <label class="form-check-label" th:text="${amenity.name}" th:for="${amenity.id}"></label>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Lưu</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
                             <label class="col-sm-2 col-form-label">Gửi</label>
                             <div class="col-sm-10">
                                 <a href="/admin/property" class="btn btn-danger">Quay lại</a>
-                                <button type="submit" class="btn btn-primary" id="btn-add-property">Tạo tài sản</button>
+                                <button type="submit" class="btn btn-success" id="btn-add-property">Tạo tài sản</button>
                             </div>
                         </div>
 
@@ -175,9 +205,35 @@
         </div>
     </section>
     <script>
+
+        $('#searchAmenity').keyup(function () {
+            const value = $(this).val().toLowerCase();
+            let found = false;
+
+            $('.form-check').filter(function () {
+                if($(this).text().toLowerCase().indexOf(value) > -1) {
+                    $(this).show();
+                    found = true;
+                } else {
+                    $(this).hide();
+                }
+            });
+
+            if (found) {
+                $('#amenityError').hide();
+            } else {
+                $('#amenityError').show();
+            }
+        });
+
+
+
         $('#formProperty').submit(function (e) {
             e.preventDefault();
             $('.invalid-feedback').hide().text('');
+            const amenityIds = $('.amenity-checkbox:checked').map(function () {
+                return $(this).val();
+            }).get();
             const data = {
                 name: $('#nameProperty').val(),
                 type: $('#typeProperty').val(),
@@ -194,7 +250,8 @@
                 description: $('#descriptionProperty').val(),
                 status: $('#statusProperty').val(),
                 salePrice: $('#salePriceProperty').val(),
-                rentPrice: $('#rentPriceProperty').val()
+                rentPrice: $('#rentPriceProperty').val(),
+                amenityIds: amenityIds
             };
             const csrf = $('#csrf').val();
             $.ajax({

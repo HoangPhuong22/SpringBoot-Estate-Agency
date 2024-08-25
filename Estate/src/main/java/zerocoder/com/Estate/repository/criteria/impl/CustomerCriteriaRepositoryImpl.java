@@ -2,15 +2,14 @@ package zerocoder.com.Estate.repository.criteria.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import zerocoder.com.Estate.dto.response.PageResponse;
 import zerocoder.com.Estate.dto.search.CustomerSearchDTO;
+import zerocoder.com.Estate.model.Account;
 import zerocoder.com.Estate.model.Customer;
+import zerocoder.com.Estate.model.Employee;
 import zerocoder.com.Estate.repository.criteria.CustomerCriteriaRepository;
 
 import java.lang.reflect.Field;
@@ -33,6 +32,7 @@ public class CustomerCriteriaRepositoryImpl implements CustomerCriteriaRepositor
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Customer> query = cb.createQuery(Customer.class);
         Root<Customer> root = query.from(Customer.class);
+
         List<Predicate> predicates = new ArrayList<>();
         for(Field field : customerSearchDTO.getClass().getDeclaredFields()) {
             try {
@@ -45,6 +45,7 @@ public class CustomerCriteriaRepositoryImpl implements CustomerCriteriaRepositor
                     case "phone" -> predicates.add(cb.like(cb.lower(root.get("phone")), "%" + data.toString().toLowerCase() + "%"));
                     case "idNumber" -> predicates.add(cb.like(cb.lower(root.get("idNumber")), "%" + data.toString().toLowerCase() + "%"));
                     case "address" -> predicates.add(cb.like(cb.lower(root.get("address")), "%" + data.toString().toLowerCase() + "%"));
+                    case "userNameEmployee" -> predicates.add(cb.equal(root.get("employees").get("account").get("username"), data));
                 }
             } catch (Exception e) {
                 log.error("Error occurred while accessing field: {}", e.getMessage());
@@ -56,7 +57,7 @@ public class CustomerCriteriaRepositoryImpl implements CustomerCriteriaRepositor
                         cb.desc(root.get("updatedAt")),
                         cb.desc(root.get("createdAt")),
                         cb.asc(root.get("fullName"))
-                );
+                ).distinct(true);
         Integer pageNo = customerSearchDTO.getPageNo();
         Integer pageSize = customerSearchDTO.getPageSize();
 

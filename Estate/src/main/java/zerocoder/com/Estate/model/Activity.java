@@ -2,6 +2,8 @@ package zerocoder.com.Estate.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import zerocoder.com.Estate.enums.ActivityType;
 
 import java.time.LocalDateTime;
@@ -17,6 +19,7 @@ public class Activity extends BaseEntity<Long> {
 
     @Column(name = "activity_type")
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private ActivityType activityType;
 
     @Column(name = "activity_time")
@@ -25,9 +28,6 @@ public class Activity extends BaseEntity<Long> {
 
     @Column(name = "location")
     private String location;
-
-    @Column(name = "description")
-    private String description;
 
     @Column(name = "result")
     private String result;
@@ -46,15 +46,6 @@ public class Activity extends BaseEntity<Long> {
     })
     @JoinColumn(name = "employee_id")
     private Employee employee;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE,
-            CascadeType.DETACH,
-            CascadeType.REFRESH
-    })
-    @JoinColumn(name = "property_id")
-    private Property property;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST,

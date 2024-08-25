@@ -53,6 +53,12 @@ public class AmenityServiceImpl implements AmenityService {
     }
 
     @Override
+    public List<AmenityResponse> findAmenitiesByIds(List<Integer> ids) {
+        List<Amenity> amenities = amenityRepository.findAllById(ids);
+        return amenities.stream().map(amenityMapper::toAmenityResponse).toList();
+    }
+
+    @Override
     public List<AmenityResponse> findAllAmenities() {
         List<Amenity> amenities = amenityRepository.findAll();
         return amenities.stream().map(amenityMapper::toAmenityResponse).toList();

@@ -55,7 +55,7 @@
             <p class="text-danger" th:if="${employees.size() == 0}">Không có nhân viên nào</p>
             <p class="text-success" th:if="${employees.size() > 0}">Có tổng cộng [[${pageResponse.totalElements}]] nhân viên được tìm thấy</p>
             <!-- Table Variants -->
-            <div class="table-responsive" th:if="${employees.size() > 0}">
+            <div class="table-responsive-lg" th:if="${employees.size() > 0}">
                 <table class="table">
                     <thead>
                     <tr class="table-info">

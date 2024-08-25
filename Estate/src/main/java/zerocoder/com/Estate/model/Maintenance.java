@@ -2,7 +2,8 @@ package zerocoder.com.Estate.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import zerocoder.com.Estate.enums.MaintenanceLevel;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import zerocoder.com.Estate.enums.MaintenanceStatus;
 
 import java.time.LocalDateTime;
@@ -18,14 +19,10 @@ public class Maintenance extends BaseEntity<Long> {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "reported_at")
-    private LocalDateTime reportedAt;
-
-    @Column(name = "priority_level")
-    private MaintenanceLevel priorityLevel;
-
     @Column(name = "status")
-    private MaintenanceStatus status;
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    private MaintenanceStatus status = MaintenanceStatus.PENDING;
 
     @Column(name = "estimated_cost")
     private Long estimatedCost;
@@ -51,7 +48,7 @@ public class Maintenance extends BaseEntity<Long> {
             CascadeType.DETACH,
             CascadeType.REFRESH
     })
-    @JoinColumn(name = "reported_by_id")
-    private Customer reportedBy;
+    @JoinColumn(name = "account_id")
+    private Account account;
 
 }

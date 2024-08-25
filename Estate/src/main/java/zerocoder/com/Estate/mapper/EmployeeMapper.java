@@ -29,6 +29,7 @@ public class EmployeeMapper {
                 .gender(Gender.valueOf(request.getGender()))
                 .education(request.getEducation())
                 .hireDate(request.getHireDate())
+                .isActive(true)
                 .build();
 
     }

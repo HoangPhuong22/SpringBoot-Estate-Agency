@@ -12,13 +12,14 @@ import zerocoder.com.Estate.validator.Age;
 import zerocoder.com.Estate.validator.EnumNamePattern;
 import zerocoder.com.Estate.validator.IdNumberValid;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerRequest {
+public class CustomerRequest implements Serializable {
     private Long id;
 
     @NotBlank(message = "Tên khách hàng không được để trống")

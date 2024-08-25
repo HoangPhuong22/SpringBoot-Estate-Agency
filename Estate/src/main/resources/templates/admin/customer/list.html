@@ -2,6 +2,7 @@
 <html
         lang="en"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
         layout:decorate="~{common/admin/page-admin.html}"
 >
 <head>
@@ -24,23 +25,23 @@
             <form action="/admin/customer" id="searchCustomer" method="get" class="row g-3">
                 <div class="col-md-6">
                     <label for="fullName" class="form-label">Tên</label>
-                    <input type="text" class="form-control" id="fullName" name="fullName" th:value="${param.fullName}">
+                    <input type="text" class="form-control" id="fullName" name="fullName" th:value="${param.fullName}" placeholder="Nhập tên khách hàng. VD(Trần Văn A)">
                 </div>
                 <div class="col-md-6">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" th:value="${param.email}">
+                    <input type="email" class="form-control" id="email" name="email" th:value="${param.email}" placeholder="Nhập email khách hàng. VD(nguyevana@edu.com)">
                 </div>
                 <div class="col-md-4">
                     <label for="phone" class="form-label">Số điện thoại</label>
-                    <input type="text" class="form-control" id="phone" name="phone" th:value="${param.phone}">
+                    <input type="text" class="form-control" id="phone" name="phone" th:value="${param.phone}" placeholder="Nhập số điện thoại khách hàng. VD(0987654321)">
                 </div>
                 <div class="col-md-4">
                     <label for="idNumber" class="form-label">Số CMND</label>
-                    <input type="text" class="form-control" id="idNumber" name="idNumber" th:value="${param.idNumber}">
+                    <input type="text" class="form-control" id="idNumber" name="idNumber" th:value="${param.idNumber}" placeholder="Nhập số CMND khách hàng. VD(123456789)">
                 </div>
                 <div class="col-md-4">
                     <label for="address" class="form-label">Địa chỉ</label>
-                    <input type="text" class="form-control" id="address" name="address" th:value="${param.address}">
+                    <input type="text" class="form-control" id="address" name="address" th:value="${param.address}" placeholder="Nhập địa chỉ khách hàng. VD(123 Đường ABC)">
                 </div>
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary">
@@ -57,8 +58,10 @@
         </div>
         <div class="card-body">
             <a href="/admin/customer/add" class="btn btn-success mt-3 mb-3">Thêm mới</a>
-            <p class="text-danger" th:if="${customers.size() == 0}">Không có khách hàng nào được tìm thấy</p>
-            <p class="text-success" th:if="${customers.size() > 0}">Có tổng cộng [[${pageResponse.totalElements}]] khách hàng</p>
+            <p sec:authorize="hasAuthority('ADMIN')" class="text-danger" th:if="${customers.size() == 0}">Không có khách hàng nào được tìm thấy</p>
+            <p sec:authorize="hasAuthority('ADMIN')"class="text-success" th:if="${customers.size() > 0}">Có tổng cộng [[${pageResponse.totalElements}]] khách hàng</p>
+            <p sec:authorize="hasAuthority('EMPLOYEE')" class="text-danger" th:if="${customers.size() == 0}">Không có khách hàng nào đang được quản lý</p>
+            <p sec:authorize="hasAuthority('EMPLOYEE')"class="text-success" th:if="${customers.size() > 0}">Có tổng cộng [[${pageResponse.totalElements}]] khách hàng đang quản lý</p>
             <!-- Table Variants -->
             <div class="table-responsive" th:if="${customers.size() > 0}">
                 <table class="table">
@@ -94,6 +97,16 @@
                             <a th:href="@{'/admin/customer/edit/' + ${customer.id}}" class="btn btn-info btn-sm">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
+                            <button
+                                    type="button"
+                                    class="btn btn-primary btn-sm btn-assignment"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#assignmentModal"
+                                    th:data-id-customer="${customer.id}"
+                                    th:data-list-employeeids="${customer.employeeIds}"
+                            >
+                                <i class="bi bi-calendar-check"></i>
+                            </button>
                             <!-- Disabled Backdrop Modal -->
                             <button
                                     th:if="${customer.accountId == null}"
@@ -125,6 +138,30 @@
                     </tbody>
                 </table>
                 <!-- Modal add Account -->
+                <!--  Start Modal assignmentModal -->
+                <div class="modal fade" id="assignmentModal" tabindex="-1" aria-labelledby="assignmentModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Giao cho nhân viên</h5>
+                                <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf-assignment"/>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input class="form-control" id="searchEmployee" type="text" placeholder="Tìm kiếm nhân viên">
+                                <div class="invalid-feedback" id="employeeError">Không có nhân viên nào được tìm thấy</div>
+                                <div class="form-check mt-3" th:each="employee : ${employees}">
+                                    <input class="form-check-input employee-checkbox" type="checkbox" th:value="${employee.id}"/>
+                                    <label class="form-check-label" th:text="${employee.fullName} + ' (' + ${employee.phone} + ')'" th:for="${employee.id}"></label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Thoát</button>
+                                <button type="button" class="btn btn-primary" id="assignmentEmployeeAdd">Giao việc</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="modal fade" id="disablebackdrop">
                     <div class="modal-dialog modal-dialog-scrollable">
                         <div class="modal-content">
@@ -227,6 +264,65 @@
         </div>
     </div>
     <script>
+        let idCustomerAssignment;
+        $('.btn-assignment').click(function () {
+            idCustomerAssignment = $(this).data('id-customer');
+            const employeeIds = $(this).data('list-employeeids');
+            $('.employee-checkbox').each(function () {
+                console.log($(this).val());
+                $(this).prop('checked', employeeIds.includes(parseInt($(this).val())));
+            });
+        });
+        $('#searchEmployee').keyup(function () {
+            const value = $(this).val().toLowerCase();
+            let found = false;
+
+            $('.form-check').filter(function () {
+                if($(this).text().toLowerCase().indexOf(value) > -1) {
+                    $(this).show();
+                    found = true;
+                } else {
+                    $(this).hide();
+                }
+            });
+
+            if (found) {
+                $('#employeeError').hide();
+            } else {
+                $('#employeeError').show();
+            }
+        });
+        $('#assignmentEmployeeAdd').click(function () {
+            const data = {
+                customerId: idCustomerAssignment,
+                employeeIds: []
+            };
+            $('.employee-checkbox').each(function () {
+                if ($(this).is(':checked')) {
+                    data.employeeIds.push($(this).val());
+                }
+            });
+            const csrf = $('#csrf-assignment').val();
+            $.ajax({
+                url: '/api/customer/assignment',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                },
+                success: function () {
+                    $('#assignmentModal').modal('hide');
+                    window.location.reload();
+                    alert('Giao việc thành công');
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        });
+
+
         $('button[type="reset"]').click(function (event) {
             event.preventDefault();
             $('form input').val('');

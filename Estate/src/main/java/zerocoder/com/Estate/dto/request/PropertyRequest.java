@@ -10,10 +10,13 @@ import org.hibernate.validator.constraints.Range;
 import zerocoder.com.Estate.validator.EnumNamePattern;
 import zerocoder.com.Estate.validator.NumberValid;
 
+import java.io.Serializable;
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
-public class PropertyRequest {
+public class PropertyRequest implements Serializable {
     private Long id;
 
     @EnumNamePattern(regexp = "APARTMENT|HOUSE|VILLA", message = "Loại tài sản không hợp lệ")
@@ -35,7 +38,7 @@ public class PropertyRequest {
     private String ward;
 
     @NotNull(message = "Diện tích không được để trống")
-    @Min(value = 10, message = "Diện tích phải lớn hơn 10m2")
+    @Range(min = 10, message = "Diện tích phải lớn hơn 10")
     private Double area;
 
     @NotNull(message = "Số tầng không được để trống")
@@ -69,4 +72,6 @@ public class PropertyRequest {
     @NotNull(message = "Giá thuê không được để trống")
     @Min(value = 1000000, message = "Giá thuê phải lớn hơn 1 triệu")
     private Long rentPrice;
+
+    private List<Integer> amenityIds;
 }

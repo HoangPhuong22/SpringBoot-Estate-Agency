@@ -7,6 +7,7 @@ import zerocoder.com.Estate.dto.response.PropertyResponse;
 import zerocoder.com.Estate.enums.PropertyDirection;
 import zerocoder.com.Estate.enums.PropertyStatus;
 import zerocoder.com.Estate.enums.PropertyType;
+import zerocoder.com.Estate.model.Amenity;
 import zerocoder.com.Estate.model.Property;
 import zerocoder.com.Estate.service.AccountService;
 
@@ -62,6 +63,7 @@ public class PropertyMapper {
                 .updatedBy(accountService.getUserName(property.getUpdatedBy()))
                 .createdAt(property.getCreatedAt())
                 .updatedAt(property.getUpdatedAt())
+                .amenityIds(property.getAmenities().stream().map(Amenity::getId).toList())
                 .build();
     }
     public void updateProperty(Property property, PropertyRequest propertyRequest) {

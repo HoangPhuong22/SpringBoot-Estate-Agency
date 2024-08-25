@@ -7,6 +7,7 @@ import zerocoder.com.Estate.enums.PropertyStatus;
 import zerocoder.com.Estate.enums.PropertyType;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -32,4 +33,5 @@ public class PropertyResponse extends AbstractResponse {
     private Long rentPrice;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private List<Integer> amenityIds;
 }

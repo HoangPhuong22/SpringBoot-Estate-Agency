@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+        layout:decorate="~{common/admin/page-admin.html}"
+>
+<head>
+    <title>Thêm tiện ích</title>
+</head>
+
+<div layout:fragment="content">
+
+    <div class="pagetitle">
+        <h1>Trang chủ</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin">Home</a></li>
+                <li class="breadcrumb-item active">Hồ sơ</li>
+            </ol>
+        </nav>
+    </div>
+
+    <section class="section profile">
+        <div class="row">
+            <div class="col-xl-4">
+
+                <div class="card">
+                    <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+                        <img src="/admin/assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+                        <h2 th:text="${account.username}"></h2>
+                        <p class="small" th:if="${account.roles[0].name=='ADMIN'}">Quản trị viên</p>
+                        <p class="small" th:if="${account.roles[0].name=='CUSTOMER'}">Khách hàng</p>
+                        <p class="small" th:if="${account.roles[0].name=='EMPLOYEE'}">Nhân viên</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-xl-8">
+
+                <div class="card">
+                    <div class="card-body pt-3">
+                        <!-- Bordered Tabs -->
+                        <ul class="nav nav-tabs nav-tabs-bordered">
+
+                            <li class="nav-item">
+                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Giới thiệu</button>
+                            </li>
+
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Thay đổi mật khẩu</button>
+                            </li>
+
+                        </ul>
+                        <div class="tab-content pt-2">
+
+                            <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                                <h5 class="card-title">Thông tin cá nhân</h5>
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label ">Tên đăng nhập</div>
+                                    <div class="col-lg-9 col-md-8" th:text="${account.username}"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label ">Địa chỉ email</div>
+                                    <div class="col-lg-9 col-md-8" th:text="${account.email}"></div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade pt-3" id="profile-change-password">
+                                <form id="formChangePassword" >
+                                    <input type="hidden" name="id" th:value="${account.id}" id="idAccount"/>
+                                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf-change-password"/>
+                                    <div class="mb-3">
+                                        <label for="passwordChange" class="form-label">Mật khẩu mới</label>
+                                        <input type="password" class="form-control" id="passwordChange" name="password" placeholder="Nhập mật khẩu mới">
+                                        <div id="passwordChangeError" class="invalid-feedback"></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="confirmChangePassword" class="form-label">Xác nhận mật khẩu</label>
+                                        <input type="password" class="form-control" id="confirmChangePassword" name="confirmPassword" placeholder="Nhập lại mật khẩu">
+                                        <div id="confirmChangeError" class="invalid-feedback"></div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Sửa mật khẩu</button>
+                                </form>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <script>
+        $('#formChangePassword').submit(function (e) {
+            e.preventDefault();
+            const data = {
+                id: $('#idAccount').val(),
+                passwordChange: $('#passwordChange').val()
+            };
+            $('.invalid-feedback').hide().text('');
+            const csrf = $('#csrf-change-password').val();
+            const confirmPassword = $('#confirmChangePassword').val();
+            if(data.passwordChange !== confirmPassword) {
+                $('#confirmChangeError').text('Mật khẩu không khớp').show();
+            } else {
+                $.ajax({
+                    url: '/api/account/change-password',
+                    type: 'Patch',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    headers: {
+                        'X-CSRF-TOKEN': csrf
+                    },
+                    success: function () {
+                        alert('Thay đổi mật khẩu thành công');
+                        $('#changePasswordModal').modal('hide');
+                        window.location.reload();
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        const errors = error.responseJSON.data;
+                        $.each(errors, function (key, value) {
+                            $(`#${key}Error`).text(value).show();
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+</div>

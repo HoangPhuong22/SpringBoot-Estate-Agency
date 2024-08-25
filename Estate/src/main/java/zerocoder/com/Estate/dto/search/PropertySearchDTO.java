@@ -24,4 +24,5 @@ public class PropertySearchDTO {
     private String ward;
     private Integer pageNo;
     private Integer pageSize;
+    private Long customerId;
 }

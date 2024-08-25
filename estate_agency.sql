@@ -170,7 +170,6 @@ CREATE TABLE contract (
     deposit DECIMAL(18, 0), -- Tiền cọc (VD: 500000000.00)
     service_fee DECIMAL(18, 0), -- Phí dịch vụ (VD: 10000000.00)
     payment_method VARCHAR(100), -- Hình thức thanh toán (VD: "Chuyển khoản")
-    terms TEXT, -- Điều khoản (VD: "Điều khoản hợp đồng")
     status contract_status, -- Trạng thái (VD: "Đang thực hiện", "Đã kết thúc", "Đã hủy")
     created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
 	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
@@ -180,11 +179,6 @@ CREATE TABLE contract (
 );
 
 
-CREATE TYPE maintenance_level AS ENUM(
-	'LOW',
-	'MEDIUM',
-	'HIGH'
-);
 CREATE TYPE maintenance_status AS ENUM(
 	'PENDING',
     'IN_PROGRESS',
@@ -194,10 +188,8 @@ CREATE TYPE maintenance_status AS ENUM(
 CREATE TABLE maintenance (
     id BIGSERIAL PRIMARY KEY, -- Mã yêu cầu bảo trì (1, 2, 3, ...)
     property_id BIGINT REFERENCES property(id), -- Mã bất động sản (VD: 1)
-    reported_by_id BIGINT REFERENCES customer(id), -- Mã khách hàng báo cáo (VD: 1)
+    account_id BIGINT REFERENCES account(id), -- Mã khách hàng báo cáo (VD: 1)
     description TEXT, -- Mô tả (VD: "Sửa chữa hệ thống điện")
-    reported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày báo cáo (VD: "2023-01-01 00:00:00")
-    priority_level maintenance_level, -- Mức độ ưu tiên (VD: 1)
     status maintenance_status, -- Trạng thái (VD: "Đang xử lý", "Hoàn thành")
     estimated_cost DECIMAL(18, 0), -- Chi phí dự kiến (VD: 1000000.00)
     actual_cost DECIMAL(18, 0), -- Chi phí thực tế (VD: 900000.00)
@@ -230,30 +222,22 @@ CREATE TABLE employee (
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
 
-CREATE TYPE assignment_status AS ENUM (
-	'MANAGING',
-	'ENDE'
-);
 
 CREATE TABLE assignment (
     id BIGSERIAL PRIMARY KEY, -- Mã phân công (1, 2, 3, ...)
-    property_id BIGINT REFERENCES property(id), -- Mã bất động sản (VD: 1)
+    customer_id BIGINT REFERENCES customer(id), -- Mã khách hàng
     employee_id BIGINT REFERENCES employee(id), -- Mã nhân viên (VD: 1)
-    start_date DATE NOT NULL, -- Ngày bắt đầu (VD: "2023-01-01")
-    end_date DATE, -- Ngày kết thúc (VD: "2023-12-31")
-    status assignment_status NOT NULL, -- Trạng thái (VD: "Đang quản lý", "Đã kết thúc")
-    job_description TEXT, -- Mô tả công việc (VD: "Quản lý bảo trì")
     created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
 	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
-
 CREATE TABLE inspection (
     id BIGSERIAL PRIMARY KEY, -- Mã kiểm tra (1, 2, 3, ...)
     property_id BIGINT REFERENCES property(id), -- Mã bất động sản (VD: 1)
     inspector_id BIGINT REFERENCES employee(id), -- Mã nhân viên kiểm tra (VD: 1)
+	type VARCHAR(255),
     inspection_date TIMESTAMP, -- Ngày kiểm tra (VD: "2023-01-15")
     report TEXT, -- Báo cáo (VD: "Kiểm tra hệ thống điện")
     status VARCHAR(50), -- Trạng thái (VD: "Đạt", "Không đạt")
@@ -266,13 +250,11 @@ CREATE TABLE inspection (
 
 
 CREATE TYPE activity_type AS ENUM (
-    'MEETING_CUSTOMER',
-    'CONTRACT_DISCUSSION',
-    'PROPERTY_SHOWING',
-    'NEGOTIATION',
-    'CLOSING_DEAL',
+    'MEETING',
+    'CONTRACT',
     'OTHER'
 );
+
 CREATE TABLE activity (
     id BIGSERIAL PRIMARY KEY, -- Mã hoạt động (1, 2, 3, ...)
     employee_id BIGINT REFERENCES employee(id), -- Mã nhân viên (VD: 1)
@@ -281,9 +263,8 @@ CREATE TABLE activity (
     activity_type activity_type, -- Loại hoạt động (VD: "Gặp gỡ khách hàng")
     activity_time TIMESTAMP, -- Thời gian hoạt động (VD: "2023-01-20 10:00:00")
     location VARCHAR(255), -- Địa điểm (VD: "Cà phê Trung Nguyên")
-    description TEXT, -- Mô tả (VD: "Thảo luận về hợp đồng")
     result TEXT, -- Kết quả (VD: "Thống nhất ký hợp đồng")
-    cost DECIMAL(10, 2), -- Chi phí (VD: 200000.00)
+    cost DECIMAL(18, 0), -- Chi phí (VD: 200000.00)
     note TEXT, -- Ghi chú (VD: "Mang theo tài liệu hợp đồng")
     created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
 	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)

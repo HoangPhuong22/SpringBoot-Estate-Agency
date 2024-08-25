@@ -2,6 +2,8 @@ package zerocoder.com.Estate.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import zerocoder.com.Estate.enums.InspectionStatus;
 
 import java.time.LocalDateTime;
@@ -14,6 +16,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table(name = "inspection")
 public class Inspection extends BaseEntity<Long>{
+    @Column(name = "type")
+    private String type;
 
     @Column(name = "inspection_date")
     @Temporal(TemporalType.TIMESTAMP)
@@ -24,6 +28,7 @@ public class Inspection extends BaseEntity<Long>{
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private InspectionStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {

@@ -9,7 +9,9 @@ import zerocoder.com.Estate.dto.response.PageResponse;
 import zerocoder.com.Estate.dto.search.EmployeeSearchDTO;
 import zerocoder.com.Estate.exception.UniqueException;
 import zerocoder.com.Estate.mapper.EmployeeMapper;
+import zerocoder.com.Estate.model.Customer;
 import zerocoder.com.Estate.model.Employee;
+import zerocoder.com.Estate.repository.CustomerRepository;
 import zerocoder.com.Estate.repository.EmployeeRepository;
 import zerocoder.com.Estate.service.EmployeeService;
 
@@ -61,6 +63,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.save(employee);
         return employee.getId();
     }
+
 
     @Override
     public EmployeeResponse getById(Long id) {

@@ -8,7 +8,9 @@ import zerocoder.com.Estate.dto.response.PageResponse;
 import zerocoder.com.Estate.dto.response.PropertyResponse;
 import zerocoder.com.Estate.dto.search.PropertySearchDTO;
 import zerocoder.com.Estate.mapper.PropertyMapper;
+import zerocoder.com.Estate.model.Amenity;
 import zerocoder.com.Estate.model.Property;
+import zerocoder.com.Estate.repository.AmenityRepository;
 import zerocoder.com.Estate.repository.PropertyRepository;
 import zerocoder.com.Estate.service.PropertyService;
 
@@ -21,10 +23,14 @@ public class PropertyServiceImpl implements PropertyService {
 
     private final PropertyRepository propertyRepository;
     private final PropertyMapper propertyMapper;
+    private final AmenityRepository amenityRepository;
 
     @Override
     public Long saveProperty(PropertyRequest propertyRequest) {
+        List<Integer> amenityIds = propertyRequest.getAmenityIds();
+        List<Amenity> amenities = amenityRepository.findAllById(amenityIds);
         Property property = propertyMapper.toProperty(propertyRequest);
+        property.setAmenities(amenities);
         propertyRepository.save(property);
         return property.getId();
     }
@@ -33,6 +39,9 @@ public class PropertyServiceImpl implements PropertyService {
     public Long updateProperty(PropertyRequest propertyRequest) {
         Property property = propertyRepository.findById(propertyRequest.getId()).orElseThrow();
         propertyMapper.updateProperty(property, propertyRequest);
+        List<Integer> amenityIds = propertyRequest.getAmenityIds();
+        List<Amenity> amenities = amenityRepository.findAllById(amenityIds);
+        property.setAmenities(amenities);
         propertyRepository.save(property);
         return property.getId();
     }

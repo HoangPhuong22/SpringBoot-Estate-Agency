@@ -100,11 +100,5 @@ public class Property extends BaseEntity<Long> {
     private List<Maintenance> ratings;
 
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Assignment> assignments;
-
-    @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Inspection> inspections;
-
-    @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Activity> activities;
 }

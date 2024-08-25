@@ -6,9 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import zerocoder.com.Estate.dto.request.AssignmentRequest;
 import zerocoder.com.Estate.dto.request.CustomerRequest;
 import zerocoder.com.Estate.dto.response.ResponseData;
 import zerocoder.com.Estate.service.CustomerService;
+
+import java.util.List;
 
 @Slf4j
 @Validated
@@ -29,5 +32,10 @@ public class CustomerAPI {
     public ResponseData<?> editCustomer(@Valid @RequestBody CustomerRequest customerRequest) {
         Long id = customerService.updateCustomer(customerRequest);
         return new ResponseData<>(HttpStatus.OK.value(), "Edit customer successfully", id);
+    }
+
+    @PostMapping("/assignment")
+    public ResponseData<?> assignEmployee(@RequestBody AssignmentRequest assignmentRequest) {
+        return new ResponseData<>(HttpStatus.OK.value(), "Employee assigned successfully", customerService.assignEmployee(assignmentRequest));
     }
 }

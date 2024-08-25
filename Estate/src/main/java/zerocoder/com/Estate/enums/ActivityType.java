@@ -2,18 +2,29 @@ package zerocoder.com.Estate.enums;
 
 import lombok.Getter;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
 @Getter
 public enum ActivityType {
-    MEETING_CUSTOMER("Gặp gỡ khách hàng"),
-    CONTRACT_DISCUSSION("Thảo luận hợp đồng"),
-    PROPERTY_SHOWING("Dẫn khách xem nhà"),
-    NEGOTIATION("Đàm phán"),
-    CLOSING_DEAL("Chốt hợp đồng"),
+    MEETING("Gặp gỡ khách hàng"),
+    CONTRACT("Thảo luận hợp đồng"),
     OTHER("Khác");
 
     private final String description;
 
     ActivityType(String description) {
         this.description = description;
+    }
+    public static Map<String, String> type()
+    {
+        Map<String, String> typeCodes = new LinkedHashMap<>();
+        for(ActivityType it : ActivityType.values())
+        {
+            typeCodes.put(it.toString(), it.description);
+        }
+        return typeCodes;
     }
 }

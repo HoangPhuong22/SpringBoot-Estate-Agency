@@ -39,11 +39,14 @@ public class Account extends BaseEntity<Long> implements UserDetails {
     )
     private Set<Role> roles;
 
-    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
     private Customer customer;
 
-    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
     private Employee employee;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<Maintenance> maintenances;
 
     public void addEmployee(Employee employee) {
         this.employee = employee;

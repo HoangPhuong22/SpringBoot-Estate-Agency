@@ -54,54 +54,51 @@
         </div>
         <div class="card-body">
             <a href="/admin/amenity/add" class="btn btn-success mt-3 mb-3" sec:authorize="hasAuthority('ADMIN')">Thêm mới</a>
-            <p class="text-danger" th:if="${amenities.size() == 0}">Không tiện ích nào được tìm thấy</p>
-            <p class="text-success" th:if="${amenities.size() > 0}">Có tổng cộng [[${pageResponse.totalElements}]] tiện ích được tìm thấy</p>
+            <p class="alert alert-warning" th:if="${amenities.size() == 0}">Không tìm thấy tiện ích nào</p>
+            <p class="alert alert-info" th:if="${amenities.size() > 0}">Tìm thấy <strong th:text="${pageResponse.totalElements}">0</strong> tiện ích</p>
             <!-- Table Variants -->
             <div class="table-responsive" th:if="${amenities.size() > 0}">
-                <table class="table">
+                <table class="table table-striped">
                     <thead>
-                    <tr class="table-info">
-                        <th scope="col">#</th>
-                        <th scope="col">Tên tiện ích</th>
-                        <th scope="col">Loại tiện ích</th>
-                        <th scope="col">Người thêm</th>
-                        <th scope="col">Ngày thêm</th>
-                        <th scope="col">Người sửa</th>
-                        <th scope="col">Ngày sửa</th>
-                        <th scope="col" sec:authorize="hasAuthority('ADMIN')">Hành động</th>
-                    </tr>
+                        <tr>
+                            <th>#</th>
+                            <th>Tên tiện ích</th>
+                            <th>Loại tiện ích</th>
+                            <th>Người thêm</th>
+                            <th>Ngày thêm</th>
+                            <th>Người sửa</th>
+                            <th>Ngày sửa</th>
+                            <th sec:authorize="hasAuthority('ADMIN')">Hành động</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr
-                            th:each="amenity, index: ${amenities}"
-                            th:classappend="${index.count % 2 == 0} ? 'table-light' : 'table-primary'"
-                    >
-                        <th scope="row" th:text="${index.count} + ${pageResponse.pageSize * (pageResponse.pageNo - 1)}"></th>
-                        <td th:text="${amenity.name}">Bể bơi</td>
-                        <td th:text="${amenity.type.description}">Nội thất</td>
-                        <td th:text="${amenity.createdBy}"></td>
-                        <td th:text="${#temporals.format(amenity.createdAt, 'HH:mm dd-MM-yyyy')}"></td>
-                        <td th:text="${amenity.updatedBy}"></td>
-                        <td th:text="${#temporals.format(amenity.updatedAt, 'HH:mm dd-MM-yyyy')}"></td>
-                        <td sec:authorize="hasAuthority('ADMIN')">
-                            <a th:href="@{'/admin/amenity/edit/' + ${amenity.id}}" class="btn btn-warning btn-sm">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
-                            <!-- Disabled Backdrop Modal -->
-                            <button
-                                type="button"
-                                class="btn btn-danger btn-deleted btn-sm"
-                                data-bs-toggle="modal"
-                                data-bs-target="#disablebackdrop"
-                                th:data-idamenity="${amenity.id}"
-                                th:data-nameamenity="${amenity.name}"
-                            >
-                                <i class="bi bi-trash"></i>
-                            </button>
-                            <!-- End Disabled Backdrop Modal-->
-                        </td>
-                    </tr>
-                    <div sec:authorize="hasAuthority('ADMIN')" class="modal fade" th:id="disablebackdrop" tabindex="-1" data-bs-backdrop="false" style="display: none;" aria-hidden="true">
+                        <tr th:each="amenity, index: ${amenities}">
+                            <td th:text="${index.count} + ${pageResponse.pageSize * (pageResponse.pageNo - 1)}"></td>
+                            <td th:text="${amenity.name}">Bể bơi</td>
+                            <td th:text="${amenity.type.description}">Nội thất</td>
+                            <td th:text="${amenity.createdBy}"></td>
+                            <td th:text="${#temporals.format(amenity.createdAt, 'HH:mm dd-MM-yyyy')}"></td>
+                            <td th:text="${amenity.updatedBy}"></td>
+                            <td th:text="${#temporals.format(amenity.updatedAt, 'HH:mm dd-MM-yyyy')}"></td>
+                            <td sec:authorize="hasAuthority('ADMIN')">
+                                <a th:href="@{'/admin/amenity/edit/' + ${amenity.id}}" class="btn btn-warning btn-sm">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <!-- Disabled Backdrop Modal -->
+                                <button
+                                    type="button"
+                                    class="btn btn-danger btn-deleted btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#disablebackdrop"
+                                    th:data-idamenity="${amenity.id}"
+                                    th:data-nameamenity="${amenity.name}"
+                                >
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                <!-- End Disabled Backdrop Modal-->
+                            </td>
+                        </tr>
+                        <div sec:authorize="hasAuthority('ADMIN')" class="modal fade" th:id="disablebackdrop" tabindex="-1" data-bs-backdrop="false" style="display: none;" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">

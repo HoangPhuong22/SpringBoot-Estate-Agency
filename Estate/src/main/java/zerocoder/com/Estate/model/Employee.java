@@ -60,8 +60,18 @@ public class Employee extends BaseEntity<Long> {
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Assignment> assignments;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE,
+            CascadeType.DETACH,
+            CascadeType.REFRESH
+    })
+    @JoinTable(
+            name = "assignment",
+            joinColumns = @JoinColumn(name = "employee_id"),
+            inverseJoinColumns = @JoinColumn(name = "customer_id")
+    )
+    private List<Customer> customers;
 
     @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Inspection> inspections;

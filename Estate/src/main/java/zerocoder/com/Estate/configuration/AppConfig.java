@@ -21,19 +21,27 @@ public class AppConfig {
 
     private String[] WHITE_LIST = {"/", "/auth/**", "/admin/assets/**", "/user/assets/**"};
     private String[] ADMIN_LIST = {
+            "/admin",
             "/api/employee/**",
             "/admin/employee/**",
             "/api/property/delete/**",
             "/api/amenity/**",
             "/admin/amenity/add",
             "/admin/amenity/edit/**",
+            "/api/contract/delete/**",
+            "/api/maintenance/delete/**",
     };
     private String[] MANAGER_LIST = {
             "/api/customer/**",
             "/api/property/edit/**",
             "/api/property/add/**",
+            "/admin/property/add",
+            "/admin/property/edit/**",
             "/admin/customer/**",
-            "/admin/amenity"
+            "/admin/amenity",
+            "/api/contract/save",
+            "/api/inspection/**",
+            "/api/maintenance/save",
     };
     @Bean
     public SecurityFilterChain securityFilterChain(@NotNull HttpSecurity http) throws Exception {
@@ -52,6 +60,7 @@ public class AppConfig {
                     .loginPage("/auth/login")
                     .loginProcessingUrl("/auth-login")
                     .failureHandler(failureHandler)
+                    .defaultSuccessUrl("/admin/profile")
                     .permitAll())
             .logout(logout ->
                 logout

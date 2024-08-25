@@ -2,6 +2,8 @@ package zerocoder.com.Estate.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import zerocoder.com.Estate.enums.ContractStatus;
 import zerocoder.com.Estate.enums.ContractType;
 
@@ -21,6 +23,7 @@ public class Contract extends BaseEntity<Long>{
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private ContractType type;
 
     @Column(name = "start_date")
@@ -43,11 +46,9 @@ public class Contract extends BaseEntity<Long>{
     @Column(name = "payment_method")
     private String paymentMethod;
 
-    @Column(name = "terms")
-    private String terms;
-
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private ContractStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {

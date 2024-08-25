@@ -16,4 +16,7 @@ public class SecurityUtils {
             return null;
         }
     }
+    public String getRole() {
+        return getPrincipal().getRoles().stream().findFirst().get().getName();
+    }
 }

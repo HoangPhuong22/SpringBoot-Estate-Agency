@@ -9,6 +9,7 @@ import zerocoder.com.Estate.enums.CustomerType;
 import zerocoder.com.Estate.enums.Gender;
 import zerocoder.com.Estate.model.Account;
 import zerocoder.com.Estate.model.Customer;
+import zerocoder.com.Estate.model.Employee;
 import zerocoder.com.Estate.repository.AccountRepository;
 import zerocoder.com.Estate.service.AccountService;
 import zerocoder.com.Estate.utils.SecurityUtils;
@@ -53,6 +54,7 @@ public class CustomerMapper {
                 .updatedAt(customer.getUpdatedAt())
                 .accountId((customer.getAccount() != null) ? customer.getAccount().getId() : null)
                 .userName((customer.getAccount() != null) ? customer.getAccount().getUsername() : null)
+                .employeeIds(customer.getEmployees().stream().map(Employee::getId).toList())
                 .build();
     }
     public void toCustomer(Customer customer, CustomerRequest customerRequest) {

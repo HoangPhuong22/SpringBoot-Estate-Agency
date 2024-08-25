@@ -5,16 +5,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import zerocoder.com.Estate.dto.request.AccountRequest;
+import zerocoder.com.Estate.dto.response.AccountResponse;
 import zerocoder.com.Estate.exception.UniqueException;
+import zerocoder.com.Estate.mapper.AccountMapper;
 import zerocoder.com.Estate.model.Account;
 import zerocoder.com.Estate.model.Customer;
 import zerocoder.com.Estate.model.Employee;
+import zerocoder.com.Estate.model.Role;
 import zerocoder.com.Estate.repository.AccountRepository;
 import zerocoder.com.Estate.repository.CustomerRepository;
 import zerocoder.com.Estate.repository.EmployeeRepository;
+import zerocoder.com.Estate.repository.RoleRepository;
 import zerocoder.com.Estate.service.AccountService;
-import zerocoder.com.Estate.service.CustomerService;
-import zerocoder.com.Estate.service.EmployeeService;
+import zerocoder.com.Estate.utils.SecurityUtils;
+
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -25,6 +30,7 @@ public class AccountServiceImpl implements AccountService {
     private final EmployeeRepository employeeRepository;
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
     @Override
     public Long saveAccount(AccountRequest request) {
@@ -56,8 +62,12 @@ public class AccountServiceImpl implements AccountService {
 
         if(request.getType() == 1) {
             account.addEmployee((Employee) user);
+            Role role = roleRepository.findByName("EMPLOYEE").orElseThrow();
+            account.setRoles(Set.of(role));
         } else {
             account.addCustomer((Customer) user);
+            Role role = roleRepository.findByName("CUSTOMER").orElseThrow();
+            account.setRoles(Set.of(role));
         }
         accountRepository.save(account);
         return account.getId();

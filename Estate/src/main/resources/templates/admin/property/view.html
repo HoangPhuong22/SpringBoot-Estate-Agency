@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+        layout:decorate="~{common/admin/page-admin.html}"
+>
+<head>
+    <title>Chi tiết tòa nhà</title>
+</head>
+
+<div layout:fragment="content">
+    <div class="pagetitle">
+        <h1>Chi tiết tòa nhà</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin">Home</a></li>
+                <li class="breadcrumb-item"><a href="/admin/property">Tòa nhà</a></li>
+                <li class="breadcrumb-item active">Chi tiết tòa nhà</li>
+            </ol>
+        </nav>
+    </div>
+    <section class="section">
+        <div class="row">
+            <div class="container-fluid py-4">
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-12">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Hình ảnh tòa nhà</h5>
+                                <div id="propertyCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+                                    <div class="carousel-indicators">
+                                        <button type="button" data-bs-target="#propertyCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                        <button type="button" data-bs-target="#propertyCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                        <button type="button" data-bs-target="#propertyCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                                    </div>
+                                    <div class="carousel-inner rounded">
+                                        <div class="carousel-item active">
+                                            <img src="/user/assets/img/property-1.jpg" class="d-block w-100" alt="Property Image 1">
+                                        </div>
+                                        <div class="carousel-item">
+                                            <img src="/user/assets/img/property-2.jpg" class="d-block w-100" alt="Property Image 2">
+                                        </div>
+                                        <div class="carousel-item">
+                                            <img src="/user/assets/img/property-3.jpg" class="d-block w-100" alt="Property Image 3">
+                                        </div>
+                                    </div>
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+
+                                <h5 class="card-title mb-3">Tiện ích đi kèm</h5>
+                                <div th:if="${not #lists.isEmpty(amenities)}" class="amenities-grid">
+                                    <div class="row g-2">
+                                        <div th:each="amenity : ${amenities}" class="col-6">
+                                            <div class="border rounded p-2 d-flex align-items-center">
+                                                <i class="bi bi-check-circle-fill text-success me-2" style="font-size: 0.8rem;"></i>
+                                                <div class="small">
+                                                    <span th:text="${amenity.name}" class="d-block fw-bold"></span>
+                                                    <span th:text="${amenity.type.description}" class="text-muted" style="font-size: 0.75rem;"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div th:if="${#lists.isEmpty(amenities)}" class="alert alert-info py-2" role="alert">
+                                    Không có tiện ích đi kèm.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8 col-md-12">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <h4 class="card-title mb-4">Thông tin tòa nhà</h4>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="border rounded p-3">
+                                            <h6 class="mb-2 text-muted">Tên tòa nhà</h6>
+                                            <p class="mb-0 fs-5 fw-bold" th:text="${property.name}"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="border rounded p-3">
+                                            <h6 class="mb-2 text-muted">Địa chỉ</h6>
+                                            <p class="mb-0" th:text="${property.ward} + ', ' + ${property.district} + ', ' + ${property.city} + ', ' + ${property.address}"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="border rounded p-3 text-center">
+                                            <h6 class="mb-2 text-muted">Số tầng</h6>
+                                            <p class="mb-0 fs-4 fw-bold text-primary" th:text="${property.floor}"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="border rounded p-3 text-center">
+                                            <h6 class="mb-2 text-muted">Diện tích</h6>
+                                            <p class="mb-0 fs-4 fw-bold text-danger" th:text="${property.area} + ' m²'"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="border rounded p-3 text-center">
+                                            <h6 class="mb-2 text-muted">Trạng thái</h6>
+                                            <span class="badge bg-primary fs-6" th:text="${property.status.description}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="my-4">
+
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <h6 class="mb-3">Chi tiết tòa nhà</h6>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Loại tòa nhà</span>
+                                                <span class="badge bg-success" th:text="${property.type.description}"></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Năm xây dựng</span>
+                                                <span th:text="${property.builtYear}"></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Số phòng ngủ</span>
+                                                <span th:text="${property.bedRooms}"></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Số phòng tắm</span>
+                                                <span th:text="${property.bathRooms}"></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="mb-3">Thông tin giá</h6>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Giá bán</span>
+                                                <span class="fw-bold" th:text="${T(zerocoder.com.Estate.utils.MoneyUtils).formatMoney(property.salePrice)}"></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Giá cho thuê</span>
+                                                <span class="fw-bold" th:text="${T(zerocoder.com.Estate.utils.MoneyUtils).formatMoney(property.rentPrice)}"></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <hr class="my-4">
+
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <h6 class="mb-3">Thông tin tạo</h6>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Ngày tạo</span>
+                                                <span th:text="${#temporals.format(property.createdAt, 'dd/MM/yyyy')}"></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Người tạo</span>
+                                                <span th:text="${property.createdBy}"></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="mb-3">Thông tin cập nhật</h6>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Ngày cập nhật</span>
+                                                <span th:text="${#temporals.format(property.updatedAt, 'dd/MM/yyyy')}"></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Người cập nhật</span>
+                                                <span th:text="${property.updatedBy}"></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mt-4">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h4 class="card-title mb-3">Quản lý tòa nhà</h4>
+                                <ul class="nav nav-tabs" id="propertyTabs" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="maintenance-tab" data-bs-toggle="tab" data-bs-target="#maintenance" type="button" role="tab" aria-controls="maintenance" aria-selected="true">
+                                            Thông tin bảo trì
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation" sec:authorize="hasAnyAuthority('ADMIN', 'EMPLOYEE')">
+                                        <button class="nav-link" id="inspection-tab" data-bs-toggle="tab" data-bs-target="#inspection" type="button" role="tab" aria-controls="inspection" aria-selected="false">
+                                            Thông tin kiểm tra
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="contract-tab" data-bs-toggle="tab" data-bs-target="#contract" type="button" role="tab" aria-controls="contract" aria-selected="false">
+                                            Hợp đồng
+                                        </button>
+                                    </li>
+                                </ul>
+                                <div class="tab-content mt-3" id="propertyTabsContent">
+                                    <div class="tab-pane fade show active" id="maintenance" role="tabpanel" aria-labelledby="maintenance-tab">
+                                        <h5 class="mb-3">Lịch sử bảo trì</h5>
+                                        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#MaintenanceModal">Thêm mới</button>
+                                        <p th:if="${maintenances.isEmpty()}" class="alert alert-danger">Không có dữ liệu bảo trì</p>
+                                        <div class="table-responsive-lg" th:if="${not maintenances.isEmpty()}">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th>Ngày</th>
+                                                    <th>Mô tả</th>
+                                                    <th>Trạng thái</th>
+                                                    <th>Uớc lượng</th>
+                                                    <th>Tổng chi phí</th>
+                                                    <th>Người tạo</th>
+                                                    <th>Người sửa</th>
+                                                    <th>Ngày sửa</th>
+                                                    <th sec:authorize="hasAnyAuthority('ADMIN', 'EMPLOYEE')">Hành động</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="maintenance : ${maintenances}">
+                                                    <td th:text="${#temporals.format(maintenance.createdAt, 'HH:mm dd/MM/yyyy')}"></td>
+                                                    <td th:text="${maintenance.description}"></td>
+                                                    <td>
+                                                        <span th:if="${maintenance.status.equals(maintenance.status.PENDING)}" class="badge bg-warning">Chờ xử lý</span>
+                                                        <span th:if="${maintenance.status.equals(maintenance.status.IN_PROGRESS)}" class="badge bg-primary">Đang xử lý</span>
+                                                        <span th:if="${maintenance.status.equals(maintenance.status.COMPLETED)}" class="badge bg-success">Hoàn thành</span>
+                                                    </td>
+                                                    <td th:text="${T(zerocoder.com.Estate.utils.MoneyUtils).formatMoney(maintenance.estimatedCost)}"></td>
+                                                    <td>
+                                                        <span th:if="${maintenance.actualCost != null}" th:text="${T(zerocoder.com.Estate.utils.MoneyUtils).formatMoney(maintenance.actualCost)}"></span>
+                                                        <span th:if="${maintenance.actualCost == null}" class="text-muted">Chưa cập nhật</span>
+                                                    </td>
+                                                    <td th:text="${maintenance.createdBy}"></td>
+                                                    <td th:text="${maintenance.updatedBy}"></td>
+                                                    <td th:text="${#temporals.format(maintenance.updatedAt, 'HH:mm dd/MM/yyyy')}"></td>
+                                                    <td>
+                                                        <button
+                                                            sec:authorize="hasAnyAuthority('ADMIN', 'EMPLOYEE')"
+                                                            class="btn btn-sm btn-warning btn-edit-maintenance"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#editMaintenanceModal"
+                                                            th:data-id="${maintenance.id}"
+                                                            th:data-description="${maintenance.description}"
+                                                            th:data-estimated-cost="${maintenance.estimatedCost}"
+                                                            th:data-actual-cost="${maintenance.actualCost}"
+                                                            th:data-status="${maintenance.status}"
+                                                            th:data-completed-at="${maintenance.completedAt}"
+                                                        >
+                                                            Sửa
+                                                        </button>
+                                                        <button
+                                                            sec:authorize="hasAnyAuthority('ADMIN')"
+                                                            class="btn btn-sm btn-danger btn-delete-maintenance"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#deleteMaintenanceModal"
+                                                            th:data-id-maintenance="${maintenance.id}"
+                                                        >Xóa
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="inspection" role="tabpanel" aria-labelledby="inspection-tab" sec:authorize="hasAnyAuthority('ADMIN', 'EMPLOYEE')">
+                                        <h5 class="mb-3">Lịch sử kiểm tra</h5>
+                                        <button class="btn btn-primary mb-3 btn-add-inspection" data-bs-toggle="modal" data-bs-target="#InspectionModal">Thêm mới</button>
+                                        <p class="alert alert-danger" th:if="${inspections.isEmpty()}">Không có dữ liệu kiểm tra</p>
+                                        <div class="table-responsive-lg" th:if="${not inspections.isEmpty()}">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Ngày</th>
+                                                    <th>Loại kiểm tra</th>
+                                                    <th>Kết quả</th>
+                                                    <th>Báo cáo</th>
+                                                    <th>Người tạo</th>
+                                                    <th>Ngày tạo</th>
+                                                    <th>Người sửa</th>
+                                                    <th>Ngày sửa</th>
+                                                    <th>Hành động</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="inspection, index : ${inspections}">
+                                                    <td th:text="${index.index + 1}"></td>
+                                                    <td th:text="${#temporals.format(inspection.inspectionDate, 'HH:mm dd/MM/yyyy')}"></td>
+                                                    <td th:text="${inspection.type}"></td>
+                                                    <td>
+                                                        <span th:if="${inspection.status.equals(inspection.status.PASSED)}" class="badge bg-success">Đạt</span>
+                                                        <span th:if="${inspection.status.equals(inspection.status.FAILED)}" class="badge bg-danger">Không đạt</span>
+                                                    </td>
+                                                    <td th:text="${inspection.report}"></td>
+                                                    <td th:text="${inspection.createdBy}"></td>
+                                                    <td th:text="${#temporals.format(inspection.createdAt, 'HH:mm dd/MM/yyyy')}"></td>
+                                                    <td th:text="${inspection.updatedBy}"></td>
+                                                    <td th:text="${#temporals.format(inspection.updatedAt, 'HH:mm dd/MM/yyyy')}"></td>
+                                                    <td>
+                                                        <button
+                                                            class="btn btn-sm btn-warning btn-edit-inspection"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#InspectionModal"
+                                                            th:data-id="${inspection.id}"
+                                                            th:data-inspection-date="${inspection.inspectionDate}"
+                                                            th:data-type="${inspection.type}"
+                                                            th:data-report="${inspection.report}"
+                                                            th:data-status="${inspection.status}"
+                                                            sec:authorize="hasAnyAuthority('ADMIN', 'EMPLOYEE')"
+                                                        >
+                                                            Sửa
+                                                        </button>
+                                                        <button
+                                                            class="btn btn-sm btn-danger btn-delete-inspection"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#deleteInspectionModal"
+                                                            th:data-id-inspection="${inspection.id}"
+                                                            sec:authorize="hasAnyAuthority('ADMIN', 'EMPLOYEE')"
+                                                        >
+                                                            Xóa
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="contract" role="tabpanel" aria-labelledby="contract-tab">
+                                        <h5 class="mb-3">Danh sách hợp đồng</h5>
+                                        <button class="btn btn-primary mb-3 btn-add-modal-contract" data-bs-toggle="modal" data-bs-target="#contractModal" sec:authorize="hasAnyAuthority('ADMIN', 'EMPLOYEE')">Thêm mới</button>
+                                        <p class="alert alert-danger" th:if="${contracts.isEmpty()}">Không có dữ liệu hợp đồng</p>
+                                        <div class="table-responsive" th:if="${not contracts.isEmpty()}">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Mã </th>
+                                                    <th>Loại</th>
+                                                    <th>Ngày bắt đầu</th>
+                                                    <th>Ngày kết thúc</th>
+                                                    <th>Giá trị hợp đồng</th>
+                                                    <th>Trạng thái</th>
+                                                    <th>Người tạo</th>
+                                                    <th>Ngày tạo</th>
+                                                    <th>Người sửa</th>
+                                                    <th>Ngày sửa</th>
+                                                    <th>Hành động</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="contract, index : ${contracts}">
+                                                    <td th:text="${index.count}"></td>
+                                                    <td th:text="${contract.code}"></td>
+                                                    <td>
+                                                        <span th:if="${contract.contractType.equals(contract.contractType.SALE)}" class="badge bg-primary">Mua Bán</span>
+                                                        <span th:if="${contract.contractType.equals(contract.contractType.RENT)}" class="badge bg-success">Cho thuê</span>
+                                                    </td>
+                                                    <td th:text="${#temporals.format(contract.startDate, 'dd/MM/yyyy')}"></td>
+                                                    <td th:text="${#temporals.format(contract.endDate, 'dd/MM/yyyy')}"></td>
+                                                    <td th:text="${T(zerocoder.com.Estate.utils.MoneyUtils).formatMoney(contract.value)}"></td>
+                                                    <td>
+                                                        <span th:if="${contract.status.equals(contract.status.IN_PROGRESS)}" class="badge bg-success">Đang hiệu lực</span>
+                                                        <span th:if="${contract.status.equals(contract.status.COMPLETED)}" class="badge bg-primary">Đã kết thúc</span>
+                                                        <span th:if="${contract.status.equals(contract.status.CANCELLED)}" class="badge bg-danger">Đã hủy</span>
+                                                    </td>
+                                                    <td th:text="${contract.createdBy}"></td>
+                                                    <td th:text="${#temporals.format(contract.createdAt, 'HH:mm dd/MM/yyyy')}"></td>
+                                                    <td th:text="${contract.updatedBy}"></td>
+                                                    <td th:text="${#temporals.format(contract.updatedAt, 'HH:mm dd/MM/yyyy')}"></td>
+                                                    <td>
+                                                        <button
+                                                            class="btn btn-sm btn-warning btn-edit-contract"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#contractModal"
+                                                            th:data-id="${contract.id}"
+                                                            th:data-property-id="${property.id}"
+                                                            th:data-customer-id="${contract.customerId}"
+                                                            th:data-type="${contract.contractType}"
+                                                            th:data-start-date="${contract.startDate}"
+                                                            th:data-end-date="${contract.endDate}"
+                                                            th:data-value="${contract.value}"
+                                                            th:data-deposit="${contract.deposit}"
+                                                            th:data-service-fee="${contract.serviceFee}"
+                                                            th:data-payment-method="${contract.paymentMethod}"
+                                                            th:data-status="${contract.status}"
+                                                            sec:authorize="hasAnyAuthority('ADMIN', 'EMPLOYEE')"
+                                                        >
+                                                            Sửa
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-primary btn-sm btn-view-contract"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#contractModalView"
+                                                            th:data-type="${contract.contractType}"
+                                                            th:data-code="${contract.code}"
+                                                            th:data-start-date="${#temporals.format(contract.startDate, 'dd/MM/yyyy')}"
+                                                            th:data-end-date="${#temporals.format(contract.endDate, 'dd/MM/yyyy')}"
+                                                            th:data-value="${contract.value}"
+                                                            th:data-deposit="${contract.deposit}"
+                                                            th:data-service-fee="${contract.serviceFee}"
+                                                            th:data-payment-method="${contract.paymentMethod}"
+                                                            th:data-status="${contract.status}"
+                                                            th:data-created-at="${#temporals.format(contract.createdAt, 'dd/MM/yyyy')}"
+                                                            th:data-full-name="${contract.fullName}"
+                                                            th:data-phone="${contract.phoneNumber}"
+                                                            th:data-id-number="${contract.idNumber}"
+                                                            th:data-address="${contract.address}"
+                                                        >
+                                                            Xem
+                                                        </button>
+                                                        <button
+                                                            class="btn btn-sm btn-danger btn-deleted-contract"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#deleteContractModal"
+                                                            th:data-id-contract="${contract.id}"
+                                                            sec:authorize="hasAnyAuthority('ADMIN')"
+                                                        >
+                                                            Xóa
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal thêm, sửa bảo trì -->
+                        <div class="modal fade" id="MaintenanceModal" tabindex="-1" aria-labelledby="MaintenanceModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="maintenanceModalLabel">Thêm mới bảo trì</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Form thêm mới bảo trì -->
+                                        <form>
+                                            <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf-action-maintenance">
+                                            <input type="hidden" id="propertyIdMaintenance" th:value="${property.id}">
+                                            <div class="mb-3">
+                                                <label for="maintenanceDescription" class="form-label">Mô tả</label>
+                                                <textarea class="form-control" id="maintenanceDescription" rows="3"></textarea>
+                                                <div id="descriptionMaintenanceError" class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="maintenanceEstimatedCost" class="form-label">Chi phí ước lượng</label>
+                                                <input type="number" class="form-control" id="maintenanceEstimatedCost">
+                                                <div id="estimatedCostMaintenanceError" class="invalid-feedback"></div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                        <button type="button" class="btn btn-primary" id="btn-add-maintenance">Lưu</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="editMaintenanceModal" tabindex="-1" aria-labelledby="MaintenanceModalLabel" aria-hidden="true" sec:authorize="hasAnyAuthority('ADMIN', 'EMPLOYEE')">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="EditMaintenanceModalLabel">Sửa bảo trì</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Form thêm mới bảo trì -->
+                                        <form>
+                                            <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf-edit-maintenance">
+                                            <input type="hidden" id="propertyIdEditMaintenance" th:value="${property.id}">
+                                            <input type="hidden" id="maintenanceId">
+                                            <div class="mb-3">
+                                                <label for="maintenanceEditDescription" class="form-label">Mô tả</label>
+                                                <textarea class="form-control" id="maintenanceEditDescription" rows="3"></textarea>
+                                                <div id="descriptionEditMaintenanceError" class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="maintenanceEditEstimatedCost" class="form-label">Chi phí ước lượng</label>
+                                                <input type="number" class="form-control" id="maintenanceEditEstimatedCost">
+                                                <div id="estimatedCostEditMaintenanceError" class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="maintenanceEditActualCost" class="form-label">Chi phí thực tế</label>
+                                                <input type="number" class="form-control" id="maintenanceEditActualCost">
+                                                <div id="actualCostEditMaintenanceError" class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="maintenanceEditStatus" class="form-label">Trạng thái</label>
+                                                <select class="form-select" id="maintenanceEditStatus">
+                                                    <option value="PENDING">Chờ xử lý</option>
+                                                    <option value="IN_PROGRESS">Đang xử lý</option>
+                                                    <option value="COMPLETED">Hoàn thành</option>
+                                                </select>
+                                                <div id="statusEditMaintenanceError" class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="maintenanceEditCompletedAt" class="form-label">Ngày hoàn thành</label>
+                                                <input type="datetime-local" class="form-control" id="maintenanceEditCompletedAt">
+                                                <div id="completedAtEditMaintenanceError" class="invalid-feedback"></div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                        <button type="button" class="btn btn-primary" id="btn-edit-maintenance">Lưu</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="deleteMaintenanceModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true"  sec:authorize="hasAnyAuthority('ADMIN')">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Xác nhận xóa</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Bạn có chắc chắn muốn xóa bảo trì này không?</p>
+                                        <p class="text-danger">Lưu ý: Hành động này không thể hoàn tác.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                        <button type="button" class="btn btn-danger" id="btn-deleted-maintenance">Xóa</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <!-- Modal thêm mới kiểm tra -->
+                        <div class="modal fade" id="InspectionModal" tabindex="-1" aria-labelledby="InspectionModalLabel" aria-hidden="true"  sec:authorize="hasAnyAuthority('ADMIN', 'EMPLOYEE')">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="title-inspection"></h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Form thêm mới kiểm tra -->
+                                        <form>
+                                            <input type="hidden" name="inspectionId" id="inspectionId">
+                                            <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf-action-inspection">
+                                            <input type="hidden" id="propertyId" th:value="${property.id}">
+                                            <div class="mb-3">
+                                                <label for="inspectionDate" class="form-label">Ngày</label>
+                                                <input type="datetime-local" class="form-control" id="inspectionDate">
+                                                <div id="inspectionDateError" class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="inspectionType" class="form-label">Loại kiểm tra</label>
+                                                <input type="text" class="form-control" id="inspectionType">
+                                                <div id="typeError" class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="inspectionReport" class="form-label">Báo cáo kiểm tra</label>
+                                                <textarea class="form-control" id="inspectionReport" rows="3"></textarea>
+                                                <div id="reportError" class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="inspectionResult" class="form-label">Kết quả</label>
+                                                <select class="form-select" id="inspectionResult">
+                                                    <option value="">Chọn kết quả</option>
+                                                    <option value="PASSED">Đạt</option>
+                                                    <option value="FAILED">Không đạt</option>
+                                                </select>
+                                                <div id="statusError" class="invalid-feedback"></div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                        <button type="button" class="btn btn-primary btn-action-inspection">Lưu</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Modal Xóa Inspection-->
+                        <div class="modal fade" id="deleteInspectionModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true"  sec:authorize="hasAnyAuthority('ADMIN', 'EMPLOYEE')">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Xác nhận xóa</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Bạn có chắc chắn muốn xóa kiểm tra này không?</p>
+                                        <p class="text-danger">Lưu ý: Hành động này không thể hoàn tác.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                        <button type="button" class="btn btn-danger" id="btn-deleted-inspection">Xóa</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <!-- Modal thêm mới hợp đồng -->
+                        <div class="modal fade" id="contractModal" tabindex="-1" aria-labelledby="addContractModalLabel" aria-hidden="true"  sec:authorize="hasAnyAuthority('ADMIN', 'EMPLOYEE')">
+                            <div class="modal-dialog modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="contractModalTitle">Thêm mới hợp đồng</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Form thêm mới hợp đồng -->
+                                        <form id="saveOrUpdateContract">
+                                            <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf-action-contract">
+                                            <input type="hidden" id="propertyIdContract" th:value="${property.id}">
+                                            <input type="hidden" id="contractId">
+                                            <div class="mb-3">
+                                                <label for="customerContract" class="form-label">Khách hàng</label>
+                                                <select class="form-select" id="customerContract">
+                                                    <option value="">Chọn khách hàng</option>
+                                                    <option
+                                                            th:each="customer: ${customers}"
+                                                            th:value="${customer.id}"
+                                                            th:text="${customer.fullName} + ' (' + ${customer.phone} + ')'"
+                                                    >
+                                                    </option>
+                                                </select>
+                                                <div id="customerIdContractError" class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="typeContract" class="form-label">Loại hợp đồng</label>
+                                                <select class="form-select" id="typeContract">
+                                                    <option value="">Chọn loại hợp đồng</option>
+                                                    <option value="SALE">Mua bán</option>
+                                                    <option value="RENT">Cho thuê</option>
+                                                </select>
+                                                <div id="contractTypeContractError" class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="startDateContract" class="form-label">Ngày bắt đầu</label>
+                                                <input type="date" class="form-control" id="startDateContract">
+                                                <div id="startDateContractError" class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="endDateContract" class="form-label">Ngày kết thúc</label>
+                                                <input type="date" class="form-control" id="endDateContract">
+                                                <div id="endDateContractError" class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="valueContract" class="form-label">Giá trị hợp đồng</label>
+                                                <input type="number" class="form-control" id="valueContract">
+                                                <div id="valueContractError" class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="depositContract" class="form-label">Tiền đặt cọc</label>
+                                                <input type="number" class="form-control" id="depositContract">
+                                                <div id="depositContractError" class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="serviceFeeContract" class="form-label">Phí dịch vụ</label>
+                                                <input type="number" class="form-control" id="serviceFeeContract">
+                                                <div id="serviceFeeContractError" class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="paymentMethodContract" class="form-label">Phương thức thanh toán</label>
+                                                <input type="text" class="form-control" id="paymentMethodContract">
+                                                <div id="paymentMethodContractError" class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="statusContract" class="form-label">Trạng thái</label>
+                                                <select class="form-select" id="statusContract">
+                                                    <option value="IN_PROGRESS">Đang hiệu lực</option>
+                                                    <option value="COMPLETED">Đã kết thúc</option>
+                                                    <option value="CANCELLED">Đã hủy</option>
+                                                </select>
+                                                <div id="statusContractError" class="invalid-feedback"></div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                        <button type="button" class="btn btn-primary btn-add-contract">Lưu</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Modal xem hợp đồng, xuất hợp đồng -->
+                        <div class="modal fade" id="contractModalView" tabindex="-1" aria-labelledby="contractModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-light">
+                                        <h5 class="modal-title" id="contractModalLabel">Xem chi tiết hợp đồng</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="container-fluid">
+                                            <!-- Phần đầu hợp đồng -->
+                                            <div class="text-center mb-4">
+                                                <h6 class="text-uppercase">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</h6>
+                                                <h6 class="text-uppercase">Độc lập - Tự do - Hạnh phúc</h6>
+                                                <hr class="w-25 mx-auto">
+                                            </div>
+
+                                            <h3 class="text-center text-uppercase mb-4">
+                                                <span id="view-title-contract" class="fw-bold">Hợp đồng mua bán bất động sản</span>
+                                            </h3>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <p><strong>Số:</strong> <span id="view-code-contract"></span></p>
+                                                </div>
+                                                <div class="col-md-6 text-md-end">
+                                                    <p><strong>Ngày:</strong> <span id="view-date-contract"></span></p>
+                                                </div>
+                                            </div>
+
+                                            <!-- Căn cứ pháp lý -->
+                                            <div class="mb-4">
+                                                <strong>Căn cứ: </strong>
+                                                <ul>
+                                                    <li>Bộ luật Dân sự số 91/2015/QH13 ngày 24/11/2015.</li>
+                                                    <li>Luật Kinh doanh bất động sản số 66/2014/QH13 ngày 25/11/2014.</li>
+                                                    <li>Luật Nhà ở số 65/2014/QH13 ngày 25/11/2014.</li>
+                                                    <li>Nhu cầu và sự thỏa thuận của các bên.</li>
+                                                </ul>
+                                            </div>
+
+                                            <p>Hôm nay, ngày <span id="view-day-contract"></span> tháng <span id="view-month-day"></span> năm <span id="view-year-contract"></span>, chúng tôi gồm:</p>
+
+                                            <!-- Thông tin các bên -->
+                                            <div class="mb-4">
+                                                <h5 class="fw-bold">1. <span class="view-ben-A-contract"></span> (Bên A): </h5>
+                                                <p><strong>Công ty:</strong> CÔNG TY BẤT ĐỘNG SẢN AGENCY</p>
+                                                <p><strong>Địa chỉ:</strong> 298 Nguyễn Khang, Yên Hòa, Cầu Giấy, Hà Nội</p>
+                                                <p><strong>Đại diện:</strong> Ông/Bà Hoàng Văn Phương</p>
+                                                <p><strong>Chức vụ:</strong> Giám đốc</p>
+
+                                                <h5 class="fw-bold mt-3">2. <span class="view-ben-B-contract"></span> (Bên B): </h5>
+                                                <p><strong>Ông/Bà:</strong> <span id="view-full-name"></span></p>
+                                                <p><strong>CCCD/CMND số:</strong> <span id="view-id-number"></span></p>
+                                                <p><strong>Điện thoại:</strong> <span id="view-phone"></span></p>
+                                                <p><strong>Địa chỉ:</strong> <span id="view-address"></span></p>
+                                            </div>
+
+                                            <!-- Nội dung hợp đồng -->
+                                            <h4 class="fw-bold">Hai bên cùng thỏa thuận ký kết hợp đồng bất động sản với các điều khoản sau:</h4>
+
+                                            <div class="mb-4">
+                                                <h5 class="fw-bold">I. ĐIỀU LỆ RIÊNG</h5>
+                                                <h6 class="fw-bold">Điều 1: Đối tượng của hợp đồng</h6>
+                                                <p id="view-dieu1"></p>
+                                                <ul>
+                                                    <li><strong>Loại bất động sản:</strong> <span th:text="${property.type.description}"></span></li>
+                                                    <li><strong>Địa chỉ:</strong> <span th:text="${property.address}"></span></li>
+                                                    <li><strong>Diện tích:</strong> <span th:text="${property.area}"></span> m²</li>
+                                                    <li><strong>Số tầng:</strong> <span th:text="${property.floor}"></span></li>
+                                                </ul>
+
+                                                <h6 class="fw-bold">Điều 2: Giá <span id="view-dieu-2"></span> và phương thức thanh toán</h6>
+                                                <ul>
+                                                    <li><strong>Giá bán bất động sản:</strong> <span th:text="${T(zerocoder.com.Estate.utils.MoneyUtils).formatMoney(property.salePrice)}"></span></li>
+                                                    <li><strong>Giá thuê bất động sản:</strong> <span th:text="${T(zerocoder.com.Estate.utils.MoneyUtils).formatMoney(property.rentPrice)}"></span></li>
+                                                </ul>
+                                                <p><strong>Phương thức thanh toán:</strong> <span id="view-payment-contract"></span></p>
+
+                                                <div id="view-dieu-le"></div>
+                                            </div>
+
+                                            <!-- Điều khoản chung -->
+                                            <div class="mb-4">
+                                                <h5 class="fw-bold">II. ĐIỀU KHOẢN CHUNG</h5>
+                                                <h6 class="fw-bold">Điều 1: Tuân thủ pháp luật</h6>
+                                                <p>1.1. Việc mua bán và cho thuê bất động sản phải tuân thủ đầy đủ các quy định của pháp luật hiện hành.</p>
+
+                                                <h6 class="fw-bold">Điều 2: Trách nhiệm của các bên</h6>
+                                                <p>2.1. Bên mua và bên thuê có trách nhiệm kiểm tra, xác nhận thông tin về quyền sở hữu và các giấy tờ liên quan đến bất động sản trước khi thực hiện giao dịch.</p>
+                                                <p>2.2. Bên bán và bên cho thuê cam kết cung cấp đầy đủ, chính xác các thông tin về bất động sản, đảm bảo quyền sở hữu hợp pháp và tình trạng tốt của tài sản.</p>
+
+                                                <h6 class="fw-bold">Điều 3: Quy trình thanh toán</h6>
+                                                <p>3.1. Việc thanh toán tiền mua bán hoặc tiền thuê và các chi phí liên quan phải được thực hiện đầy đủ và đúng hạn theo hợp đồng đã ký kết.</p>
+                                                <p>3.2. Bên mua hoặc bên thuê phải thanh toán tiền theo đúng phương thức và thời gian quy định trong hợp đồng.</p>
+
+                                                <h6 class="fw-bold">Điều 4: Quyền và nghĩa vụ của bên bán và bên cho thuê</h6>
+                                                <p>4.1. Bên bán hoặc bên cho thuê phải cung cấp bất động sản trong tình trạng tốt, phù hợp với mục đích sử dụng của bên mua hoặc bên thuê.</p>
+                                                <p>4.2. Bên bán và bên cho thuê không chịu trách nhiệm đối với các thiệt hại xảy ra sau khi giao dịch đã hoàn tất và bất động sản đã được chuyển giao.</p>
+
+                                                <h6 class="fw-bold">Điều 5: Trách nhiệm sửa chữa và bồi thường</h6>
+                                                <p>5.1. Trong trường hợp bất động sản bị hư hỏng do lỗi của bên thuê, bên thuê phải chịu trách nhiệm sửa chữa hoặc bồi thường thiệt hại.</p>
+                                                <p>5.2. Bên thuê phải thông báo kịp thời cho bên cho thuê về bất kỳ hư hỏng nào xảy ra và phối hợp để sửa chữa.</p>
+
+                                                <h6 class="fw-bold">Điều 6: Điều kiện và hình thức chấm dứt hợp đồng</h6>
+                                                <p>6.1. Hợp đồng mua bán hoặc cho thuê có thể bị chấm dứt trước thời hạn trong các trường hợp sau: bên mua hoặc bên thuê vi phạm điều khoản hợp đồng, hoặc khi các bên đạt được thỏa thuận chấm dứt hợp đồng.</p>
+                                                <p>6.2. Việc chấm dứt hợp đồng phải được thực hiện bằng văn bản và có sự đồng ý của các bên.</p>
+
+                                                <h6 class="fw-bold">Điều 7: Giải quyết tranh chấp</h6>
+                                                <p>7.1. Mọi tranh chấp phát sinh trong quá trình mua bán hoặc cho thuê bất động sản sẽ được giải quyết theo quy định của pháp luật.</p>
+                                                <p>7.2. Các bên cam kết tuân thủ phán quyết của cơ quan chức năng có thẩm quyền và phối hợp giải quyết tranh chấp một cách hòa bình và công bằng.</p>
+
+                                                <h6 class="fw-bold">Điều 8: Điều khoản bổ sung</h6>
+                                                <p>8.1. Các bên có thể thỏa thuận bổ sung điều khoản vào hợp đồng, tuy nhiên các điều khoản bổ sung phải tuân thủ quy định của pháp luật và không được trái ngược với các điều khoản cơ bản đã nêu trong hợp đồng.</p>
+                                                <p>8.2. Mọi điều khoản bổ sung phải được ghi rõ trong văn bản hợp đồng và có chữ ký của các bên liên quan.</p>
+                                            </div>
+
+                                            <!-- Phần ký kết -->
+                                            <div class="row mt-5">
+                                                <div class="col-6 text-center">
+                                                    <p><strong><span class="view-ben-A-contract"></span> (Bên A)</strong></p>
+                                                    <p><em>Ký tên</em></p>
+                                                    <div class="mt-4 mb-2">
+                                                        <p class="mb-1" style="font-family: 'Brush Script MT', cursive; font-size: 24px;">Phương</p>
+                                                    </div>
+                                                    <p class="mb-0"><strong>Hoàng Văn Phương</strong></p>
+                                                    <p><em>Giám đốc</em></p>
+                                                </div>
+                                                <div class="col-6 text-center">
+                                                    <p><strong><span class="view-ben-B-contract"></span> (Bên B)</strong></p>
+                                                    <p><em>Ký và ghi rõ họ tên</em></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                        <button type="button" class="btn btn-primary" onclick="printContract()">Xuất</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Modal xóa hợp đồng -->
+                        <div class="modal fade" id="deleteContractModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true"  sec:authorize="hasAnyAuthority('ADMIN')">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Xác nhận xóa</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Bạn có chắc chắn muốn xóa hợp đồng này không?</p>
+                                        <p class="text-danger">Lưu ý: Hành động này không thể hoàn tác.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                        <button type="button" class="btn btn-danger" id="btn-deleted-contract">Xóa</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+
+        // Start add,edit inspection
+        $('.btn-add-inspection').click(function () {
+            $('#inspectionId').val('');
+            $('#inspectionDate').val('');
+            $('#inspectionType').val('');
+            $('#inspectionReport').val('');
+            $('#inspectionResult').val('');
+            $('#title-inspection').text('Thêm mới kiểm tra');
+        });
+        $('.btn-edit-inspection').click(function () {
+            const id = $(this).data('id');
+            const inspectionDate = $(this).data('inspection-date');
+            const type = $(this).data('type');
+            const report = $(this).data('report');
+            const status = $(this).data('status');
+
+            $('#title-inspection').text('Chỉnh sửa kiểm tra');
+            $('#inspectionId').val(id);
+            $('#inspectionDate').val(inspectionDate);
+            $('#inspectionType').val(type);
+            $('#inspectionReport').val(report);
+            $('#inspectionResult').val(status);
+        });
+        $('.btn-action-inspection').click(function (e) {
+            e.preventDefault();
+            const data = {
+                id: $('#inspectionId').val(),
+                propertyId: $('#propertyId').val(),
+                inspectionDate: $('#inspectionDate').val(),
+                type: $('#inspectionType').val(),
+                report: $('#inspectionReport').val(),
+                status: $('#inspectionResult').val()
+            };
+            $('.invalid-feedback').text('').hide();
+            const csrf = $('#csrf-action-inspection').val();
+            $.ajax({
+                url: '/api/inspection/save',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                },
+                success: function () {
+                    $('#addInspectionModal').modal('hide');
+                    if(data.id) {
+                        alert('Cập nhật kiểm tra thành công');
+                    } else {
+                        alert('Thêm mới kiểm tra thành công');
+                    }
+                    window.location.reload();
+                },
+                error: function (error) {
+                    console.log(error);
+                    const errors = error.responseJSON.data;
+                    for (const key in errors) {
+                        $(`#${key}Error`).text(errors[key]).show();
+                    }
+                }
+            });
+        });
+        // End add, edit inspection
+
+        // Start deleted inspection
+        let idInspectionDelteted;
+        $('.btn-delete-inspection').click(function () {
+            idInspectionDelteted = $(this).data('id-inspection');
+        });
+        $('#btn-deleted-inspection').click(function () {
+            const csrf = $('#csrf-action-inspection').val();
+            $.ajax({
+                url: '/api/inspection/delete/' + idInspectionDelteted,
+                type: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                },
+                success: function () {
+                    $('#deleteInspectionModal').modal('hide');
+                    alert('Xóa kiểm tra thành công');
+                    window.location.reload();
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        });
+        // End deleted inspection
+
+        // Start add, edit contract
+
+        $('.btn-edit-contract').click(function () {
+            const id = $(this).data('id');
+            const propertyId = $(this).data('property-id');
+            const customerId = $(this).data('customer-id');
+            const type = $(this).data('type');
+            const startDate = $(this).data('start-date');
+            const endDate = $(this).data('end-date');
+            const value = $(this).data('value');
+            const deposit = $(this).data('deposit');
+            const serviceFee = $(this).data('service-fee');
+            const paymentMethod = $(this).data('payment-method');
+            const status = $(this).data('status');
+
+            $('#contractId').val(id);
+            $('#propertyIdContract').val(propertyId);
+            $('#customerContract').val(customerId);
+            $('#typeContract').val(type);
+            $('#startDateContract').val(startDate);
+            $('#endDateContract').val(endDate);
+            $('#valueContract').val(value);
+            $('#depositContract').val(deposit);
+            $('#serviceFeeContract').val(serviceFee);
+            $('#paymentMethodContract').val(paymentMethod);
+            $('#statusContract').val(status);
+        });
+        $('.btn-add-modal-contract').click(function () {
+            $('#contractId').val('');
+            $('#customerContract').val('');
+            $('#typeContract').val('');
+            $('#startDateContract').val('');
+            $('#endDateContract').val('');
+            $('#valueContract').val('');
+            $('#depositContract').val('');
+            $('#serviceFeeContract').val('');
+            $('#paymentMethodContract').val('');
+            $('#statusContract').val('');
+        });
+
+        $('.btn-add-contract').click(function (e) {
+            e.preventDefault();
+            const data = {
+                id: $('#contractId').val(),
+                propertyId: $('#propertyIdContract').val(),
+                customerId: $('#customerContract').val(),
+                contractType: $('#typeContract').val(),
+                startDate: $('#startDateContract').val(),
+                endDate: $('#endDateContract').val(),
+                value: $('#valueContract').val(),
+                deposit: $('#depositContract').val(),
+                serviceFee: $('#serviceFeeContract').val(),
+                paymentMethod: $('#paymentMethodContract').val(),
+                status: $('#statusContract').val()
+            }
+            $('.invalid-feedback').text('').hide();
+            const csrf = $('#csrf-action-contract').val();
+            $.ajax({
+                url: '/api/contract/save',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                },
+                success: function () {
+                    $('#contractModal').modal('hide');
+                    if(data.id) {
+                        alert('Cập nhật hợp đồng thành công');
+                    } else {
+                        alert('Thêm mới hợp đồng thành công');
+                    }
+                    window.location.reload();
+                },
+                error: function (error) {
+                    console.log(error);
+                    const errors = error.responseJSON.data;
+                    for (const key in errors) {
+                        $(`#${key}ContractError`).text(errors[key]).show();
+                    }
+                }
+            });
+        });
+
+
+        // View Contract
+        $('.btn-view-contract').click(function () {
+            const type = $(this).data('type');
+            const code = $(this).data('code');
+            const startDate = $(this).data('start-date');
+            const endDate = $(this).data('end-date');
+            const value = $(this).data('value');
+            const deposit = $(this).data('deposit');
+            const serviceFee = $(this).data('service-fee');
+            const paymentMethod = $(this).data('payment-method');
+            const status = $(this).data('status');
+            const date = $(this).data('created-at');
+            const fullName = $(this).data('full-name');
+            const phone = $(this).data('phone');
+            const idNumber = $(this).data('id-number');
+            const address = $(this).data('address');
+
+            if(type === 'SALE') {
+                $('#view-title-contract').text('Hợp đồng mua bán bất động sản');
+                $('.view-ben-A-contract').text('Bên bán');
+                $('.view-ben-B-contract').text('Bên mua');
+                $('#view-dieu1').text('Bên A đồng ý bán cho Bên B và Bên B đồng ý mua lại bất động sản sau đây:');
+                $('#view-dieu-le').html(
+                    '<h6 class="fw-bold">Điều 3: Thời gian sở hữu</h6>' +
+                    '<p>Vô hạn </p>'
+                )
+            } else {
+                $('#view-title-contract').text('Hợp đồng cho thuê bất động sản');
+                $('.view-ben-A-contract').text('Bên cho thuê');
+                $('.view-ben-B-contract').text('Bên thuê');
+                $('#view-dieu1').text('Bên A đồng ý cho Bên B thuê bất động sản sau đây:');
+                $('#view-dieu-le').html(
+                    '<h6 class="fw-bold">Điều 3: Thời gian thuê</h6>' +
+                    '<p class="fw-bold">Thời gian thuê: Từ ngày ' + startDate + ' đến ngày ' + endDate + '</p>'
+                )
+            }
+            $('#view-phone').text(phone);
+            $('#view-code-contract').text(code);
+            $('#view-date-contract').text(date);
+            $('#view-day-contract').text(startDate.split('/')[0]);
+            $('#view-month-day').text(startDate.split('/')[1]);
+            $('#view-year-contract').text(startDate.split('/')[2]);
+            $('#view-full-name').text(fullName);
+            $('#view-id-number').text(idNumber);
+            $('#view-address').text(address);
+            $('#view-payment-contract').text(paymentMethod);
+        });
+
+        // Deleted Contract
+        let idContractDeleted;
+        $('.btn-deleted-contract').click(function () {
+            idContractDeleted = $(this).data('id-contract');
+        });
+        $('#btn-deleted-contract').click(function () {
+            const csrf = $('#csrf-action-contract').val();
+            $.ajax({
+                url: '/api/contract/delete/' + idContractDeleted,
+                type: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                },
+                success: function () {
+                    $('#deleteContractModal').modal('hide');
+                    alert('Xóa hợp đồng thành công');
+                    window.location.reload();
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        });
+
+
+        // Print Contract
+        function printContract() {
+            const printContents = $('#contractModalView .modal-body').html();
+            const originalContents = $('body').html();
+            $('body').html(printContents);
+            window.print();
+            $('body').html(originalContents);
+        }
+
+
+
+        // Start add, edit maintenance
+        $('#btn-add-maintenance').click(function (e) {
+            e.preventDefault();
+            const data = {
+                propertyId: $('#propertyIdMaintenance').val(),
+                description: $('#maintenanceDescription').val(),
+                estimatedCost: $('#maintenanceEstimatedCost').val()
+            };
+            $('.invalid-feedback').text('').hide();
+            const csrf = $('#csrf-action-maintenance').val();
+            $.ajax({
+                url: '/api/maintenance/add',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                },
+                success: function () {
+                    $('#maintenanceModal').modal('hide');
+                    alert('Thêm mới bảo trì thành công');
+                    window.location.reload();
+                },
+                error: function (error) {
+                    console.log(error);
+                    const errors = error.responseJSON.data;
+                    for (const key in errors) {
+                        $(`#${key}MaintenanceError`).text(errors[key]).show();
+                    }
+                }
+            });
+        });
+
+        $('.btn-edit-maintenance').click(function () {
+            const id = $(this).data('id');
+            const description = $(this).data('description');
+            const estimatedCost = $(this).data('estimated-cost');
+            const status = $(this).data('status');
+            const actualCost = $(this).data('actual-cost');
+            const completed = $(this).data('completed-at');
+            $('#maintenanceId').val(id);
+            $('#maintenanceEditDescription').val(description);
+            $('#maintenanceEditEstimatedCost').val(estimatedCost);
+            $('#maintenanceEditStatus').val(status);
+            $('#maintenanceEditActualCost').val(actualCost);
+            $('#maintenanceEditCompletedAt').val(completed);
+        });
+        $('#btn-edit-maintenance').click(function () {
+            const data = {
+                id: $('#maintenanceId').val(),
+                propertyId: $('#propertyIdEditMaintenance').val(),
+                description: $('#maintenanceEditDescription').val(),
+                estimatedCost: $('#maintenanceEditEstimatedCost').val(),
+                status: $('#maintenanceEditStatus').val(),
+                actualCost: $('#maintenanceEditActualCost').val(),
+                completedAt: $('#maintenanceEditCompletedAt').val()
+            };
+            $('.invalid-feedback').text('').hide();
+            const csrf = $('#csrf-edit-maintenance').val();
+            $.ajax({
+                url: '/api/maintenance/edit',
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                },
+                success: function () {
+                    $('#editMaintenanceModal').modal('hide');
+                    alert('Cập nhật bảo trì thành công');
+                    window.location.reload();
+                },
+                error: function (error) {
+                    console.log(error);
+                    const errors = error.responseJSON.data;
+                    for (const key in errors) {
+                        $(`#${key}EditMaintenanceError`).text(errors[key]).show();
+                    }
+                }
+            });
+        });
+
+        let idMaintenanceDeleted;
+        $('.btn-delete-maintenance').click(function () {
+            idMaintenanceDeleted = $(this).data('id-maintenance');
+        });
+        $('#btn-deleted-maintenance').click(function () {
+            const csrf = $('#csrf-action-maintenance').val();
+            $.ajax({
+                url: '/api/maintenance/delete/' + idMaintenanceDeleted,
+                type: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                },
+                success: function () {
+                    $('#deleteMaintenanceModal').modal('hide');
+                    alert('Xóa bảo trì thành công');
+                    window.location.reload();
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        });
+    </script>
+</div>
