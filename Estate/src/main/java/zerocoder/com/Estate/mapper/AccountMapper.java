@@ -16,23 +16,23 @@ public class AccountMapper {
                 .password(request.getPassword())
                 .build();
     }
-    public AccountResponse toAccountResponse(Account account, Integer type) {
-        if(type == 0) {
+    public AccountResponse toAccountResponse(Account account) {
+        if(account.getEmployee() != null) {
             return AccountResponse.builder()
+                    .id(account.getId())
                     .username(account.getUsername())
-                    .fullName(account.getCustomer().getFullName())
                     .email(account.getEmail())
-                    .phone(account.getCustomer().getPhone())
-                    .address(account.getCustomer().getAddress())
+                    .status(account.getEmployee().getIsActive() ? "Đang làm việc" : "Đã nghỉ việc")
+                    .roles(account.getRoles().stream().findFirst().get().getName())
+                    .isDeleted(account.getIsDeleted())
                     .build();
         } else {
             return AccountResponse.builder()
+                    .id(account.getId())
                     .username(account.getUsername())
-                    .fullName(account.getEmployee().getFullName())
                     .email(account.getEmail())
-                    .phone(account.getEmployee().getPhone())
-                    .address(account.getEmployee().getAddress())
-                    .status(account.getEmployee().getIsActive() ? "Đang làm việc" : "Đã nghỉ việc")
+                    .roles(account.getRoles().stream().findFirst().get().getName())
+                    .isDeleted(account.getIsDeleted())
                     .build();
         }
     }

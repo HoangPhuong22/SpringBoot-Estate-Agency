@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import zerocoder.com.Estate.dto.request.AccountEditRequest;
 import zerocoder.com.Estate.dto.request.AccountRequest;
 import zerocoder.com.Estate.dto.response.AccountResponse;
 import zerocoder.com.Estate.exception.UniqueException;
@@ -19,6 +20,8 @@ import zerocoder.com.Estate.repository.RoleRepository;
 import zerocoder.com.Estate.service.AccountService;
 import zerocoder.com.Estate.utils.SecurityUtils;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -31,6 +34,8 @@ public class AccountServiceImpl implements AccountService {
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final AccountMapper accountMapper;
+
 
     @Override
     public Long saveAccount(AccountRequest request) {
@@ -74,6 +79,27 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public Long editAccount(AccountEditRequest request) {
+        Account account = accountRepository.findById(request.getId()).orElseThrow();
+        if(accountRepository.existsByEmailAndIdNot(request.getEmail(), request.getId())) {
+            throw new UniqueException("Email đã tồn tại", "email");
+        }
+        if(accountRepository.existsByUsernameAndIdNot(request.getUsername(), request.getId())) {
+            throw new UniqueException("Tên đăng nhập đã tồn tại", "username");
+        }
+        account.setEmail(request.getEmail());
+        account.setUsername(request.getUsername());
+        if(request.getRole() != null) {
+            Role role = roleRepository.findByName(request.getRole()).orElseThrow();
+            Set<Role> roles = new HashSet<>();
+            roles.add(role);
+            account.setRoles(roles);
+        }
+        accountRepository.save(account);
+        return account.getId();
+    }
+
+    @Override
     public String getUserName(Long id) {
         if(id == null) return "Anonymous";
         Account account = accountRepository.findById(id).orElse(null);
@@ -85,5 +111,18 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository.findById(id).orElseThrow();
         account.setPassword(passwordEncoder.encode(password));
         accountRepository.save(account);
+    }
+
+    @Override
+    public void editDelete(Long id) {
+        Account account = accountRepository.findById(id).orElseThrow();
+        account.setIsDeleted(!account.getIsDeleted());
+        accountRepository.save(account);
+    }
+
+    @Override
+    public List<AccountResponse> findAllByRole(String role) {
+        List<Account> accounts = accountRepository.findAllByRoleName(role);
+        return accounts.stream().map(accountMapper::toAccountResponse).toList();
     }
 }

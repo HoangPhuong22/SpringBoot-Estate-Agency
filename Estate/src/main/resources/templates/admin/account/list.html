@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+        layout:decorate="~{common/admin/page-admin.html}"
+>
+<head>
+    <title>Quản lý tài khoản</title>
+</head>
+<div layout:fragment="content">
+
+    <div class="pagetitle">
+        <h1>Trang chủ</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Danh sách tài khoản</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="container">
+        <h1 class="mb-4">Quản lý tài khoản</h1>
+
+        <ul class="nav nav-tabs" id="accountTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="admin-tab" data-bs-toggle="tab" data-bs-target="#admin" type="button" role="tab" aria-controls="admin" aria-selected="true">
+                    Quản trị viên ([[${accountAdmin.size()}]])
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="staff-tab" data-bs-toggle="tab" data-bs-target="#staff" type="button" role="tab" aria-controls="staff" aria-selected="false">
+                    Nhân viên ([[${accountEmployee.size()}]])
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="customer-tab" data-bs-toggle="tab" data-bs-target="#customer" type="button" role="tab" aria-controls="customer" aria-selected="false">
+                    Khách hàng ([[${accountCustomer.size()}]])
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content mt-3" id="accountTabsContent">
+            <div class="tab-pane fade show active" id="admin" role="tabpanel" aria-labelledby="admin-tab">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Vai trò</th>
+                        <th>Tình trạng</th>
+                        <th>Hành động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="account, index : ${accountAdmin}">
+                        <td th:text="${index.count}"></td>
+                        <td th:text="${account.username}"></td>
+                        <td th:text="${account.email}"></td>
+                        <td>
+                            <span class="badge bg-primary">Quản trị viên</span>
+                        </td>
+                        <td>
+                            <span th:if="${not account.isDeleted}" class="badge bg-success">Hoạt động</span>
+                            <span th:if="${account.isDeleted}" class="badge bg-danger">Ngưng hoạt động</span>
+                        </td>
+                        <td>
+                            <button
+                                    class="btn btn-sm btn-primary btn-edit-account"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editAccountModal"
+                                    th:data-account-id="${account.id}"
+                                    th:data-account-role="${account.roles}"
+                                    th:data-account-username="${account.username}"
+                                    th:data-account-email="${account.email}"
+                            >
+                                <i class="fas fa-edit"></i>
+                                Sửa
+                            </button>
+                            <button
+                                    th:if="${not account.isDeleted}"
+                                    class="btn btn-sm btn-danger btn-delete-account"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#activateAccountModal"
+                                    th:data-id="${account.id}"
+                            >
+                                <i class="fas fa-trash"></i>
+                                Xóa
+                            </button>
+                            <button
+                                    th:if="${account.isDeleted}"
+                                    class="btn btn-sm btn-success btn-active-account"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#activateAccountModal"
+                                    th:data-id="${account.id}"
+                            >
+                                <i class="fas fa-check"></i>
+                                Kích hoạt
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade" id="staff" role="tabpanel" aria-labelledby="staff-tab">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Vai trò</th>
+                        <th>Trạng thái</th>
+                        <th>Tình trạng</th>
+                        <th>Hành động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="account, index : ${accountEmployee}">
+                        <td th:text="${index.count}"></td>
+                        <td th:text="${account.username}"></td>
+                        <td th:text="${account.email}"></td>
+                        <td>
+                            <span class="badge bg-primary">Nhân viên</span>
+                        </td>
+                        <td>
+                            <span th:if="${account.status.equals('Đang làm việc')}" class="badge bg-warning">Đang làm việc</span>
+                            <span th:if="${account.status.equals('Đã nghỉ việc')}" class="badge bg-secondary">Đã nghỉ việc</span>
+                        </td>
+                        <td>
+                            <span th:if="${not account.isDeleted}" class="badge bg-success">Hoạt động</span>
+                            <span th:if="${account.isDeleted}" class="badge bg-danger">Ngưng hoạt động</span>
+                        </td>
+                        <td>
+                            <button
+                                    class="btn btn-sm btn-primary btn-edit-account"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editAccountModal"
+                                    th:data-account-id="${account.id}"
+                                    th:data-account-role="${account.roles}"
+                                    th:data-account-username="${account.username}"
+                                    th:data-account-email="${account.email}"
+                            >
+                                <i class="fas fa-edit"></i>
+                                Sửa
+                            </button>
+                            <button
+                                    th:if="${not account.isDeleted}"
+                                    class="btn btn-sm btn-danger btn-delete-account"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#activateAccountModal"
+                                    th:data-id="${account.id}"
+                            >
+                                <i class="fas fa-trash"></i>
+                                Xóa
+                            </button>
+                            <button
+                                    th:if="${account.isDeleted}"
+                                    class="btn btn-sm btn-success btn-active-account"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#activateAccountModal"
+                                    th:data-id="${account.id}"
+                            >
+                                <i class="fas fa-check"></i>
+                                Kích hoạt
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade" id="customer" role="tabpanel" aria-labelledby="customer-tab">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Vai trò</th>
+                        <th>Tình trạng</th>
+                        <th>Hành động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="account, index : ${accountCustomer}">
+                        <td th:text="${index.count}"></td>
+                        <td th:text="${account.username}"></td>
+                        <td th:text="${account.email}"></td>
+                        <td>
+                            <span class="badge bg-primary">Khách hàng</span>
+                        </td>
+                        <td>
+                            <span th:if="${not account.isDeleted}" class="badge bg-success">Hoạt động</span>
+                            <span th:if="${account.isDeleted}" class="badge bg-danger">Ngưng hoạt động</span>
+                        </td>
+                        <td>
+                            <button
+                                    class="btn btn-sm btn-primary btn-edit-account"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editAccountModal"
+                                    th:data-account-id="${account.id}"
+                                    th:data-account-username="${account.username}"
+                                    th:data-account-email="${account.email}"
+                            >
+                                <i class="fas fa-edit"></i>
+                                Sửa
+                            </button>
+                            <button
+                                    th:if="${not account.isDeleted}"
+                                    class="btn btn-sm btn-danger btn-delete-account"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#activateAccountModal"
+                                    th:data-id="${account.id}"
+                            >
+                                <i class="fas fa-trash"></i>
+                                Xóa
+                            </button>
+                            <button
+                                    th:if="${account.isDeleted}"
+                                    class="btn btn-sm btn-success btn-active-account"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#activateAccountModal"
+                                    th:data-id="${account.id}"
+                            >
+                                <i class="fas fa-check"></i>
+                                Kích hoạt
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editAccountModal" tabindex="-1" aria-labelledby="editAccountModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editAccountModalLabel">Sửa Tài Khoản</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editAccountForm">
+                        <input type="hidden" name="id" id="accountId" />
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Tên đăng nhập</label>
+                            <input type="text" class="form-control" id="username">
+                            <div id="usernameError" class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email">
+                            <div id="emailError" class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-3" id="select-role">
+                            <label for="role" class="form-label">Vai trò</label>
+                            <select class="form-select" id="role" required>
+                                <option value="">Chọn vai trò</option>
+                                <option value="ADMIN">Admin</option>
+                                <option value="EMPLOYEE">Nhân viên</option>
+                                <option value="CUSTOMER">Khách hàng</option>
+                            </select>
+                            <div id="roleError" class="invalid-feedback"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="btn-edit-account">Lưu thay đổi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Xóa, Xác nhận kích hoạt tài khoản -->
+    <div class="modal fade" id="activateAccountModal" tabindex="-1" aria-labelledby="activateAccountModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf-account-action" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="activateAccountModalLabel">Xác nhận kích hoạt tài khoản</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn có chắc chắn muốn kích hoạt lại tài khoản này không?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="btn-confirm-action">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        $('.btn-edit-account').click(function () {
+            const accountId = $(this).data('account-id');
+            const accountUsername = $(this).data('account-username');
+            const accountEmail = $(this).data('account-email');
+            const accountRole = $(this).data('account-role');
+            $('#editAccountModal #username').val(accountUsername);
+            $('#editAccountModal #email').val(accountEmail);
+            $('#editAccountModal #accountId').val(accountId);
+
+            if(accountRole == null) {
+                $('#select-role').hide();
+            } else {
+                $('#editAccountModal #role').val(accountRole);
+                $('#select-role').show();
+            }
+        });
+
+        $('#btn-edit-account').click(function () {
+            const data = {
+                id : $('#editAccountModal #accountId').val(),
+                username: $('#editAccountModal #username').val(),
+                email: $('#editAccountModal #email').val(),
+                role: $('#editAccountModal #role').val()
+            };
+            const csrfToken = $('#csrf-account-action').val();
+            $('.invalid-feedback').text('').hide();
+            $.ajax({
+                url: '/api/account/edit',
+                type: 'PUT',
+                contentType: 'application/json',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                data: JSON.stringify(data),
+                success: function () {
+                    alert('Thực hiện thành công');
+                    window.location.reload();
+                },
+                error: function (error) {
+                    console.log(error);
+                    const errors = error.responseJSON.data;
+                    $.each(errors, function (key, value) {
+                        $(`#${key}Error`).text(value).show();
+                    });
+                }
+            });
+        });
+
+        let accountId;
+        $('.btn-delete-account').click(function () {
+            accountId = $(this).data('id');
+            $('#activateAccountModalLabel').text('Xác nhận xóa tài khoản');
+            $('#activateAccountModal .modal-body p').text('Bạn có chắc chắn muốn xóa tài khoản này không?');
+        });
+        $('.btn-active-account').click(function () {
+            accountId = $(this).data('id');
+            $('#activateAccountModalLabel').text('Xác nhận kích hoạt tài khoản');
+            $('#activateAccountModal .modal-body p').text('Bạn có chắc chắn muốn kích hoạt lại tài khoản này không?');
+        });
+
+        $('#btn-confirm-action').click(function () {
+            console.log(accountId);
+            const csrfToken = $('#csrf-account-action').val();
+            // Gọi API xóa hoặc kích hoạt tài khoản
+            $.ajax({
+                url: '/api/account/edit-delete/' + accountId,
+                type: 'PATCH',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                success: function (result) {
+                    alert('Thực hiện thành công');
+                    window.location.reload();
+                },
+                error: function (error) {
+                    console.log(error);
+                    alert('Thực hiện thất bại');
+                }
+            });
+        });
+    </script>
+</div>

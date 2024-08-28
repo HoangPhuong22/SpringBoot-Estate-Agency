@@ -25,4 +25,5 @@ public class PropertySearchDTO {
     private Integer pageNo;
     private Integer pageSize;
     private Long customerId;
+    private Integer isDeleted;
 }

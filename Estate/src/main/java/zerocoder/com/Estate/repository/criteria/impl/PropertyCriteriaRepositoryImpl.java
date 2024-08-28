@@ -64,6 +64,7 @@ public class PropertyCriteriaRepositoryImpl implements PropertyCriteriaRepositor
                     case "salePrice" -> predicates.add(cb.greaterThan(root.get("salePrice"), Long.parseLong((String) data)));
                     case "rentPrice" -> predicates.add(cb.greaterThan(root.get("rentPrice"), Long.parseLong((String) data)));
                     case "customerId" -> predicates.add(cb.equal(customerJoin.get("id"), data));
+                    case "isDeleted" -> predicates.add(cb.equal(root.get("isDeleted"), false));
                 }
             } catch (Exception e) {
                 log.error("Error occurred while accessing field: {}", e.getMessage());
@@ -75,7 +76,7 @@ public class PropertyCriteriaRepositoryImpl implements PropertyCriteriaRepositor
                         root.get("updatedAt")),
                         cb.desc(root.get("createdAt")),
                         cb.asc(root.get("name"))
-                );
+                ).distinct(true);
         Integer pageNo = searchDTO.getPageNo();
         Integer pageSize = searchDTO.getPageSize();
 

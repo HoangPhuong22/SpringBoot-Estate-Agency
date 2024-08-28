@@ -36,9 +36,13 @@ public class PropertyController {
     @GetMapping
     public String index(@RequestParam Map<String,String> params, Model model) {
         PropertySearchDTO searchDTO = SearchUtils.propertySearchDTO(params);
-        if(securityUtils.getRole().equals("CUSTOMER")) {
+        String role = securityUtils.getRole();
+        if(role.equals("CUSTOMER")) {
             Long customerId = securityUtils.getPrincipal().getCustomer().getId();
             searchDTO.setCustomerId(customerId);
+        }
+        if(role.equals("EMPLOYEE")) {
+            searchDTO.setIsDeleted(0);
         }
         PageResponse<?> pageResponse = propertyService.findPropertiesAndSearch(searchDTO);
         List<PropertyResponse> properties = (List<PropertyResponse>) pageResponse.getContent();
