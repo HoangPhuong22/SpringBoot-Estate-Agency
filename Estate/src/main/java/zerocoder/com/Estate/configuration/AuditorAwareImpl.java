@@ -19,6 +19,9 @@ public class AuditorAwareImpl implements AuditorAware<Long> {
     @NonNull
     public Optional<Long> getCurrentAuditor() {
         Account account = securityUtils.getPrincipal();
+        if(account == null) {
+            return Optional.empty();
+        }
         return Optional.of(account.getId());
     }
 }

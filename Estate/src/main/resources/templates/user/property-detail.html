@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{common/user/page-user.html}"
+>
+<head>
+    <title>Chi tiết tài sản</title>
+</head>
+
+<div layout:fragment="content">
+    <!-- ======= Intro Single ======= -->
+    <section class="intro-single">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-lg-8">
+                    <div class="title-single-box">
+                        <h1 class="title-single" th:text="${property.name}"></h1>
+                        <span class="color-text-a" th:text="${property.ward} + ', ' + ${property.district} + ', ' + ${property.city} + ', ' + ${property.address}"></span>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-4">
+                    <nav aria-label="breadcrumb" class="breadcrumb-box d-flex justify-content-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="/">Trang chủ</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="/property">Tài sản</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                               Chi tiết
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section><!-- End Intro Single-->
+
+    <!-- ======= Property Single ======= -->
+    <section class="property-single nav-arrow-b">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div id="property-single-carousel" class="swiper">
+                        <div class="swiper-wrapper">
+                            <div class="carousel-item-b swiper-slide">
+                                <img src="/user/assets/img/slide-1.jpg" alt="">
+                            </div>
+                            <div class="carousel-item-b swiper-slide">
+                                <img src="/user/assets/img/slide-2.jpg" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="property-single-carousel-pagination carousel-pagination"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <div class="row justify-content-between">
+                        <div class="col-md-5 col-lg-4">
+                            <div class="property-price d-flex justify-content-center foo">
+                                <div class="card-header-c d-flex">
+                                    <div class="card-box-ico">
+                                        <span class="bi bi-cash"></span>
+                                    </div>
+                                    <div class="card-title-c align-self-center">
+                                        <h5 class="title-c" th:text="${T(zerocoder.com.Estate.utils.MoneyUtils).formatMoney(property.salePrice)}"></h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="property-summary">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="title-box-d section-t4">
+                                            <h3 class="title-d">Thông tin chi tiết</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="summary-list">
+                                    <ul class="list">
+                                        <li class="d-flex justify-content-between">
+                                            <strong>Code:</strong>
+                                            <span th:text="${property.code}"></span>
+                                        </li>
+                                        <li class="d-flex justify-content-between">
+                                            <strong>Địa chỉ:</strong>
+                                            <span th:text="${property.ward} + ', ' + ${property.district} + ', ' + ${property.city} + ', ' + ${property.address}"></span>
+                                        </li>
+                                        <li class="d-flex justify-content-between">
+                                            <strong>Loại:</strong>
+                                            <span th:text="${property.type.description}"></span>
+                                        </li>
+                                        <li class="d-flex justify-content-between">
+                                            <strong>Năm xây dựng:</strong>
+                                            <span th:text="${property.builtYear}"></span>
+                                        </li>
+                                        <li class="d-flex justify-content-between">
+                                            <strong>Số tầng:</strong>
+                                            <span th:text="${property.floor}"></span>
+                                        </li>
+                                        <li class="d-flex justify-content-between">
+                                            <strong>Hướng:</strong>
+                                            <span th:text="${property.direction.description}"></span>
+                                        </li>
+                                        <li class="d-flex justify-content-between">
+                                            <strong>Diện tích:</strong>
+                                            <span th:text="${property.area} + ' m2'"></span>
+                                        </li>
+                                        <li class="d-flex justify-content-between">
+                                            <strong>Phòng ngủ:</strong>
+                                            <span th:text="${property.bedRooms}"></span>
+                                        </li>
+                                        <li class="d-flex justify-content-between">
+                                            <strong>Phòng tắm:</strong>
+                                            <span th:text="${property.bathRooms}"></span>
+                                        </li>
+                                        <li class="d-flex justify-content-between">
+                                            <strong>Tiện ích:</strong>
+                                            <span th:text="${property.amenityIds.size()}"></span>
+                                        </li>
+                                        <li class="d-flex justify-content-between">
+                                            <strong>Giá thuê:</strong>
+                                            <span th:text="${T(zerocoder.com.Estate.utils.MoneyUtils).formatMoney(property.rentPrice)}"></span>
+                                        </li>
+                                        <li class="d-flex justify-content-between">
+                                            <strong>Giá bán:</strong>
+                                            <span th:text="${T(zerocoder.com.Estate.utils.MoneyUtils).formatMoney(property.salePrice)}"></span>
+                                        </li>
+                                        <li class="d-flex justify-content-between">
+                                            <strong class="text-color">Trạng thái:</strong>
+                                            <span th:text="${property.status.description}"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7 col-lg-7 section-md-t3">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="title-box-d">
+                                        <h3 class="title-d">Mô tả</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="property-description">
+                                <p class="description color-text-a" th:text="${property.description}"></p>
+                            </div>
+                            <div class="row section-t3">
+                                <div class="col-sm-12">
+                                    <div class="title-box-d">
+                                        <h3 class="title-d">Tiện ích</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="amenities-list color-text-a">
+                                <div th:if="${amenities.size() == 0}" class="alert alert-danger">
+                                    Không có tiện ích nào
+                                </div>
+                                <ul class="list-a no-margin">
+                                    <li th:each="amenity : ${amenities}" th:text="${amenity.name}">
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="row section-t3">
+                        <div class="col-sm-12">
+                            <div class="title-box-d">
+                                <h3 class="title-d">Liên hệ với chúng tôi</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12-md col-lg-8">
+                            <div class="property-contact">
+                                <form id="form-add-customer">
+                                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf"/>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-10">
+                                            <input id="fullNameCustomer" type="text" class="form-control form-control-lg" placeholder="Nhập tên VD: (Nguyễn Văn A,...)">
+                                            <div id="fullNameError" class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-10">
+                                            <input id="phoneCustomer" type="text" class="form-control form-control-lg" placeholder="Nhập số điện thoại. VD: (0987654321,...)">
+                                            <div id="phoneError" class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-10">
+                                            <input id="addressCustomer" type="text" class="form-control form-control-lg" placeholder="Nhập địa chỉ. VD: (Hà Nội,...)">
+                                            <div id="addressError" class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-10">
+                                            <select id="genderCustomer" class="form-select form-select-lg">
+                                                <option value="">Chọn giới tính</option>
+                                                <option value="MALE">Nam</option>
+                                                <option value="FEMALE">Nữ</option>
+                                                <option value="OTHER">Khác</option>
+                                            </select>
+                                            <div id="genderError" class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-10">
+                                            <input id="birthDayCustomer" type="date" class="form-control form-control-lg">
+                                            <div id="birthDayError" class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-10">
+                                            <input id="demandCustomer" type="text" class="form-control form-control-lg" placeholder="Nhập nhu cầu. VD: (Nhà ở,...)">
+                                            <div id="demandError" class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 text-center">
+                                        <button type="submit" class="btn btn-a">Gửi</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        $('#form-add-customer').submit(function (e) {
+            e.preventDefault();
+            const data = {
+                fullName: $('#fullNameCustomer').val(),
+                phone: $('#phoneCustomer').val(),
+                address: $('#addressCustomer').val(),
+                demand: $('#demandCustomer').val(),
+                gender: $('#genderCustomer').val(),
+                birthDay: $('#birthDayCustomer').val(),
+            }
+            const csrf = $('#csrf').val();
+            $('.invalid-feedback').hide().text('');
+            $.ajax({
+                type: 'POST',
+                url: '/user/customer/add',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                },
+                success: function (response) {
+                    alert('Gửi yêu cầu thành công');
+                    location.reload();
+                },
+                error: function (error) {
+                    const erros = error.responseJSON.data;
+                    $.each(erros, function (key, value) {
+                        $(`#${key}Error`).text(value).show();
+                    });
+                }
+            })
+        });
+    </script>
+</div>

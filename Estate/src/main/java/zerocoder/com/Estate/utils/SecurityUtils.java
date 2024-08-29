@@ -10,8 +10,12 @@ public class SecurityUtils {
 
     public Account getPrincipal() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication.isAuthenticated()) {
-            return (Account) authentication.getPrincipal();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof Account) {
+            return (Account) principal;
         } else {
             return null;
         }

@@ -135,9 +135,10 @@ CREATE TABLE customer (
 	account_id BIGINT REFERENCES account(id),
     code VARCHAR(50) UNIQUE NOT NULL, -- Mã khách hàng (VD: "CUST001")
     full_name VARCHAR(100), -- Họ tên khách hàng (VD: "Nguyễn Văn A")
-    email VARCHAR(255) UNIQUE, -- Email (VD: "nguyenvana@example.com")
+    email VARCHAR(255), -- Email (VD: "nguyenvana@example.com")
     phone VARCHAR(20), -- Số điện thoại (VD: "0901234567")
     address TEXT, -- Địa chỉ (VD: "123 Đường ABC, Quận 1, TP.HCM")
+	demand TEXT, -- nhu cầu
     birth_date DATE, -- Ngày sinh (VD: "1990-01-01")
     id_number VARCHAR(20) UNIQUE, -- CMND/CCCD (VD: "123456789")
     type customer_type, -- Loại khách hàng (VD: "Cá nhân", "Doanh nghiệp")

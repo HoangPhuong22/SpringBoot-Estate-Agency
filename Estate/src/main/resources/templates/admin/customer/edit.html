@@ -57,6 +57,13 @@
                             </div>
                         </div>
                         <div class="row mb-3">
+                            <label for="demandCustomer" class="col-sm-2 col-form-label">Yêu cầu</label>
+                            <div class="col-sm-10">
+                                <input th:value="${customer.demand}"  id="demandCustomer" type="text" class="form-control" placeholder="Nhập yêu cầu. VD: (Nhà ở,...)">
+                                <div id="demandError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
                             <label for="addressCustomer" class="col-sm-2 col-form-label">Địa chỉ</label>
                             <div class="col-sm-10">
                                 <input id="addressCustomer" th:value="${customer.address}" type="text" class="form-control" placeholder="Nhập địa chỉ. VD: (Hà Nội,...)">
@@ -438,6 +445,7 @@
                 phone: $('#phoneCustomer').val(),
                 address: $('#addressCustomer').val(),
                 gender: $('#genderCustomer').val(),
+                demand: $('#demandCustomer').val(),
                 birthDay: $('#birthDayCustomer').val(),
                 idNumber: $('#idNumberCustomer').val(),
                 type: $('#typeCustomer').val(),

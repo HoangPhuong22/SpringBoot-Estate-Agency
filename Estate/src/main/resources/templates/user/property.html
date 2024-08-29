@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{common/user/page-user.html}"
+>
+<head>
+    <title>Danh sách tài sản</title>
+</head>
+
+<div layout:fragment="content">
+    <section class="intro-single">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-lg-8">
+                    <div class="title-single-box">
+                        <h1 class="title-single">Tất cả bất động sản đang có</h1>
+                        <span class="color-text-a">
+                            Tất cả bất động sản đang có trên thị trường. Hãy chọn cho mình một căn nhà ưng ý nhất.
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-4">
+                    <nav aria-label="breadcrumb" class="breadcrumb-box d-flex justify-content-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="/admin">Trang chủ</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                Tài sản
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section><!-- End Intro Single-->
+
+    <!-- ======= Property Grid ======= -->
+    <section class="property-grid grid">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="grid-option">
+                        <form id="selectForm">
+                            <select class="custom-select" name="sort" id="select-sort-search">
+                                <option selected>Tất cả</option>
+                                <option value="updatedAt:desc" th:selected="${#strings.equals(param.sort, 'updatedAt:desc')}">Mới nhất</option>
+                                <option value="salePrice:asc" th:selected="${#strings.equals(param.sort, 'salePrice:asc')}">Giá thấp nhất</option>
+                                <option value="salePrice:desc" th:selected="${#strings.equals(param.sort, 'salePrice:desc')}">Giá cao nhất</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="alert alert-danger" th:if="${properties.size() == 0}">
+                        Không tìm thấy bất động sản nào
+                    </div>
+                    <div class="alert alert-success" th:if="${properties.size() > 0}">
+                        Tìm thấy [[${pageResponse.totalElements}]] bất động sản
+                    </div>
+                </div>
+                <div class="col-md-4" th:each="property, index : ${properties}">
+                    <div class="card-box-a card-shadow">
+                        <div class="img-box-a">
+                            <img src="/user/assets/img/property-1.jpg" alt="" class="img-a img-fluid">
+                        </div>
+                        <div class="card-overlay">
+                            <div class="card-overlay-a-content">
+                                <div class="card-header-a">
+                                    <h2 class="card-title-a">
+                                        <a th:href="@{'/property/' + ${property.id}}" th:text="${property.name}"></a>
+                                    </h2>
+                                </div>
+                                <div class="card-body-a">
+                                    <div class="price-box d-flex">
+                                        <span class="price-a" th:text="${'Giá bán | ' + T(zerocoder.com.Estate.utils.MoneyUtils).formatMoney(property.salePrice)}"></span>
+                                    </div>
+                                    <div class="price-box d-flex">
+                                        <span class="price-a" th:text="${'Giá thuê | ' + T(zerocoder.com.Estate.utils.MoneyUtils).formatMoney(property.rentPrice)}"></span>
+                                    </div>
+                                    <a th:href="@{'/property/' + ${property.id}}" class="link-a">
+                                        Bấm vào đây để xem chi tiết
+                                        <span class="bi bi-chevron-right"></span>
+                                    </a>
+                                </div>
+                                <div class="card-footer-a">
+                                    <ul class="card-info d-flex justify-content-around">
+                                        <li>
+                                            <h4 class="card-info-title">Diện tích</h4>
+                                            <span th:text="${property.area} + ' m²'">
+                                                <sup>2</sup>
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <h4 class="card-info-title">Phòng ngủ</h4>
+                                            <span th:text="${property.bedRooms}"></span>
+                                        </li>
+                                        <li>
+                                            <h4 class="card-info-title">Phòng tắm</h4>
+                                            <span th:text="${property.bathRooms}"></span>
+                                        </li>
+                                        <li>
+                                            <h4 class="card-info-title">Tiện ích</h4>
+                                            <span th:text="${property.amenityIds.size()}"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="card-body" th:if="${pageResponse.totalPages > 1}">
+                    <nav class="pagination-a">
+                        <ul class="pagination justify-content-end">
+                            <li class="page-item" th:classappend="${pageResponse.pageNo <= 1} ? 'disabled' : ''">
+                                <a class="page-link" th:href="@{'?pageNo=' + ${pageResponse.pageNo - 1}}" aria-label="Previous" th:data-page="${pageResponse.pageNo - 1}">
+                                    <span class="bi bi-chevron-left"></span>
+                                </a>
+                            </li>
+                            <li
+                                    class="page-item"
+                                    th:each="item: ${pageRange}"
+                                    th:classappend="${item == pageResponse.pageNo} ? 'active' : ''"
+                            >
+                                <a class="page-link" th:href="@{'?pageNo=' + ${item}}" th:data-page="${item}">[[${item}]]</a>
+                            </li>
+                            <li class="page-item next" th:classappend="${pageResponse.pageNo >= pageResponse.totalPages} ? 'disabled' : ''">
+                                <a class="page-link" th:href="@{'?pageNo=' + ${pageResponse.pageNo + 1}}" aria-label="Next" th:data-page="${pageResponse.pageNo + 1}">
+                                    <span class="bi bi-chevron-right"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        $('#select-sort-search').change(function () {
+            const sort = $(this).val();
+            let url = new URL(window.location.href);
+            if (url.search) {
+                url.searchParams.set('sort', sort);
+            } else {
+                url.search = `sort=${sort}`;
+            }
+            window.location.href = url.toString();
+        });
+    </script>
+</div>

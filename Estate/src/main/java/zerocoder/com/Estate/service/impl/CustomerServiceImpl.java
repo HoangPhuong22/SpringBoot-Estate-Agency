@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import zerocoder.com.Estate.dto.request.AssignmentRequest;
 import zerocoder.com.Estate.dto.request.CustomerRequest;
+import zerocoder.com.Estate.dto.request.CustomerUserRequest;
 import zerocoder.com.Estate.dto.response.CustomerResponse;
 import zerocoder.com.Estate.dto.response.PageResponse;
 import zerocoder.com.Estate.dto.search.CustomerSearchDTO;
@@ -30,12 +31,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Long addCustomer(CustomerRequest customerRequest) {
-        if(customerRepository.existsByEmail(customerRequest.getEmail())) {
-            throw new UniqueException("Email đã tồn tại", "email");
-        }
-        if(customerRepository.existsByPhone(customerRequest.getPhone())) {
-            throw new UniqueException("Số điện thoại đã tồn tại", "phone");
-        }
         if(customerRepository.existsByIdNumber(customerRequest.getIdNumber())) {
             throw new UniqueException("Số chứng minh nhân dân đã tồn tại", "idNumber");
         }
@@ -45,15 +40,16 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public Long addCustomer(CustomerUserRequest customerRequest) {
+        Customer customer = customerMapper.toCustomer(customerRequest);
+        customerRepository.save(customer);
+        return customer.getId();
+    }
+
+    @Override
     public Long updateCustomer(CustomerRequest customerRequest) {
         Customer customer = customerRepository.findById(customerRequest.getId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy khách hàng"));
-        if(customerRepository.existsByEmailAndIdNot(customerRequest.getEmail(), customerRequest.getId())) {
-            throw new UniqueException("Email đã tồn tại", "email");
-        }
-        if(customerRepository.existsByPhoneAndIdNot(customerRequest.getPhone(), customerRequest.getId())) {
-            throw new UniqueException("Số điện thoại đã tồn tại", "phone");
-        }
         if(customerRepository.existsByIdNumberAndIdNot(customerRequest.getIdNumber(), customerRequest.getId())) {
             throw new UniqueException("Số chứng minh nhân dân đã tồn tại", "idNumber");
         }

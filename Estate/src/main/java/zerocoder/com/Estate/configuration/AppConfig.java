@@ -19,7 +19,13 @@ public class AppConfig {
     private final CustomUserDetailService userDetailsService;
     private final FailureHandler failureHandler;
 
-    private String[] WHITE_LIST = {"/", "/auth/**", "/admin/assets/**", "/user/assets/**"};
+    private String[] WHITE_LIST = {
+            "/", "/user/customer/add",
+            "/property/**", "/contact",
+            "/about", "/auth/**",
+            "/admin/assets/**",
+            "/user/assets/**"
+    };
     private String[] ADMIN_LIST = {
             "/admin",
             "/api/employee/**",

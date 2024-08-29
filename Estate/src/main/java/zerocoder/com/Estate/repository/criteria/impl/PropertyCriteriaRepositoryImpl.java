@@ -11,6 +11,7 @@ import zerocoder.com.Estate.model.Contract;
 import zerocoder.com.Estate.model.Customer;
 import zerocoder.com.Estate.model.Property;
 import zerocoder.com.Estate.repository.criteria.PropertyCriteriaRepository;
+import zerocoder.com.Estate.utils.SearchUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class PropertyCriteriaRepositoryImpl implements PropertyCriteriaRepositor
         if(searchDTO.getPageNo() == null) {
             searchDTO.setPageNo(1);
         }
-        searchDTO.setPageSize(1);
+        searchDTO.setPageSize(6);
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Property> query = cb.createQuery(Property.class);
         Root<Property> root = query.from(Property.class);
@@ -70,13 +71,28 @@ public class PropertyCriteriaRepositoryImpl implements PropertyCriteriaRepositor
                 log.error("Error occurred while accessing field: {}", e.getMessage());
             }
         }
+
         query.select(root)
                 .where(predicates.toArray(new Predicate[0]))
-                .orderBy(cb.desc(
-                        root.get("updatedAt")),
-                        cb.desc(root.get("createdAt")),
-                        cb.asc(root.get("name"))
-                ).distinct(true);
+                .distinct(true);
+
+        if (searchDTO.getSort() != null && !searchDTO.getSort().isEmpty()) {
+            String[] sortParams = searchDTO.getSort().split("\\:");
+            String sortField = sortParams[0];
+            String sortDirection = sortParams.length > 1 ? sortParams[1] : "asc";
+            if(SearchUtils.getFieldName(Property.class).contains(sortField)) {
+                if ("desc".equalsIgnoreCase(sortDirection)) {
+                    query.orderBy(cb.desc(root.get(sortField)));
+                } else {
+                    query.orderBy(cb.asc(root.get(sortField)));
+                }
+            }
+        } else {
+            query.orderBy(cb.desc(root.get("updatedAt")),
+                    cb.desc(root.get("createdAt")),
+                    cb.asc(root.get("name")));
+        }
+
         Integer pageNo = searchDTO.getPageNo();
         Integer pageSize = searchDTO.getPageSize();
 

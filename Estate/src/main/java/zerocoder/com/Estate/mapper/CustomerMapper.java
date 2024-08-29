@@ -3,6 +3,7 @@ package zerocoder.com.Estate.mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import zerocoder.com.Estate.dto.request.CustomerRequest;
+import zerocoder.com.Estate.dto.request.CustomerUserRequest;
 import zerocoder.com.Estate.dto.response.CustomerResponse;
 import zerocoder.com.Estate.enums.CustomerStatus;
 import zerocoder.com.Estate.enums.CustomerType;
@@ -18,7 +19,7 @@ import zerocoder.com.Estate.utils.SecurityUtils;
 @RequiredArgsConstructor
 public class CustomerMapper {
 
-    private final SecurityUtils securityUtils;
+
     private final AccountService accountService;
 
     public Customer toCustomer(CustomerRequest customerRequest) {
@@ -29,11 +30,25 @@ public class CustomerMapper {
                 .email(customerRequest.getEmail())
                 .phone(customerRequest.getPhone())
                 .address(customerRequest.getAddress())
+                .demand(customerRequest.getDemand())
                 .type(CustomerType.valueOf(customerRequest.getType()))
                 .birthDay(customerRequest.getBirthDay())
                 .idNumber(customerRequest.getIdNumber())
                 .gender(Gender.valueOf(customerRequest.getGender()))
                 .status(CustomerStatus.valueOf(customerRequest.getStatus()))
+                .build();
+    }
+    public Customer toCustomer(CustomerUserRequest customerRequest) {
+        String code = "KH" + System.currentTimeMillis();
+        return Customer.builder()
+                .code(code)
+                .fullName(customerRequest.getFullName())
+                .phone(customerRequest.getPhone())
+                .address(customerRequest.getAddress())
+                .demand(customerRequest.getDemand())
+                .birthDay(customerRequest.getBirthDay())
+                .gender(Gender.valueOf(customerRequest.getGender()))
+                .status(CustomerStatus.PENDING)
                 .build();
     }
     public CustomerResponse toCustomerResponse(Customer customer) {
@@ -47,6 +62,7 @@ public class CustomerMapper {
                 .status(customer.getStatus())
                 .type(customer.getType())
                 .birthDay(customer.getBirthDay())
+                .demand(customer.getDemand())
                 .gender(customer.getGender())
                 .createdBy(accountService.getUserName(customer.getCreatedBy()))
                 .updatedBy(accountService.getUserName(customer.getUpdatedBy()))
@@ -62,6 +78,7 @@ public class CustomerMapper {
         customer.setEmail(customerRequest.getEmail());
         customer.setPhone(customerRequest.getPhone());
         customer.setAddress(customerRequest.getAddress());
+        customer.setDemand(customerRequest.getDemand());
         customer.setType(CustomerType.valueOf(customerRequest.getType()));
         customer.setBirthDay(customerRequest.getBirthDay());
         customer.setIdNumber(customerRequest.getIdNumber());

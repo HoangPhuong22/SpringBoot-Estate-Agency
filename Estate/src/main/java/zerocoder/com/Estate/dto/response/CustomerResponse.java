@@ -21,6 +21,7 @@ public class CustomerResponse extends AbstractResponse implements Serializable {
     private String phone;
     private String idNumber;
     private String address;
+    private String demand;
     private Gender gender;
     private CustomerStatus status;
     private CustomerType type;

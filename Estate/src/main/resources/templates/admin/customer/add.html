@@ -81,6 +81,13 @@
                             </div>
                         </div>
                         <div class="row mb-3">
+                            <label for="demandCustomer" class="col-sm-2 col-form-label">Yêu cầu</label>
+                            <div class="col-sm-10">
+                                <input id="demandCustomer" type="text" class="form-control" placeholder="Nhập yêu cầu. VD: (Nhà ở,...)">
+                                <div id="demandError" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
                             <label for="idNumberCustomer" class="col-sm-2 col-form-label">Số CMND</label>
                             <div class="col-sm-10">
                                 <input id="idNumberCustomer" type="text" class="form-control" placeholder="Nhập số CMND. VD: (123456789,...)">
@@ -120,6 +127,7 @@
                 email: $('#emailCustomer').val(),
                 phone: $('#phoneCustomer').val(),
                 address: $('#addressCustomer').val(),
+                demand: $('#demandCustomer').val(),
                 gender: $('#genderCustomer').val(),
                 birthDay: $('#birthDayCustomer').val(),
                 idNumber: $('#idNumberCustomer').val(),

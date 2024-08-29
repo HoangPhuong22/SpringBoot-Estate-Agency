@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{common/user/page-user.html}"
+>
+<head>
+    <title>Liên hệ</title>
+</head>
+
+<div layout:fragment="content">
+    <!-- ======= Intro Single ======= -->
+    <section class="intro-single">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-lg-8">
+                    <div class="title-single-box">
+                        <h1 class="title-single">Liên Hệ Với Chúng Tôi</h1>
+                        <span class="color-text-a">
+                            Chúng tôi luôn sẵn sàng lắng nghe và đáp ứng nhu cầu của bạn. Dịch vụ của chúng tôi mang đến giải pháp toàn diện cho mọi yêu cầu và mong muốn, với sự tận tâm và chuyên nghiệp cao nhất. Đừng ngần ngại liên hệ với chúng tôi để được hỗ trợ kịp thời và giải đáp mọi thắc mắc của bạn. Chúng tôi cam kết mang đến sự hài lòng tối đa và trải nghiệm dịch vụ tốt nhất.
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-4">
+                    <nav aria-label="breadcrumb" class="breadcrumb-box d-flex justify-content-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="/">Trang chủ</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                Liên hệ
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section><!-- End Intro Single-->
+
+    <!-- ======= Contact Single ======= -->
+    <section class="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="contact-map box">
+                        <div id="map" class="contact-map">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d29793.9884588654!2d105.81636405839674!3d21.02273835997583!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab9bd9861ca1%3A0xe7887f7b72ca17a9!2zSMOgIE7hu5lpLCBWaeG7h3QgTmFt!5e0!3m2!1svi!2s!4v1724813314649!5m2!1svi!2s" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 section-t8">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <form id="form-add-customer">
+                                <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf"/>
+                                <div class="row mb-3">
+                                    <div class="col-sm-10">
+                                        <input id="fullNameCustomer" type="text" class="form-control form-control-lg" placeholder="Nhập tên VD: (Nguyễn Văn A,...)">
+                                        <div id="fullNameError" class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-10">
+                                        <input id="phoneCustomer" type="text" class="form-control form-control-lg" placeholder="Nhập số điện thoại. VD: (0987654321,...)">
+                                        <div id="phoneError" class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-10">
+                                        <input id="addressCustomer" type="text" class="form-control form-control-lg" placeholder="Nhập địa chỉ. VD: (Hà Nội,...)">
+                                        <div id="addressError" class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-10">
+                                        <select id="genderCustomer" class="form-select form-select-lg">
+                                            <option value="">Chọn giới tính</option>
+                                            <option value="MALE">Nam</option>
+                                            <option value="FEMALE">Nữ</option>
+                                            <option value="OTHER">Khác</option>
+                                        </select>
+                                        <div id="genderError" class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-10">
+                                        <input id="birthDayCustomer" type="date" class="form-control form-control-lg">
+                                        <div id="birthDayError" class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-10">
+                                        <input id="demandCustomer" type="text" class="form-control form-control-lg" placeholder="Nhập nhu cầu. VD: (Nhà ở,...)">
+                                        <div id="demandError" class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-a">Gửi</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-5 section-md-t3">
+                            <div class="icon-box section-b2">
+                                <div class="icon-box-icon">
+                                    <span class="bi bi-envelope"></span>
+                                </div>
+                                <div class="icon-box-content table-cell">
+                                    <div class="icon-box-title">
+                                        <h4 class="icon-title">Xin hãy liên hệ</h4>
+                                    </div>
+                                    <div class="icon-box-content">
+                                        <p class="mb-1">Email.
+                                            <span class="color-a">contact@example.com</span>
+                                        </p>
+                                        <p class="mb-1">Điện thoại.
+                                            <span class="color-a">+54 356 945234</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="icon-box section-b2">
+                                <div class="icon-box-icon">
+                                    <span class="bi bi-geo-alt"></span>
+                                </div>
+                                <div class="icon-box-content table-cell">
+                                    <div class="icon-box-title">
+                                        <h4 class="icon-title">Địa chỉ</h4>
+                                    </div>
+                                    <div class="icon-box-content">
+                                        <p class="mb-1">
+                                            292 Nguyễn Đình Chính, Phường 11, Quận Phú Nhuận, TP.HCM
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="icon-box">
+                                <div class="icon-box-icon">
+                                    <span class="bi bi-share"></span>
+                                </div>
+                                <div class="icon-box-content table-cell">
+                                    <div class="icon-box-title">
+                                        <h4 class="icon-title">Social networks</h4>
+                                    </div>
+                                    <div class="icon-box-content">
+                                        <div class="socials-footer">
+                                            <ul class="list-inline">
+                                                <li class="list-inline-item">
+                                                    <a href="#" class="link-one">
+                                                        <i class="bi bi-facebook" aria-hidden="true"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="list-inline-item">
+                                                    <a href="#" class="link-one">
+                                                        <i class="bi bi-twitter" aria-hidden="true"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="list-inline-item">
+                                                    <a href="#" class="link-one">
+                                                        <i class="bi bi-instagram" aria-hidden="true"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="list-inline-item">
+                                                    <a href="#" class="link-one">
+                                                        <i class="bi bi-linkedin" aria-hidden="true"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        $('#form-add-customer').submit(function (e) {
+            e.preventDefault();
+            const data = {
+                fullName: $('#fullNameCustomer').val(),
+                phone: $('#phoneCustomer').val(),
+                address: $('#addressCustomer').val(),
+                demand: $('#demandCustomer').val(),
+                gender: $('#genderCustomer').val(),
+                birthDay: $('#birthDayCustomer').val(),
+            }
+            const csrf = $('#csrf').val();
+            $('.invalid-feedback').hide().text('');
+            $.ajax({
+                type: 'POST',
+                url: '/user/customer/add',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                },
+                success: function () {
+                    alert('Gửi yêu cầu thành công');
+                    location.reload();
+                },
+                error: function (error) {
+                    const erros = error.responseJSON.data;
+                    $.each(erros, function (key, value) {
+                        $(`#${key}Error`).text(value).show();
+                    });
+                }
+            })
+        });
+    </script>
+</div>

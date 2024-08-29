@@ -9,29 +9,33 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
         <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN')">
-            <a class="nav-link collapsed" href="/admin">
+            <a class="nav-link" href="/admin" th:classappend="${servletPath != '/admin' ? 'collapsed' : ''}">
                 <i class="bi bi-grid"></i>
                 <span>Trang chủ</span>
             </a>
         </li>
         <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN')">
-            <a class="nav-link collapsed" href="/admin/account">
+            <a class="nav-link" href="/admin/account" th:classappend="${servletPath != '/admin/account' ? 'collapsed' : ''}">
                 <i class="bi bi-person-vcard"></i>
                 <span>Tài khoản</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+            <a class="nav-link" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#"
+               th:classappend="${servletPath != '/admin/property' && servletPath != '/admin/amenity' ? 'collapsed' : ''}"
+            >
                 <i class="bi bi-menu-button-wide"></i><span>Bất động sản</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav"
+                th:classappend="${servletPath == '/admin/property' || servletPath == '/admin/amenity' ? 'show' : ''}"
+            >
                 <li>
-                    <a href="/admin/property">
+                    <a href="/admin/property" th:classappend="${servletPath == '/admin/property' ? 'active' : ''}">
                         <i class="bi bi-circle"></i><span>Tài sản</span>
                     </a>
                 </li>
                 <li  sec:authorize="hasAnyAuthority('ADMIN', 'EMPLOYEE')">
-                    <a href="/admin/amenity">
+                    <a href="/admin/amenity" th:classappend="${servletPath == '/admin/amenity' ? 'active' : ''}">
                         <i class="bi bi-circle"></i><span>Tiện ích</span>
                     </a>
                 </li>
@@ -39,17 +43,21 @@
         </li>
 
         <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN', 'EMPLOYEE')">
-            <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+            <a class="nav-link" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#"
+               th:classappend="${servletPath != '/admin/employee' && servletPath != '/admin/customer' ? 'collapsed' : ''}"
+            >
                 <i class="bi bi-person"></i><span>Người dùng</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav"
+                th:classappend="${servletPath == '/admin/employee' || servletPath == '/admin/customer' ? 'show' : ''}"
+            >
                 <li sec:authorize="hasAuthority('ADMIN')">
-                    <a href="/admin/employee">
+                    <a href="/admin/employee" th:classappend="${servletPath == '/admin/employee' ? 'active' : ''}">
                         <i class="bi bi-circle"></i><span>Nhân viên</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/admin/customer">
+                    <a href="/admin/customer" th:classappend="${servletPath == '/admin/customer' ? 'active' : ''}">
                         <i class="bi bi-circle"></i><span>Khách hàng</span>
                     </a>
                 </li>
@@ -57,7 +65,9 @@
         </li>
 
         <li class="nav-item" sec:authorize="isAuthenticated()">
-            <a class="nav-link collapsed" href="/admin/profile">
+            <a class="nav-link" href="/admin/profile"
+               th:classappend="${servletPath != '/admin/profile' ? 'collapsed' : ''}"
+            >
                 <i class="bi bi-person-bounding-box"></i>
                 <span>Hồ sơ cá nhân</span>
             </a>

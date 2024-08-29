@@ -11,12 +11,8 @@ import java.util.List;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long>, CustomerCriteriaRepository {
-    Boolean existsByEmail(String email);
-    Boolean existsByPhone(String phone);
-    Boolean existsByIdNumber(String idNumber);
 
-    Boolean existsByEmailAndIdNot(String email, Long id);
-    Boolean existsByPhoneAndIdNot(String phone, Long id);
+    Boolean existsByIdNumber(String idNumber);
     Boolean existsByIdNumberAndIdNot(String idNumber, Long id);
 
     Long countCustomerByCreatedAtBetween(LocalDateTime start, LocalDateTime end);

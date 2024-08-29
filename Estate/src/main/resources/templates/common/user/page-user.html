@@ -25,6 +25,10 @@
     <link th:href="@{/user/assets/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
     <link th:href="@{/user/assets/vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet">
     <link th:href="@{/user/assets/vendor/swiper/swiper-bundle.min.css}" rel="stylesheet">
+    
+    <!-- Jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/admin/assets/js/pagination.js"></script>
 
     <!-- Template Main CSS File -->
     <link th:href="@{/user/assets/css/style.css}" rel="stylesheet">
@@ -40,10 +44,6 @@
 <!-- ======= Header/Navbar ======= -->
 <div th:replace="common/user/header.html::header-fragment"></div>
 <!-- End Header/Navbar -->
-
-<!-- ======= Intro Section ======= -->
-<div th:replace="common/user/intro.html::intro-fragment"></div>
-<!-- End Intro Section -->
 
 <main id="main" layout:fragment="content">
 </main>
