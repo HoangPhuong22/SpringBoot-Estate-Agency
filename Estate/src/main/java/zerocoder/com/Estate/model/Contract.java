@@ -37,20 +37,6 @@ public class Contract extends BaseEntity<Long>{
     @Column(name = "value")
     private Long value;
 
-    @Column(name = "deposit")
-    private Long deposit;
-
-    @Column(name = "service_fee")
-    private Long serviceFee;
-
-    @Column(name = "payment_method")
-    private String paymentMethod;
-
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    private ContractStatus status;
-
     @ManyToOne(fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE,
@@ -68,4 +54,19 @@ public class Contract extends BaseEntity<Long>{
     })
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
+    public ContractStatus getContractStatus() {
+        LocalDate now = LocalDate.now();
+        if(type.equals(ContractType.SALE)) {
+            return ContractStatus.ACTIVE;
+        }
+
+        if (now.isBefore(startDate)) {
+            return ContractStatus.UPCOMING;
+        } else if (now.isAfter(endDate)) {
+            return ContractStatus.EXPIRED;
+        } else {
+            return ContractStatus.ACTIVE;
+        }
+    }
 }

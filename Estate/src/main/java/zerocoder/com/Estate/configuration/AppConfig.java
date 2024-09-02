@@ -24,6 +24,7 @@ public class AppConfig {
             "/property/**", "/contact",
             "/about", "/auth/**",
             "/admin/assets/**",
+            "/media/**",
             "/user/assets/**"
     };
     private String[] ADMIN_LIST = {
@@ -36,6 +37,7 @@ public class AppConfig {
             "/admin/amenity/edit/**",
             "/api/contract/delete/**",
             "/api/maintenance/delete/**",
+            "/api/customer/assignment/**",
     };
     private String[] MANAGER_LIST = {
             "/api/customer/**",
@@ -52,6 +54,9 @@ public class AppConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(@NotNull HttpSecurity http) throws Exception {
         http
+            .csrf(csrf -> csrf
+                    .ignoringRequestMatchers(WHITE_LIST)
+            )
             .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
                     .requestMatchers(WHITE_LIST).permitAll()

@@ -11,13 +11,13 @@ CREATE TABLE account (
     username VARCHAR(50) UNIQUE NOT NULL, -- Tên đăng nhập (VD: "user1")
     password_hash VARCHAR(255) NOT NULL, -- Mật khẩu đã mã hóa
     email VARCHAR(255) UNIQUE, -- Email (VD: "user1@example.com")
+	avatar_url TEXT,
     created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
 	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày sửa (VD: "2023-01-01 00:00:00")
     is_deleted BOOLEAN DEFAULT FALSE -- Trạng thái xóa (VD: FALSE)
 );
-
 CREATE TABLE role (
     id SERIAL PRIMARY KEY, -- Mã vai trò (1, 2, 3, ...)
     name VARCHAR(50) UNIQUE NOT NULL, -- Tên vai trò (VD: "Admin", "User")
@@ -45,12 +45,6 @@ CREATE TYPE property_type AS ENUM (
 	'HOUSE',
 	'VILLA'
 );
-CREATE TYPE property_status AS ENUM (
-	'AVAILABLE',
-	'RENTED',
-	'SOLD',
-	'UNDER_REPAIR'
-);
 CREATE TYPE property_direction AS ENUM(
 	'EAST',
 	'NORTH',
@@ -73,7 +67,6 @@ CREATE TABLE property (
     built_year INT, -- Năm xây dựng (VD: 2019)
     direction property_direction, -- Hướng nhà (VD: "Đông")
     description TEXT, -- Mô tả (VD: "Căn hộ cao cấp")
-    status property_status, -- Trạng thái (VD: "Trống", "Đã cho thuê", "Đã bán", "Đang sửa chữa")
     sale_price DECIMAL(18, 0), -- Giá bán (VD: 3000000000.00)
     rent_price DECIMAL(18, 0), -- Giá thuê (VD: 15000000.00)
     created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
@@ -117,7 +110,6 @@ CREATE TABLE property_image (
     property_id BIGINT REFERENCES property(id), -- Mã bất động sản (VD: 1)
     image_url TEXT, -- Đường dẫn hình ảnh (VD: "https://example.com/image.jpg")
     is_main BOOLEAN DEFAULT false, -- Hình ảnh chính (VD: TRUE)
-    description VARCHAR(255), -- Mô tả (VD: "Hình ảnh mặt tiền")
     created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
 	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")
@@ -154,11 +146,6 @@ CREATE TYPE contract_type AS ENUM (
 	'RENT'
 );
 
-CREATE TYPE contract_status AS ENUM (
-	'IN_PROGRESS',
-	'COMPLETED',
-	'CANCELLED'
-);
 CREATE TABLE contract (
     id BIGSERIAL PRIMARY KEY, -- Mã hợp đồng (1, 2, 3, ...)
     code VARCHAR(50) UNIQUE NOT NULL, -- Mã hợp đồng (VD: "CONT001")
@@ -168,10 +155,6 @@ CREATE TABLE contract (
     start_date DATE, -- Ngày bắt đầu (VD: "2023-01-01")
     end_date DATE, -- Ngày kết thúc (VD: "2023-12-31")
     value DECIMAL(18, 0), -- Giá trị hợp đồng (VD: 5000000000.00)
-    deposit DECIMAL(18, 0), -- Tiền cọc (VD: 500000000.00)
-    service_fee DECIMAL(18, 0), -- Phí dịch vụ (VD: 10000000.00)
-    payment_method VARCHAR(100), -- Hình thức thanh toán (VD: "Chuyển khoản")
-    status contract_status, -- Trạng thái (VD: "Đang thực hiện", "Đã kết thúc", "Đã hủy")
     created_by BIGINT, -- Người tạo (VD:\ 1, 2, ....)     
 	updated_by BIGINT, -- Người sửa (VD: 1, 2, ...)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo (VD: "2023-01-01 00:00:00")

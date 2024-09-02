@@ -11,9 +11,9 @@ public class PropertySearchDTO {
     private String name;
     private Integer builtYear;
     private String type;
-    private String status;
     private Double area;
     private Integer bedroom;
+    private String status;
     private Integer bathroom;
     private Integer floor;
     private Long salePrice;

@@ -56,9 +56,9 @@
             <p class="text-success" th:if="${employees.size() > 0}">Có tổng cộng [[${pageResponse.totalElements}]] nhân viên được tìm thấy</p>
             <!-- Table Variants -->
             <div class="table-responsive-lg" th:if="${employees.size() > 0}">
-                <table class="table">
+                <table class="table table-striped table-bordered">
                     <thead>
-                    <tr class="table-info">
+                    <tr >
                         <th scope="col">#</th>
                         <th scope="col">Tên nhân viên</th>
                         <th scope="col">Số điện thoại</th>
@@ -75,7 +75,6 @@
                     <tbody>
                     <tr
                             th:each="employee, index: ${employees}"
-                            th:classappend="${index.count % 2 == 0} ? 'table-light' : 'table-primary'"
                     >
                         <th scope="row" th:text="${index.count} + ${pageResponse.pageSize * (pageResponse.pageNo - 1)}"></th>
                         <td th:text="${employee.fullName}"></td>
@@ -139,6 +138,12 @@
                                             <label for="emailAccount" class="form-label">Email</label>
                                             <input type="email" class="form-control" id="emailAccount" name="email" placeholder="Nhập email VD(zerocoder@edu.com...)">
                                             <div id="emailError" class="invalid-feedback"></div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="avatarAccount" class="form-label">Ảnh đại diện</label>
+                                            <input type="file" class="form-control" id="avatarAccount" name="avatar">
+                                            <div id="avatarReview" class="mt-2"></div>
+                                            <div id="avatarError" class="invalid-feedback"></div>
                                         </div>
                                         <div class="mb-3">
                                             <label for="passwordAccount" class="form-label">Mật khẩu</label>
@@ -224,6 +229,18 @@
         </div>
     </div>
     <script>
+        // Reader avatar
+        $('#avatarAccount').change(function (e) {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function () {
+                    $('#avatarReview').html(`<img src="${reader.result}" class="img-thumbnail" alt="avatar" style="width: 100px; height: 100px">`);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
         $('button[type="reset"]').click(function (event) {
             event.preventDefault();
             $('form input').val('');
@@ -251,24 +268,25 @@
 
         $('#formAddAccount').submit(function(e) {
             e.preventDefault();
-            const data = {
-                username: $('#usernameAccount').val(),
-                email: $('#emailAccount').val(),
-                password: $('#passwordAccount').val(),
-                confirmPassword: $('#confirmPasswordAcount').val(),
-                id: idEmployee,
-                type: 1 // Loại tài khoản nhân viên
-            };
+            const formData = new FormData();
+            formData.append('username', $('#usernameAccount').val());
+            formData.append('email', $('#emailAccount').val());
+            formData.append('password', $('#passwordAccount').val());
+            formData.append('confirmPassword', $('#confirmPasswordAcount').val());
+            formData.append('id', idEmployee);
+            formData.append('type', 1);
+            formData.append('avatar', $('#avatarAccount')[0].files[0]);
             const csrf = $('#csrf-add-account').val();
             $('.invalid-feedback').hide().text('');
-            if(data.confirmPassword !== data.password) {
+            if($('#passwordAccount').val() !== $('#confirmPasswordAcount').val()) {
                 $('#confirmPasswordError').text('Mật khẩu không khớp').show();
             } else {
                 $.ajax({
                     url: '/api/account/add',
                     type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(data),
+                    processData: false,
+                    contentType: false,
+                    data: formData,
                     headers: {
                         'X-CSRF-TOKEN': csrf
                     },

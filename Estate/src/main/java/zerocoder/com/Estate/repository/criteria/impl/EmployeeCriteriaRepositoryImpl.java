@@ -28,7 +28,7 @@ public class EmployeeCriteriaRepositoryImpl implements EmployeeCriteriaRepositor
         if(searchDTO.getPageNo() == null) {
             searchDTO.setPageNo(1);
         }
-        searchDTO.setPageSize(1);
+        searchDTO.setPageSize(5);
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Employee> query = cb.createQuery(Employee.class);
         Root<Employee> root = query.from(Employee.class);

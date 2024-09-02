@@ -29,6 +29,10 @@ public class HomeController {
 
     @GetMapping
     public String home(Model model) {
+        List<PropertyResponse> properties = propertyService.findTop5Properties();
+        List<PropertyResponse> top3Properties = propertyService.findTop3Properties();
+        model.addAttribute("properties", properties);
+        model.addAttribute("top3Properties", top3Properties);
         return "user/home";
     }
     @GetMapping("/about")
@@ -44,6 +48,7 @@ public class HomeController {
     @GetMapping("/property")
     public String property(@RequestParam Map<String,String> params, Model model) {
         PropertySearchDTO searchDTO = SearchUtils.propertySearchDTO(params);
+        searchDTO.setIsDeleted(0);
         PageResponse<?> pageResponse = propertyService.findPropertiesAndSearch(searchDTO);
         List<PropertyResponse> properties = (List<PropertyResponse>) pageResponse.getContent();
         List<Integer> pageRange = PageUtils.getPageNumbers(pageResponse.getTotalPages(), 5, pageResponse.getPageNo());

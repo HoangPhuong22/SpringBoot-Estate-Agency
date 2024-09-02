@@ -66,11 +66,6 @@ public class Property extends BaseEntity<Long> {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    private PropertyStatus status;
-
     @Column(name = "sale_price")
     private Long salePrice;
 

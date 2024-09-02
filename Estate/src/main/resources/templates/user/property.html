@@ -64,7 +64,8 @@
                 <div class="col-md-4" th:each="property, index : ${properties}">
                     <div class="card-box-a card-shadow">
                         <div class="img-box-a">
-                            <img src="/user/assets/img/property-1.jpg" alt="" class="img-a img-fluid">
+                            <img th:src="'/media/' + ${property.mainImages}" alt=""
+                                 class="img-a img-fluid">
                         </div>
                         <div class="card-overlay">
                             <div class="card-overlay-a-content">

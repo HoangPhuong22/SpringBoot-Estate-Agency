@@ -28,13 +28,24 @@ public class GlobalExceptionHandler {
         return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), "Validation error", errors);
     }
 
-    @ExceptionHandler({UniqueException.class})
+    @ExceptionHandler({UniqueException.class, EmptyFileException.class, ContractValidException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseData<?> handleUniqueException(UniqueException e) {
+    public ResponseData<?> handleUniqueException(Exception e) {
         Map<String, String> errors = new HashMap<>();
-        errors.put(e.getField(), e.getMessage());
-        return new ResponseData<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Unique validator field" ,errors);
+        String message;
+        if(e instanceof ContractValidException) {
+            message = "Contract valid exception";
+            errors.put(((ContractValidException) e).getField(), e.getMessage());
+        } else if(e instanceof EmptyFileException) {
+            message = "Empty file exception";
+            errors.put(((EmptyFileException) e).getField(), e.getMessage());
+        } else {
+            message = "Unique exception";
+            errors.put(((UniqueException) e).getField(), e.getMessage());
+        }
+        return new ResponseData<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), message ,errors);
     }
+
 
     @ExceptionHandler({HttpMessageNotReadableException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)

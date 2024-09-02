@@ -21,10 +21,6 @@ public class ContractMapper {
                 .startDate(contractRequest.getStartDate())
                 .endDate(contractRequest.getEndDate())
                 .value(contractRequest.getValue())
-                .deposit(contractRequest.getDeposit())
-                .serviceFee(contractRequest.getServiceFee())
-                .paymentMethod(contractRequest.getPaymentMethod())
-                .status(ContractStatus.valueOf(contractRequest.getStatus()))
                 .build();
     }
 
@@ -33,10 +29,6 @@ public class ContractMapper {
         contract.setStartDate(contractRequest.getStartDate());
         contract.setEndDate(contractRequest.getEndDate());
         contract.setValue(contractRequest.getValue());
-        contract.setDeposit(contractRequest.getDeposit());
-        contract.setServiceFee(contractRequest.getServiceFee());
-        contract.setPaymentMethod(contractRequest.getPaymentMethod());
-        contract.setStatus(ContractStatus.valueOf(contractRequest.getStatus()));
     }
 
     public ContractResponse toResponse(Contract contract) {
@@ -49,10 +41,7 @@ public class ContractMapper {
                 .startDate(contract.getStartDate())
                 .endDate(contract.getEndDate())
                 .value(contract.getValue())
-                .deposit(contract.getDeposit())
-                .serviceFee(contract.getServiceFee())
-                .paymentMethod(contract.getPaymentMethod())
-                .status(contract.getStatus())
+                .status(contract.getContractStatus())
                 .createdBy(accountService.getUserName(contract.getCreatedBy()))
                 .updatedBy(accountService.getUserName(contract.getUpdatedBy()))
                 .createdAt(contract.getCreatedAt())

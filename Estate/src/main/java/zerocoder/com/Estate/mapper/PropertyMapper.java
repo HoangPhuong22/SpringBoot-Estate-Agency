@@ -4,18 +4,26 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import zerocoder.com.Estate.dto.request.PropertyRequest;
 import zerocoder.com.Estate.dto.response.PropertyResponse;
+import zerocoder.com.Estate.enums.ContractType;
 import zerocoder.com.Estate.enums.PropertyDirection;
 import zerocoder.com.Estate.enums.PropertyStatus;
 import zerocoder.com.Estate.enums.PropertyType;
 import zerocoder.com.Estate.model.Amenity;
+import zerocoder.com.Estate.model.Contract;
 import zerocoder.com.Estate.model.Property;
+import zerocoder.com.Estate.model.PropertyImage;
+import zerocoder.com.Estate.repository.ContractRepository;
 import zerocoder.com.Estate.service.AccountService;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class PropertyMapper {
 
     private final AccountService accountService;
+    private final ContractRepository contractRepository;
 
     public Property toProperty(PropertyRequest propertyRequest) {
         String Code = PropertyType.valueOf(propertyRequest.getType()).getCode() + System.currentTimeMillis();
@@ -34,7 +42,6 @@ public class PropertyMapper {
                 .builtYear(propertyRequest.getBuiltYear())
                 .direction(PropertyDirection.valueOf(propertyRequest.getDirection()))
                 .description(propertyRequest.getDescription())
-                .status(PropertyStatus.valueOf(propertyRequest.getStatus()))
                 .salePrice(propertyRequest.getSalePrice())
                 .rentPrice(propertyRequest.getRentPrice())
                 .build();
@@ -55,17 +62,54 @@ public class PropertyMapper {
                 .builtYear(property.getBuiltYear())
                 .description(property.getDescription())
                 .salePrice(property.getSalePrice())
+                .isDeleted(property.getIsDeleted())
                 .rentPrice(property.getRentPrice())
                 .direction(PropertyDirection.valueOf(property.getDirection().name()))
                 .type(PropertyType.valueOf(property.getType().name()))
-                .status(PropertyStatus.valueOf(property.getStatus().name()))
+                .status(getPropertyStatus(property.getId()))
                 .createdBy(accountService.getUserName(property.getCreatedBy()))
                 .updatedBy(accountService.getUserName(property.getUpdatedBy()))
                 .createdAt(property.getCreatedAt())
                 .updatedAt(property.getUpdatedAt())
                 .amenityIds(property.getAmenities().stream().map(Amenity::getId).toList())
+                .mainImages(mainImage(property.getImages()))
+                .images(listImage(property.getImages()))
                 .build();
     }
+
+    private PropertyStatus getPropertyStatus(Long id) {
+        LocalDate now = LocalDate.now();
+        List<Contract> contracts = contractRepository.findAllByPropertyId(id);
+        if (!contracts.isEmpty()) {
+            for (Contract contract : contracts) {
+                if (contract.getType().equals(ContractType.SALE) && isBeforeEqual(contract.getStartDate(), now))
+                    return PropertyStatus.SOLD;
+                if (contract.getType().equals(ContractType.RENT) && isAfterEqual(contract.getEndDate(), now) && isBeforeEqual(contract.getStartDate(), now))
+                    return PropertyStatus.RENTED;
+            }
+        }
+        return PropertyStatus.AVAILABLE;
+    }
+    private boolean isBeforeEqual(LocalDate a, LocalDate b) {
+        return a.isBefore(b) || a.isEqual(b);
+    }
+    private boolean isAfterEqual(LocalDate a, LocalDate b) {
+        return a.isAfter(b) || a.isEqual(b);
+    }
+    private String mainImage(List<PropertyImage> images) {
+        if(images == null || images.isEmpty()) {
+            return null;
+        }
+        return images.stream().filter(PropertyImage::getIsMain).findFirst().map(PropertyImage::getImageUrl).orElse(null);
+    }
+
+    private List<String> listImage(List<PropertyImage> images) {
+        if(images == null || images.isEmpty()) {
+            return null;
+        }
+        return images.stream().map(PropertyImage::getImageUrl).toList();
+    }
+
     public void updateProperty(Property property, PropertyRequest propertyRequest) {
         property.setType(PropertyType.valueOf(propertyRequest.getType()));
         property.setName(propertyRequest.getName());
@@ -80,7 +124,6 @@ public class PropertyMapper {
         property.setBuiltYear(propertyRequest.getBuiltYear());
         property.setDirection(PropertyDirection.valueOf(propertyRequest.getDirection()));
         property.setDescription(propertyRequest.getDescription());
-        property.setStatus(PropertyStatus.valueOf(propertyRequest.getStatus()));
         property.setSalePrice(propertyRequest.getSalePrice());
         property.setRentPrice(propertyRequest.getRentPrice());
     }

@@ -100,7 +100,13 @@ public class SearchUtils {
                         if(NumberUtils.isNumeric(params.get(key))) {
                             field.set(searchDTO, Integer.parseInt(params.get(key)));
                         }
-                    } else {
+                    }
+                    else if(field.getType().equals(Long.class)) {
+                        if(NumberUtils.isNumeric(params.get(key))) {
+                            field.set(searchDTO, Long.parseLong(params.get(key)));
+                        }
+
+                    }else {
                         field.set(searchDTO, params.get(key));
                     }
                 } catch (Exception e) {

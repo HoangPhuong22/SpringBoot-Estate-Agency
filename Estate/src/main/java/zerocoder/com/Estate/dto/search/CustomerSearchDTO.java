@@ -16,6 +16,7 @@ public class CustomerSearchDTO {
     private String idNumber;
     private String address;
     private String userNameEmployee;
+    private Long employeeId;
     private Integer pageNo;
     private Integer pageSize;
 }

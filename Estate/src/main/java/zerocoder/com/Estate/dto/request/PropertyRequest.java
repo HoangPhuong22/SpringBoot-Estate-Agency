@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.web.multipart.MultipartFile;
 import zerocoder.com.Estate.validator.EnumNamePattern;
 import zerocoder.com.Estate.validator.NumberValid;
 
@@ -61,9 +62,6 @@ public class PropertyRequest implements Serializable {
     private String direction;
 
     private String description;
-
-    @EnumNamePattern(regexp = "AVAILABLE|RENTED|SOLD|UNDER_REPAIR", message = "Trạng thái không hợp lệ")
-    private String status;
 
     @NotNull(message = "Giá bán không được để trống")
     @Min(value = 50000000, message = "Giá bán phải lớn hơn 50 triệu")

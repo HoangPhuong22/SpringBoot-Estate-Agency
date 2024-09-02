@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum ContractStatus {
-    IN_PROGRESS("Đang thực hiện"),
-    COMPLETED("Đã kết thúc"),
-    CANCELLED("Đã hủy");
+    UPCOMING("Hợp đồng sắp tới"),      // Hợp đồng sắp tới
+    ACTIVE("Hợp đồng đang hoạt động"), // Hợp đồng đang hoạt động
+    EXPIRED("Hợp đồng đã hết hạn");     // Hợp đồng đã hết hạn
 
     private final String description;
 

@@ -26,6 +26,9 @@ public class Account extends BaseEntity<Long> implements UserDetails {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE,
@@ -55,6 +58,16 @@ public class Account extends BaseEntity<Long> implements UserDetails {
     public void addCustomer(Customer customer) {
         this.customer = customer;
         customer.setAccount(this);
+    }
+
+    public String getFullName() {
+        if (this.employee != null) {
+            return this.employee.getFullName();
+        } else if(this.customer != null) {
+            return this.customer.getFullName();
+        } else {
+            return this.username;
+        }
     }
 
     @Override

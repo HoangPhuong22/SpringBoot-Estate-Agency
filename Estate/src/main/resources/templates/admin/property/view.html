@@ -30,19 +30,16 @@
                                 <h5 class="card-title mb-3">Hình ảnh tòa nhà</h5>
                                 <div id="propertyCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
                                     <div class="carousel-indicators">
-                                        <button type="button" data-bs-target="#propertyCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                                        <button type="button" data-bs-target="#propertyCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                                        <button type="button" data-bs-target="#propertyCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                                        <button
+                                            th:each="image, index: ${property.images}"
+                                            type="button" data-bs-target="#propertyCarousel"
+                                            th:data-bs-slide-to="${index.index}" th:classappend="${index.index == 0} ? 'active' : ''"
+                                        >
+                                        </button>
                                     </div>
                                     <div class="carousel-inner rounded">
-                                        <div class="carousel-item active">
-                                            <img src="/user/assets/img/property-1.jpg" class="d-block w-100" alt="Property Image 1">
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="/user/assets/img/property-2.jpg" class="d-block w-100" alt="Property Image 2">
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="/user/assets/img/property-3.jpg" class="d-block w-100" alt="Property Image 3">
+                                        <div class="carousel-item" th:each="image, index: ${property.images}" th:classappend="${index.index == 0} ? 'active' : ''">
+                                            <img th:src="'/media/' + ${image}" class="d-block w-100" alt="...">
                                         </div>
                                     </div>
                                     <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
@@ -235,6 +232,7 @@
                                                         <span th:if="${maintenance.status.equals(maintenance.status.PENDING)}" class="badge bg-warning">Chờ xử lý</span>
                                                         <span th:if="${maintenance.status.equals(maintenance.status.IN_PROGRESS)}" class="badge bg-primary">Đang xử lý</span>
                                                         <span th:if="${maintenance.status.equals(maintenance.status.COMPLETED)}" class="badge bg-success">Hoàn thành</span>
+                                                        <span th:if="${maintenance.status.equals(maintenance.status.CANCELLED)}" class="badge bg-danger">Hủy</span>
                                                     </td>
                                                     <td th:text="${T(zerocoder.com.Estate.utils.MoneyUtils).formatMoney(maintenance.estimatedCost)}"></td>
                                                     <td>
@@ -367,12 +365,17 @@
                                                         <span th:if="${contract.contractType.equals(contract.contractType.RENT)}" class="badge bg-success">Cho thuê</span>
                                                     </td>
                                                     <td th:text="${#temporals.format(contract.startDate, 'dd/MM/yyyy')}"></td>
-                                                    <td th:text="${#temporals.format(contract.endDate, 'dd/MM/yyyy')}"></td>
+                                                    <td>
+                                                        <span th:if="${contract.contractType.equals(contract.contractType.RENT)}" th:text="${#temporals.format(contract.endDate, 'dd/MM/yyyy')}"></span>
+                                                        <span th:if="${contract.contractType.equals(contract.contractType.SALE)}" class="text-muted">Vô thời hạn</span>
+                                                    </td>
                                                     <td th:text="${T(zerocoder.com.Estate.utils.MoneyUtils).formatMoney(contract.value)}"></td>
                                                     <td>
-                                                        <span th:if="${contract.status.equals(contract.status.IN_PROGRESS)}" class="badge bg-success">Đang hiệu lực</span>
-                                                        <span th:if="${contract.status.equals(contract.status.COMPLETED)}" class="badge bg-primary">Đã kết thúc</span>
-                                                        <span th:if="${contract.status.equals(contract.status.CANCELLED)}" class="badge bg-danger">Đã hủy</span>
+                                                        <span th:switch="${contract.status}">
+                                                            <span th:case="${contract.status.UPCOMING}" class="badge bg-warning">Sắp diễn ra</span>
+                                                            <span th:case="${contract.status.ACTIVE}" class="badge bg-success">Đang diễn ra</span>
+                                                            <span th:case="${contract.status.EXPIRED}" class="badge bg-danger">Hết hạn</span>
+                                                        </span>
                                                     </td>
                                                     <td th:text="${contract.createdBy}"></td>
                                                     <td th:text="${#temporals.format(contract.createdAt, 'HH:mm dd/MM/yyyy')}"></td>
@@ -390,9 +393,6 @@
                                                             th:data-start-date="${contract.startDate}"
                                                             th:data-end-date="${contract.endDate}"
                                                             th:data-value="${contract.value}"
-                                                            th:data-deposit="${contract.deposit}"
-                                                            th:data-service-fee="${contract.serviceFee}"
-                                                            th:data-payment-method="${contract.paymentMethod}"
                                                             th:data-status="${contract.status}"
                                                             sec:authorize="hasAnyAuthority('ADMIN', 'EMPLOYEE')"
                                                         >
@@ -408,9 +408,6 @@
                                                             th:data-start-date="${#temporals.format(contract.startDate, 'dd/MM/yyyy')}"
                                                             th:data-end-date="${#temporals.format(contract.endDate, 'dd/MM/yyyy')}"
                                                             th:data-value="${contract.value}"
-                                                            th:data-deposit="${contract.deposit}"
-                                                            th:data-service-fee="${contract.serviceFee}"
-                                                            th:data-payment-method="${contract.paymentMethod}"
                                                             th:data-status="${contract.status}"
                                                             th:data-created-at="${#temporals.format(contract.createdAt, 'dd/MM/yyyy')}"
                                                             th:data-full-name="${contract.fullName}"
@@ -505,6 +502,7 @@
                                                     <option value="PENDING">Chờ xử lý</option>
                                                     <option value="IN_PROGRESS">Đang xử lý</option>
                                                     <option value="COMPLETED">Hoàn thành</option>
+                                                    <option value="CANCELLED">Hủy</option>
                                                 </select>
                                                 <div id="statusEditMaintenanceError" class="invalid-feedback"></div>
                                             </div>
@@ -663,30 +661,7 @@
                                                 <input type="number" class="form-control" id="valueContract">
                                                 <div id="valueContractError" class="invalid-feedback"></div>
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="depositContract" class="form-label">Tiền đặt cọc</label>
-                                                <input type="number" class="form-control" id="depositContract">
-                                                <div id="depositContractError" class="invalid-feedback"></div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="serviceFeeContract" class="form-label">Phí dịch vụ</label>
-                                                <input type="number" class="form-control" id="serviceFeeContract">
-                                                <div id="serviceFeeContractError" class="invalid-feedback"></div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="paymentMethodContract" class="form-label">Phương thức thanh toán</label>
-                                                <input type="text" class="form-control" id="paymentMethodContract">
-                                                <div id="paymentMethodContractError" class="invalid-feedback"></div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="statusContract" class="form-label">Trạng thái</label>
-                                                <select class="form-select" id="statusContract">
-                                                    <option value="IN_PROGRESS">Đang hiệu lực</option>
-                                                    <option value="COMPLETED">Đã kết thúc</option>
-                                                    <option value="CANCELLED">Đã hủy</option>
-                                                </select>
-                                                <div id="statusContractError" class="invalid-feedback"></div>
-                                            </div>
+                                            <div class="invalid-feedback" id="messageContractError"></div>
                                         </form>
                                     </div>
                                     <div class="modal-footer">
@@ -962,10 +937,6 @@
             const startDate = $(this).data('start-date');
             const endDate = $(this).data('end-date');
             const value = $(this).data('value');
-            const deposit = $(this).data('deposit');
-            const serviceFee = $(this).data('service-fee');
-            const paymentMethod = $(this).data('payment-method');
-            const status = $(this).data('status');
 
             $('#contractId').val(id);
             $('#propertyIdContract').val(propertyId);
@@ -974,10 +945,6 @@
             $('#startDateContract').val(startDate);
             $('#endDateContract').val(endDate);
             $('#valueContract').val(value);
-            $('#depositContract').val(deposit);
-            $('#serviceFeeContract').val(serviceFee);
-            $('#paymentMethodContract').val(paymentMethod);
-            $('#statusContract').val(status);
         });
         $('.btn-add-modal-contract').click(function () {
             $('#contractId').val('');
@@ -1002,10 +969,6 @@
                 startDate: $('#startDateContract').val(),
                 endDate: $('#endDateContract').val(),
                 value: $('#valueContract').val(),
-                deposit: $('#depositContract').val(),
-                serviceFee: $('#serviceFeeContract').val(),
-                paymentMethod: $('#paymentMethodContract').val(),
-                status: $('#statusContract').val()
             }
             $('.invalid-feedback').text('').hide();
             const csrf = $('#csrf-action-contract').val();
@@ -1043,11 +1006,7 @@
             const code = $(this).data('code');
             const startDate = $(this).data('start-date');
             const endDate = $(this).data('end-date');
-            const value = $(this).data('value');
-            const deposit = $(this).data('deposit');
-            const serviceFee = $(this).data('service-fee');
             const paymentMethod = $(this).data('payment-method');
-            const status = $(this).data('status');
             const date = $(this).data('created-at');
             const fullName = $(this).data('full-name');
             const phone = $(this).data('phone');

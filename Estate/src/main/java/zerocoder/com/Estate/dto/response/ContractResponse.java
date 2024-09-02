@@ -24,11 +24,7 @@ public class ContractResponse extends AbstractResponse implements Serializable {
     private LocalDate startDate;
     private LocalDate endDate;
     private Long value;
-    private Long deposit;
-    private Long serviceFee;
-    private String paymentMethod;
     private ContractStatus status;
-    private String terms;
     private String fullName;
     private String idNumber;
     private String phoneNumber;

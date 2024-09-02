@@ -27,8 +27,10 @@
 
                 <div class="card">
                     <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-                        <img src="/admin/assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-                        <h2 th:text="${account.username}"></h2>
+                        <img th:src="'/media/' + ${account.avatarUrl}"
+                             alt="Profile"
+                             class="rounded-circle">
+                        <h2 th:text="${account.getFullName}"></h2>
                         <p class="small" th:if="${account.roles[0].name=='ADMIN'}">Quản trị viên</p>
                         <p class="small" th:if="${account.roles[0].name=='CUSTOMER'}">Khách hàng</p>
                         <p class="small" th:if="${account.roles[0].name=='EMPLOYEE'}">Nhân viên</p>
@@ -60,6 +62,10 @@
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label ">Tên đăng nhập</div>
                                     <div class="col-lg-9 col-md-8" th:text="${account.username}"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label ">Họ và tên</div>
+                                    <div class="col-lg-9 col-md-8" th:text="${account.getFullName()}"></div>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label ">Địa chỉ email</div>

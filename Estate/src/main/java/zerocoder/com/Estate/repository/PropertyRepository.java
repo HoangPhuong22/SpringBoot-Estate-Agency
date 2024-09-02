@@ -11,9 +11,10 @@ import java.util.List;
 
 @Repository
 public interface PropertyRepository extends JpaRepository<Property, Long>, PropertyCriteriaRepository {
-    Long countByStatus(PropertyStatus status);
 
     Long countPropertyByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
     List<Property> findTop5ByOrderByCreatedAtDesc();
+    List<Property> findTop5ByIsDeletedOrderByCreatedAtDesc(Boolean isDeleted);
+    List<Property> findTop3ByIsDeletedOrderByCreatedAtDesc(Boolean isDeleted);
 }

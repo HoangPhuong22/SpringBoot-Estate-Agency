@@ -46,11 +46,8 @@
                 <div class="col-lg-8">
                     <div id="property-single-carousel" class="swiper">
                         <div class="swiper-wrapper">
-                            <div class="carousel-item-b swiper-slide">
-                                <img src="/user/assets/img/slide-1.jpg" alt="">
-                            </div>
-                            <div class="carousel-item-b swiper-slide">
-                                <img src="/user/assets/img/slide-2.jpg" alt="">
+                            <div class="carousel-item-b swiper-slide" th:each="image : ${property.images}">
+                                <img th:src="'/media/' + ${image}" alt="" class="img-fluid">
                             </div>
                         </div>
                     </div>
@@ -181,7 +178,6 @@
                         <div class="col-12-md col-lg-8">
                             <div class="property-contact">
                                 <form id="form-add-customer">
-                                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrf"/>
                                     <div class="row mb-3">
                                         <div class="col-sm-10">
                                             <input id="fullNameCustomer" type="text" class="form-control form-control-lg" placeholder="Nhập tên VD: (Nguyễn Văn A,...)">
@@ -245,16 +241,12 @@
                 gender: $('#genderCustomer').val(),
                 birthDay: $('#birthDayCustomer').val(),
             }
-            const csrf = $('#csrf').val();
             $('.invalid-feedback').hide().text('');
             $.ajax({
                 type: 'POST',
                 url: '/user/customer/add',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
-                headers: {
-                    'X-CSRF-TOKEN': csrf
-                },
                 success: function (response) {
                     alert('Gửi yêu cầu thành công');
                     location.reload();

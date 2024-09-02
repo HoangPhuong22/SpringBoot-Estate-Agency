@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import zerocoder.com.Estate.dto.request.ContractRequest;
 import zerocoder.com.Estate.dto.response.ContractResponse;
+import zerocoder.com.Estate.enums.ContractType;
+import zerocoder.com.Estate.exception.ContractValidException;
 import zerocoder.com.Estate.mapper.ContractMapper;
 import zerocoder.com.Estate.model.Contract;
 import zerocoder.com.Estate.model.Customer;
@@ -14,6 +16,7 @@ import zerocoder.com.Estate.repository.PropertyRepository;
 import zerocoder.com.Estate.service.ContractService;
 import zerocoder.com.Estate.utils.SecurityUtils;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -53,6 +56,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     private Long save(ContractRequest contractRequest) {
+        validateContractRequest(contractRequest, -1L);
         Long propertyId = contractRequest.getPropertyId();
         Long customerId = contractRequest.getCustomerId();
         Property property = propertyRepository.findById(propertyId).orElseThrow();
@@ -66,6 +70,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     private Long update(ContractRequest contractRequest) {
+        validateContractRequest(contractRequest, contractRequest.getId());
         Long contractId = contractRequest.getId();
         Long propertyId = contractRequest.getPropertyId();
         Long customerId = contractRequest.getCustomerId();
@@ -78,5 +83,58 @@ public class ContractServiceImpl implements ContractService {
         contract.setCustomer(customer);
 
         return contractRepository.save(contract).getId();
+    }
+
+    private void validateContractRequest(ContractRequest contractRequest, Long contractId) {
+        validateContractSale(contractRequest);
+        validateStartDateBeforeEndDate(contractRequest.getStartDate(), contractRequest.getEndDate());
+        if(contractId == -1) validateStartDateNotInPast(contractRequest.getStartDate());
+        validateNoActiveContract(contractRequest.getPropertyId(), contractRequest.getStartDate(), contractRequest.getEndDate(), contractId);
+    }
+
+    private void validateContractSale(ContractRequest contractRequest) {
+        if(contractRequest.getId() == null) {
+            if(contractRepository.existsByTypeAndPropertyId(ContractType.SALE, contractRequest.getPropertyId())) {
+                throw new ContractValidException("Tòa nhà đã bán không thể tạo hợp đồng mới", "message");
+            }
+        } else {
+            if(contractRepository.existsByTypeAndPropertyIdAndIdNot(ContractType.SALE, contractRequest.getPropertyId(), contractRequest.getId())) {
+                throw new ContractValidException("Tòa nhà đã bán không thể tạo hợp đồng mới", "message");
+            }
+        }
+    }
+
+    private void validateStartDateBeforeEndDate(LocalDate startDate, LocalDate endDate) {
+        if (startDate.isAfter(endDate)) {
+            throw new ContractValidException("Ngày bắt đầu không thể sau ngày kết thúc", "startDate");
+        }
+    }
+
+    private void validateStartDateNotInPast(LocalDate startDate) {
+        if (startDate.isBefore(LocalDate.now())) {
+            throw new ContractValidException("Ngày bắt đầu không thể trước ngày hiện tại", "startDate");
+        }
+    }
+
+    private void validateNoActiveContract(Long propertyId, LocalDate startDate, LocalDate endDate,  Long contractId) {
+        if (!isContractActive(propertyId, startDate, endDate, contractId)) {
+            throw new ContractValidException("Tòa đang có hợp đồng hoạt động trong thời gian này", "message");
+        }
+    }
+
+    private boolean isContractActive(Long propertyId, LocalDate startDate, LocalDate endDate, Long contractId) {
+        List<Contract> contracts = contractId == -1 ?
+                contractRepository.findAllByPropertyId(propertyId) :
+                contractRepository.findAllByPropertyIdAndIdNot(propertyId, contractId);
+        for(Contract contract : contracts) {
+            if(!isWithinActivePeriod(contract, startDate, endDate)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isWithinActivePeriod(Contract contract, LocalDate startDate, LocalDate endDate) {
+        return startDate.isAfter(contract.getEndDate()) || endDate.isBefore(contract.getStartDate());
     }
 }

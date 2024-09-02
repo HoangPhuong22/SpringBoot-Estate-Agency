@@ -18,8 +18,6 @@ public class PropertyImage extends BaseEntity<Integer> {
     @Column(name = "is_main")
     private Boolean isMain;
 
-    @Column(name = "description")
-    private String description;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST,

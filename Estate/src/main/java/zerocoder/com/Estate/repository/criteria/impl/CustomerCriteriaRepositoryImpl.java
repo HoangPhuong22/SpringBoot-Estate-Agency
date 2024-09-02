@@ -28,11 +28,10 @@ public class CustomerCriteriaRepositoryImpl implements CustomerCriteriaRepositor
         if(customerSearchDTO.getPageNo() == null) {
             customerSearchDTO.setPageNo(1);
         }
-        customerSearchDTO.setPageSize(1);
+        customerSearchDTO.setPageSize(5);
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Customer> query = cb.createQuery(Customer.class);
         Root<Customer> root = query.from(Customer.class);
-
         List<Predicate> predicates = new ArrayList<>();
         for(Field field : customerSearchDTO.getClass().getDeclaredFields()) {
             try {
@@ -46,6 +45,7 @@ public class CustomerCriteriaRepositoryImpl implements CustomerCriteriaRepositor
                     case "idNumber" -> predicates.add(cb.like(cb.lower(root.get("idNumber")), "%" + data.toString().toLowerCase() + "%"));
                     case "address" -> predicates.add(cb.like(cb.lower(root.get("address")), "%" + data.toString().toLowerCase() + "%"));
                     case "userNameEmployee" -> predicates.add(cb.equal(root.get("employees").get("account").get("username"), data));
+                    case "employeeId" -> predicates.add(cb.equal(root.get("employees").get("id"), data));
                 }
             } catch (Exception e) {
                 log.error("Error occurred while accessing field: {}", e.getMessage());

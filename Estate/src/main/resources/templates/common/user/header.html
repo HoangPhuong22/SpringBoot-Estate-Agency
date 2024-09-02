@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html
     lang="en"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
     xmlns:th="http://www.thymeleaf.org"
 >
 <!-- ======= Header/Navbar ======= -->
@@ -11,7 +12,7 @@
             <span></span>
             <span></span>
         </button>
-        <a class="navbar-brand text-brand" href="index.html">Estate<span class="color-b">Agency</span></a>
+        <a class="navbar-brand text-brand" href="/">Estate<span class="color-b">Agency</span></a>
 
         <div class="navbar-collapse collapse justify-content-center" id="navbarDefault">
             <ul class="navbar-nav">
@@ -57,6 +58,16 @@
             <i class="bi bi-search"></i>
         </button>
 
+
+
+        <!--   Đăng nhập     -->
+        <a class="btn btn-b-n navbar-toggle-box navbar-toggle-box-collapse" href="/auth/login" sec:authorize=" not isAuthenticated()">
+           <i class="bi bi-box-arrow-in-right"></i>
+        </a>
+        <!--   Profile     -->
+        <a class="btn btn-b-n navbar-toggle-box navbar-toggle-box-collapse" href="/admin/profile" sec:authorize="isAuthenticated()">
+            <i class="bi bi-person"></i>
+        </a>
     </div>
 </nav>
 <!-- End Header/Navbar -->

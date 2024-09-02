@@ -172,7 +172,7 @@
                     <div class="col-12">
                         <div class="card recent-sales overflow-auto">
                             <div class="card-body">
-                                <h5 class="card-title">Top tài khoản mới</h5>
+                                <h5 class="card-title">Top khách hàng mới</h5>
 
                                 <table class="table table-borderless">
                                     <thead>
@@ -230,7 +230,7 @@
                                     <tr th:each="property, index: ${dashboard.top5Property}">
                                         <th scope="row">
                                             <a th:href="@{'/admin/property/view/' + ${property.id}}">
-                                                <img src="/user/assets/img/property-4.jpg" alt="">
+                                                <img th:src="@{'/media/' + ${property.mainImages}}" alt="" class="img-fluid" style="width: 50px;">
                                             </a>
                                         </th>
                                         <td>
@@ -243,7 +243,6 @@
                                             <span class="badge bg-warning" th:if="${property.status.equals(property.status.AVAILABLE)}">Còn trống</span>
                                             <span class="badge bg-success" th:if="${property.status.equals(property.status.SOLD)}">Đã bán</span>
                                             <span class="badge bg-primary" th:if="${property.status.equals(property.status.RENTED)}">Đã cho thuê</span>
-                                            <span class="badge bg-danger" th:if="${property.status.equals(property.status.UNDER_REPAIR)}">Đang sửa chữa</span>
                                         </td>
                                     </tr>
                                     </tbody>

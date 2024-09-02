@@ -36,16 +36,4 @@ public class ContractRequest implements Serializable {
 
     @NotNull(message = "Giá trị hợp đồng không được để trống")
     private Long value;
-
-    @NotNull(message = "Tiền cọc không được để trống")
-    private Long deposit;
-
-    @NotNull(message = "Phí dịch vụ không được để trống")
-    private Long serviceFee;
-
-    @NotBlank(message = "Hình thức thanh toán không được để trống")
-    private String paymentMethod;
-
-    @EnumNamePattern(regexp = "IN_PROGRESS|COMPLETED|CANCELLED", message = "Trạng thái hợp đồng không hợp lệ")
-    private String status;
 }

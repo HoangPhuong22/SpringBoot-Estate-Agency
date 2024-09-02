@@ -44,6 +44,7 @@ public class PropertyController {
         if(role.equals("EMPLOYEE")) {
             searchDTO.setIsDeleted(0);
         }
+
         PageResponse<?> pageResponse = propertyService.findPropertiesAndSearch(searchDTO);
         List<PropertyResponse> properties = (List<PropertyResponse>) pageResponse.getContent();
         List<Integer> pageRange = PageUtils.getPageNumbers(pageResponse.getTotalPages(), 5, pageResponse.getPageNo());

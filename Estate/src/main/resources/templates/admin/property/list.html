@@ -37,7 +37,7 @@
                     <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="">
                         <form action="/admin/property" id="searchFormProperty" method="get" class="row g-3">
                             <div class="col-md-6">
-                                <label for="nameProperty" class="col-sm-2 col-form-label">Tên tài sản</label>
+                                <label for="nameProperty" class="col-form-label">Tên tài sản</label>
                                 <input id="nameProperty" th:value="${param.name}" name="name" type="text" class="form-control" placeholder="Chung cư mini, nhà 3 tầng, biệt thự 5 tầng...">
                             </div>
                             <div class="col-md-6">
@@ -60,7 +60,6 @@
                                     <option value="AVAILABLE" th:selected="${#strings.equals(param.status, 'AVAILABLE')}">Còn trống</option>
                                     <option value="RENTED" th:selected="${#strings.equals(param.status, 'RENTED')}">Đã cho thuê</option>
                                     <option value="SOLD" th:selected="${#strings.equals(param.status, 'SOLD')}">Đã bán</option>
-                                    <option value="UNDER_REPAIR" th:selected="${#strings.equals(param.status, 'UNDER_REPAIR')}">Đang sửa chữa</option>
                                 </select>
                             </div>
                             <div class="col-md-3">
@@ -103,6 +102,14 @@
                                 <label for="wardProperty" class="col-form-label">Đường / Tòa nhà</label>
                                 <input id="wardProperty" th:value="${param.ward}" name="ward" type="text" class="form-control" placeholder="Nhập đường/tòa nhà VD: 101 Láng Hạ,..">
                             </div>
+                            <div class="col-md-6" sec:authorize="hasAuthority('ADMIN')">
+                                <label for="isDeletedProperty" class="col-form-label">Tình trạng</label>
+                                <select id="isDeletedProperty" name="isDeleted" class="form-select">
+                                    <option value="">Chọn tình trạng</option>
+                                    <option value="1" th:selected="${#strings.equals(param.isDeleted, '1')}">Đã xoá</option>
+                                    <option value="0" th:selected="${#strings.equals(param.isDeleted, '0')}">Hoạt động</option>
+                                </select>
+                            </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-search"></i>
@@ -138,6 +145,7 @@
                         <th>Ngày tạo</th>
                         <th>Người sửa</th>
                         <th>Ngày sửa</th>
+                        <th>Tình trạng</th>
                         <th>Thao tác</th>
                     </tr>
                     </thead>
@@ -150,21 +158,38 @@
                         <td th:text="${property.type.description}"></td>
                         <td th:text="${property.builtYear}"></td>
                         <td th:text="${property.area} + 'm2'"></td>
-                        <td th:text="${property.status.description}"></td>
+                        <td>
+                            <span
+                                    th:switch="${property.status}"
+                            >
+                                <span th:case="${property.status.AVAILABLE}" class="badge bg-success">Còn trống</span>
+                                <span th:case="${property.status.RENTED}" class="badge bg-warning">Đã cho thuê</span>
+                                <span th:case="${property.status.SOLD}" class="badge bg-danger">Đã bán</span>
+                            </span>
+                        </td>
                         <td th:text="${property.createdBy}"></td>
                         <td th:text="${#temporals.format(property.createdAt, 'HH:mm dd/MM/yyyy')}"></td>
                         <td th:text="${property.updatedBy}"></td>
                         <td th:text="${#temporals.format(property.updatedAt, 'HH:mm dd/MM/yyyy')}"></td>
                         <td>
+                            <span
+                                    th:switch="${property.isDeleted}"
+                            >
+                                <span th:case="${true} " class="badge bg-danger">Đã xoá</span>
+                                <span th:case="${false} " class="badge bg-success">Hoạt động</span>
+                            </span>
+                        </td>
+                        <td>
                             <a  sec:authorize="hasAnyAuthority('ADMIN', 'EMPLOYEE')" th:href="@{'/admin/property/edit/' + ${property.id}}" class="btn btn-warning btn-sm">
-                                Sửa
+                                <i class="bi bi-pencil"></i>
                             </a>
                             <a th:href="@{'/admin/property/view/' + ${property.id}}" class="btn btn-primary btn-sm">
-                                Xem
+                                <i class="bi bi-eye"></i>
                             </a>
                             <!-- Disabled Backdrop Modal -->
                             <button
                                     sec:authorize="hasAuthority('ADMIN')"
+                                    th:if="${property.isDeleted == false}"
                                     type="button"
                                     class="btn btn-danger btn-deleted-property btn-sm"
                                     data-bs-toggle="modal"
@@ -172,7 +197,19 @@
                                     th:data-id="${property.id}"
                                     th:data-name="${property.name}"
                             >
-                                Xóa
+                                <i class="bi bi-trash"></i>
+                            </button>
+                            <button
+                                    sec:authorize="hasAuthority('ADMIN')"
+                                    th:if="${property.isDeleted == true}"
+                                    type="button"
+                                    class="btn btn-success btn-recover-property btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#disablebackdrop"
+                                    th:data-id="${property.id}"
+                                    th:data-name="${property.name}"
+                            >
+                                <i class="bi bi-arrow-repeat"></i>
                             </button>
                             <!-- End Disabled Backdrop Modal-->
                         </td>
@@ -261,6 +298,16 @@
             idProperty = $(this).data('id');
             $('#text-modal-property').html(textModalProperty(nameProperty));
         })
+
+        $('.btn-recover-property').click(function () {
+            nameProperty = $(this).data('name');
+            idProperty = $(this).data('id');
+            $('#disablebackdrop .modal-title').html('Khôi phục tài sản');
+            $('#text-modal-property').html('Bạn có chắc chắn muốn khôi phục tài sản '
+            + '<strong>' + nameProperty + '</strong>' + ' không?');
+            $('#btn-deleted-property').text('Khôi phục');
+        })
+
         $('#btn-deleted-property').click(function () {
             const csrf = $('#csrf').val();
             $.ajax({
@@ -270,11 +317,11 @@
                     'X-CSRF-TOKEN': csrf
                 },
                 success: function () {
-                    alert('Xoá tài sản thành công');
+                    alert('Xử lý thành công');
                     window.location.reload();
                 },
                 error: function () {
-                    alert('Xoá tài sản thất bại');
+                    alert('Xử lý thất bại');
                 }
             })
             $('#disablebackdrop').modal('hide');

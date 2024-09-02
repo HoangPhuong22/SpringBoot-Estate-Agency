@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html
         lang="en"
+        xmlns:th="http://www.thymeleaf.org"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
         layout:decorate="~{common/admin/page-admin.html}"
@@ -31,17 +32,29 @@
                     <label for="email" class="form-label">Email</label>
                     <input type="email" class="form-control" id="email" name="email" th:value="${param.email}" placeholder="Nhập email khách hàng. VD(nguyevana@edu.com)">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label for="phone" class="form-label">Số điện thoại</label>
                     <input type="text" class="form-control" id="phone" name="phone" th:value="${param.phone}" placeholder="Nhập số điện thoại khách hàng. VD(0987654321)">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label for="idNumber" class="form-label">Số CMND</label>
                     <input type="text" class="form-control" id="idNumber" name="idNumber" th:value="${param.idNumber}" placeholder="Nhập số CMND khách hàng. VD(123456789)">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label for="address" class="form-label">Địa chỉ</label>
                     <input type="text" class="form-control" id="address" name="address" th:value="${param.address}" placeholder="Nhập địa chỉ khách hàng. VD(123 Đường ABC)">
+                </div>
+                <div class="col-md-6" sec:authorize="hasAnyAuthority('ADMIN')">
+                    <label for="employee" class="form-label">Nhân viên</label>
+                    <select class="form-select" id="employee" name="employeeId">
+                        <option value="">Chọn nhân viên</option>
+                        <option
+                                th:each="employee : ${employees}"
+                                th:value="${employee.id}"
+                                th:text="${employee.fullName}"
+                                th:selected="${#strings.equals(param.employeeId, employee.id)}"
+                        ></option>
+                    </select>
                 </div>
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary">
@@ -64,9 +77,9 @@
             <p sec:authorize="hasAuthority('EMPLOYEE')"class="text-success" th:if="${customers.size() > 0}">Có tổng cộng [[${pageResponse.totalElements}]] khách hàng đang quản lý</p>
             <!-- Table Variants -->
             <div class="table-responsive" th:if="${customers.size() > 0}">
-                <table class="table">
+                <table class="table table-striped table-bordered">
                     <thead>
-                    <tr class="table-info">
+                    <tr>
                         <th scope="col">#</th>
                         <th scope="col">Tên</th>
                         <th scope="col">Số điện thoại</th>
@@ -82,24 +95,28 @@
                     <tbody>
                     <tr
                             th:each="customer, index: ${customers}"
-                            th:classappend="${index.count % 2 == 0} ? 'table-light' : 'table-primary'"
                     >
                         <th scope="row" th:text="${index.count} + ${pageResponse.pageSize * (pageResponse.pageNo - 1)}"></th>
                         <td th:text="${customer.fullName}"></td>
                         <td th:text="${customer.phone}"></td>
                         <td th:text="${customer.gender.description}"></td>
-                        <td th:text="${customer.status.description}"></td>
+                        <td>
+                            <span th:if="${customer.status.equals(customer.status.PENDING)}" class="badge bg-warning">Chờ xác nhận</span>
+                            <span th:if="${customer.status.equals(customer.status.ASSIGNED)}" class="badge bg-success">Đã phân công</span>
+                            <span th:if="${customer.status.equals(customer.status.DONE)}" class="badge bg-primary">Hoàn thành</span>
+                        </td>
                         <td th:text="${#temporals.format(customer.createdAt, 'HH:mm dd/MM/yyyy')}"></td>
                         <td th:text="${customer.createdBy}"></td>
                         <td th:text="${#temporals.format(customer.updatedAt, 'HH:mm dd/MM/yyyy')}"></td>
                         <td th:text="${customer.updatedBy}"></td>
                         <td>
-                            <a th:href="@{'/admin/customer/edit/' + ${customer.id}}" class="btn btn-info btn-sm">
+                            <a th:href="@{'/admin/customer/edit/' + ${customer.id}}" class="btn btn-primary btn-sm">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
                             <button
+                                    sec:authorize="hasAuthority('ADMIN')"
                                     type="button"
-                                    class="btn btn-primary btn-sm btn-assignment"
+                                    class="btn btn-info btn-sm btn-assignment"
                                     data-bs-toggle="modal"
                                     data-bs-target="#assignmentModal"
                                     th:data-id-customer="${customer.id}"
@@ -183,6 +200,12 @@
                                         <div id="emailError" class="invalid-feedback"></div>
                                     </div>
                                     <div class="mb-3">
+                                        <label for="avatarAccount" class="form-label">Ảnh đại diện</label>
+                                        <input type="file" class="form-control" id="avatarAccount" name="avatar">
+                                        <div id="avatarReview" class="mt-2"></div>
+                                        <div id="avatarError" class="invalid-feedback"></div>
+                                    </div>
+                                    <div class="mb-3">
                                         <label for="passwordAccount" class="form-label">Mật khẩu</label>
                                         <input type="password" class="form-control" id="passwordAccount" name="password" placeholder="Nhập mật khẩu">
                                         <div id="passwordError" class="invalid-feedback"></div>
@@ -264,6 +287,20 @@
         </div>
     </div>
     <script>
+
+        // Reader avatar
+        $('#avatarAccount').change(function (e) {
+           const file = e.target.files[0];
+           if(file) {
+               const reader = new FileReader();
+               reader.onload = function () {
+                   $('#avatarReview').html(`<img src="${reader.result}" class="img-thumbnail" alt="avatar" style="width: 100px; height: 100px">`);
+               };
+                reader.readAsDataURL(file);
+           }
+        });
+
+        // Phân công
         let idCustomerAssignment;
         $('.btn-assignment').click(function () {
             idCustomerAssignment = $(this).data('id-customer');
@@ -326,6 +363,7 @@
         $('button[type="reset"]').click(function (event) {
             event.preventDefault();
             $('form input').val('');
+            $('form select').val('');
         });
 
         $('#searchCustomer').submit(function (e) {
@@ -350,24 +388,26 @@
 
         $('#formAddAccount').submit(function(e) {
             e.preventDefault();
-            const data = {
-                username: $('#usernameAccount').val(),
-                email: $('#emailAccount').val(),
-                password: $('#passwordAccount').val(),
-                confirmPassword: $('#confirmPasswordAcount').val(),
-                id: idCustomer,
-                type: 0 // Loại tài khoản khách hàng
-            };
+            let formData = new FormData();
+            formData.append('username', $('#usernameAccount').val());
+            formData.append('email', $('#emailAccount').val());
+            formData.append('password', $('#passwordAccount').val());
+            formData.append('confirmPassword', $('#confirmPasswordAcount').val());
+            formData.append('id', idCustomer);
+            formData.append('type', 0);
+            formData.append('avatar', $('#avatarAccount')[0].files[0]);
+
             const csrf = $('#csrf-add-account').val();
             $('.invalid-feedback').hide().text('');
-            if(data.confirmPassword !== data.password) {
+            if($('#passwordAccount').val() !== $('#confirmPasswordAcount').val()) {
                 $('#confirmPasswordError').text('Mật khẩu không khớp').show();
             } else {
                 $.ajax({
                     url: '/api/account/add',
                     type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(data),
+                    contentType: false,
+                    processData: false,
+                    data: formData,
                     headers: {
                       'X-CSRF-TOKEN': csrf
                     },

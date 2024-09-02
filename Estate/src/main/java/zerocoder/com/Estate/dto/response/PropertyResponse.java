@@ -31,7 +31,10 @@ public class PropertyResponse extends AbstractResponse {
     private PropertyStatus status;
     private Long salePrice;
     private Long rentPrice;
+    private Boolean isDeleted;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<Integer> amenityIds;
+    private String mainImages;
+    private List<String> images;
 }

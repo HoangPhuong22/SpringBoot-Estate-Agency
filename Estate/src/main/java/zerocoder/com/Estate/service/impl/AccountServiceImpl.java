@@ -2,8 +2,10 @@ package zerocoder.com.Estate.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import zerocoder.com.Estate.dto.request.AccountEditRequest;
 import zerocoder.com.Estate.dto.request.AccountRequest;
 import zerocoder.com.Estate.dto.response.AccountResponse;
@@ -18,7 +20,7 @@ import zerocoder.com.Estate.repository.CustomerRepository;
 import zerocoder.com.Estate.repository.EmployeeRepository;
 import zerocoder.com.Estate.repository.RoleRepository;
 import zerocoder.com.Estate.service.AccountService;
-import zerocoder.com.Estate.utils.SecurityUtils;
+import zerocoder.com.Estate.utils.FileUtils;
 
 import java.util.HashSet;
 import java.util.List;
@@ -36,9 +38,14 @@ public class AccountServiceImpl implements AccountService {
     private final RoleRepository roleRepository;
     private final AccountMapper accountMapper;
 
+    @Value("${file.upload-dir}")
+    private String uploadDir;
 
     @Override
-    public Long saveAccount(AccountRequest request) {
+    public Long saveAccount(AccountRequest request, MultipartFile avatar) {
+        if(avatar == null) {
+            throw new UniqueException("Ảnh đại diện không được để trống", "avatar");
+        }
         if(accountRepository.existsByEmail(request.getEmail())) {
             throw new UniqueException("Email đã tồn tại", "email");
         }
@@ -59,10 +66,12 @@ public class AccountServiceImpl implements AccountService {
             }
             user = userTemp;
         }
+        String fileName = FileUtils.save(uploadDir, avatar);
         Account account = Account.builder()
                 .email(request.getEmail())
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .avatarUrl(fileName)
                 .build();
 
         if(request.getType() == 1) {
@@ -79,7 +88,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Long editAccount(AccountEditRequest request) {
+    public Long editAccount(AccountEditRequest request, MultipartFile avatar) {
         Account account = accountRepository.findById(request.getId()).orElseThrow();
         if(accountRepository.existsByEmailAndIdNot(request.getEmail(), request.getId())) {
             throw new UniqueException("Email đã tồn tại", "email");
@@ -87,9 +96,14 @@ public class AccountServiceImpl implements AccountService {
         if(accountRepository.existsByUsernameAndIdNot(request.getUsername(), request.getId())) {
             throw new UniqueException("Tên đăng nhập đã tồn tại", "username");
         }
+        if(avatar != null) {
+            String fileName = FileUtils.save(uploadDir, avatar);
+            FileUtils.delete(uploadDir, account.getAvatarUrl());
+            account.setAvatarUrl(fileName);
+        }
         account.setEmail(request.getEmail());
         account.setUsername(request.getUsername());
-        if(request.getRole() != null) {
+        if(request.getRole() != null && !request.getRole().isEmpty()) {
             Role role = roleRepository.findByName(request.getRole()).orElseThrow();
             Set<Role> roles = new HashSet<>();
             roles.add(role);

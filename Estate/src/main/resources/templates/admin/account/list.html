@@ -253,6 +253,12 @@
                             <input type="email" class="form-control" id="email">
                             <div id="emailError" class="invalid-feedback"></div>
                         </div>
+                        <div class="mb-3">
+                            <label for="avatarAccount" class="form-label">Ảnh đại diện</label>
+                            <input type="file" class="form-control" id="avatarAccount" name="avatar">
+                            <div id="avatarReview" class="mt-2"></div>
+                            <div id="avatarError" class="invalid-feedback"></div>
+                        </div>
                         <div class="mb-3" id="select-role">
                             <label for="role" class="form-label">Vai trò</label>
                             <select class="form-select" id="role" required>
@@ -293,6 +299,17 @@
     </div>
 
     <script>
+        // Reader avatar
+        $('#avatarAccount').change(function (e) {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function () {
+                    $('#avatarReview').html(`<img src="${reader.result}" class="img-thumbnail" alt="avatar" style="width: 100px; height: 100px">`);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
         $('.btn-edit-account').click(function () {
             const accountId = $(this).data('account-id');
@@ -312,22 +329,23 @@
         });
 
         $('#btn-edit-account').click(function () {
-            const data = {
-                id : $('#editAccountModal #accountId').val(),
-                username: $('#editAccountModal #username').val(),
-                email: $('#editAccountModal #email').val(),
-                role: $('#editAccountModal #role').val()
-            };
+            const data = new FormData();
+            data.append('id', $('#accountId').val());
+            data.append('username', $('#username').val());
+            data.append('email', $('#email').val());
+            data.append('role', $('#role').val());
+            data.append('avatar', $('#avatarAccount')[0].files[0]);
             const csrfToken = $('#csrf-account-action').val();
             $('.invalid-feedback').text('').hide();
             $.ajax({
                 url: '/api/account/edit',
                 type: 'PUT',
-                contentType: 'application/json',
+                contentType: false,
+                processData: false,
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
                 },
-                data: JSON.stringify(data),
+                data: data,
                 success: function () {
                     alert('Thực hiện thành công');
                     window.location.reload();
