@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import zerocoder.com.Estate.dto.request.AccountEditRequest;
 import zerocoder.com.Estate.dto.request.AccountRequest;
 import zerocoder.com.Estate.dto.response.AccountResponse;
+import zerocoder.com.Estate.exception.EmptyFileException;
 import zerocoder.com.Estate.exception.UniqueException;
 import zerocoder.com.Estate.mapper.AccountMapper;
 import zerocoder.com.Estate.model.Account;
@@ -44,7 +45,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Long saveAccount(AccountRequest request, MultipartFile avatar) {
         if(avatar == null) {
-            throw new UniqueException("Ảnh đại diện không được để trống", "avatar");
+            throw new EmptyFileException("Ảnh đại diện không được để trống", "avatar");
         }
         if(accountRepository.existsByEmail(request.getEmail())) {
             throw new UniqueException("Email đã tồn tại", "email");

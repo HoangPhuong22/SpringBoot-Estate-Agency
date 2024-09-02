@@ -14,6 +14,7 @@ import zerocoder.com.Estate.repository.ContractRepository;
 import zerocoder.com.Estate.repository.CustomerRepository;
 import zerocoder.com.Estate.repository.PropertyRepository;
 import zerocoder.com.Estate.service.ContractService;
+import zerocoder.com.Estate.service.EmailService;
 import zerocoder.com.Estate.utils.SecurityUtils;
 
 import java.time.LocalDate;
@@ -28,6 +29,7 @@ public class ContractServiceImpl implements ContractService {
     private final CustomerRepository customerRepository;
     private final ContractMapper contractMapper;
     private final SecurityUtils securityUtils;
+    private final EmailService emailService;
 
     @Override
     public Long saveOrUpdateContract(ContractRequest contractRequest) {
@@ -65,6 +67,12 @@ public class ContractServiceImpl implements ContractService {
         Contract contract =  contractMapper.toEntity(contractRequest);
         contract.setProperty(property);
         contract.setCustomer(customer);
+
+        if(contract.getType().equals(ContractType.SALE)) {
+            emailService.sendEmail(customer.getEmail(), "Hợp đồng mua bán", "Chúc mừng bạn đã mua thành công tòa nhà " + property.getName());
+        } else {
+            emailService.sendEmail(customer.getEmail(), "Hợp đồng thuê", "Chúc mừng bạn đã thuê thành công tòa nhà " + property.getName());
+        }
 
         return contractRepository.save(contract).getId();
     }

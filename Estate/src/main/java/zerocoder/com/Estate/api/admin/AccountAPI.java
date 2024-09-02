@@ -23,13 +23,13 @@ public class AccountAPI {
     private final AccountService accountService;
 
     @PostMapping("/add")
-    public ResponseData<?> addAccount(@Valid @ModelAttribute AccountRequest request, @RequestParam("avatar") MultipartFile avatar) {
+    public ResponseData<?> addAccount(@Valid @ModelAttribute AccountRequest request, @RequestParam(value = "avatar", required = false) MultipartFile avatar) {
         Long id = accountService.saveAccount(request, avatar);
         return new ResponseData<>(HttpStatus.CREATED.value(), "Add account successfully", id);
     }
 
     @PutMapping("/edit")
-    public ResponseData<?> editAccount(@Valid @ModelAttribute AccountEditRequest request, @RequestParam("avatar") MultipartFile avatar) {
+    public ResponseData<?> editAccount(@Valid @ModelAttribute AccountEditRequest request, @RequestParam(value = "avatar", required = false) MultipartFile avatar) {
         Long id = accountService.editAccount(request, avatar);
         return new ResponseData<>(HttpStatus.OK.value(), "Edit account successfully", id);
     }

@@ -417,6 +417,7 @@
                         window.location.reload();
                     },
                     error: function (error) {
+                        console.log(error);
                         const errors = error.responseJSON.data;
                         $.each(errors, function (key, value) {
                             $(`#${key}Error`).text(value).show();

@@ -66,7 +66,11 @@
                             <span th:if="${account.isDeleted}" class="badge bg-danger">Ngưng hoạt động</span>
                         </td>
                         <td>
+                            <button class="btn btn-sm btn-secondary" th:if="${#authentication.principal.username == account.username}">
+                                <i class="bi bi-file-lock2-fill"></i>
+                            </button>
                             <button
+                                    th:if="${#authentication.principal.username != account.username}"
                                     class="btn btn-sm btn-primary btn-edit-account"
                                     data-bs-toggle="modal"
                                     data-bs-target="#editAccountModal"
@@ -79,7 +83,7 @@
                                 Sửa
                             </button>
                             <button
-                                    th:if="${not account.isDeleted}"
+                                    th:if="${#authentication.principal.username != account.username and not account.isDeleted}"
                                     class="btn btn-sm btn-danger btn-delete-account"
                                     data-bs-toggle="modal"
                                     data-bs-target="#activateAccountModal"
@@ -89,7 +93,7 @@
                                 Xóa
                             </button>
                             <button
-                                    th:if="${account.isDeleted}"
+                                    th:if="${#authentication.principal.username != account.username and account.isDeleted}"
                                     class="btn btn-sm btn-success btn-active-account"
                                     data-bs-toggle="modal"
                                     data-bs-target="#activateAccountModal"
